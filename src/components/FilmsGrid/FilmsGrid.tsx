@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback, useDeferredValue } from "react";
 import FilmCard from "../FilmCard/FilmCard";
 import SearchBar from "../SearchBar/SearchBar";
 import styles from "./FilmsGrid.module.css";
+import { PreserveScroll } from "@/hooks/preservScroll";
 
 interface Film {
   id: string;
@@ -100,6 +101,7 @@ export default function FilmsGrid({ episodes }: FilmsGridProps) {
 
   return (
     <div className={styles.container}>
+      <PreserveScroll />
       <SearchBar
         value={searchQuery}
         onChange={handleSearchChange}

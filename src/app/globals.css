@@ -54,14 +54,10 @@ html {
   scroll-behavior: smooth;
 }
 
-[id] {
-  scroll-margin-top: 60px;
-}
 
 html,
 body {
   height: 100dvh;
-  overflow-x: hidden;
 }
 
 body {
