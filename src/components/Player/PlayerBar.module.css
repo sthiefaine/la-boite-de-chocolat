@@ -1,0 +1,171 @@
+.container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.player_title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 0.25rem;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player_bar_container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.player_button {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+  flex-shrink: 0;
+}
+
+.player_button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.player_button svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.player_bar {
+  position: relative;
+  flex: 1;
+  height: 34px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.player_bar:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.player_bar_timer {
+  position: absolute;
+  left: 0;
+  top: 12px;
+  right: 0;
+  text-align: center;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+.button_container {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.button {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 0.375rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+}
+
+.button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.button svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.button a {
+  color: inherit;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .container {
+    padding: 0.5rem;
+  }
+  
+  .player_bar_container {
+    gap: 0.75rem;
+  }
+  
+  .player_button {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .player_button svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  .button {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .button svg {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  .player_title {
+    font-size: 0.75rem;
+  }
+  
+  .player_bar_timer {
+    font-size: 0.625rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .player_bar_container {
+    gap: 0.5rem;
+  }
+  
+  .player_title {
+    font-size: 0.7rem;
+  }
+} 
