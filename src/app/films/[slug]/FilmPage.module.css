@@ -1,0 +1,248 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 2rem 0;
+}
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  color: #8b4513;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: color 0.2s ease;
+}
+
+.backLink:hover {
+  color: #d2691e;
+}
+
+.filmDetails {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 3rem;
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 2px solid #8b4513;
+}
+
+.posterSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.posterContainer {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border: 3px solid #8b4513;
+}
+
+.poster {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.noPoster {
+  width: 300px;
+  height: 450px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  border-radius: 12px;
+  border: 3px solid #8b4513;
+}
+
+.noPoster span {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.noPoster p {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.infoSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.metadata {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.year {
+  display: inline-block;
+  background: linear-gradient(135deg, #8b4513, #d2691e);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  width: fit-content;
+}
+
+.director {
+  color: #6b7280;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.saga {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sagaLabel {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.sagaName {
+  color: #8b4513;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.episodesSection {
+  border-top: 2px solid #f3f4f6;
+  padding-top: 2rem;
+}
+
+.episodesTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 1.5rem 0;
+}
+
+.episodesList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.episodeCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.episodeCard:hover {
+  background: #f1f5f9;
+  border-color: #8b4513;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.1);
+}
+
+.episodeInfo {
+  flex: 1;
+}
+
+.episodeTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 0.5rem 0;
+}
+
+.episodeDate {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0 0 0.25rem 0;
+}
+
+.episodeDuration {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.listenButton {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.listenButton:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem 0;
+  }
+  
+  .content {
+    padding: 0 0.5rem;
+  }
+  
+  .filmDetails {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 1.5rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .episodeCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .listenButton {
+    align-self: flex-end;
+  }
+} 

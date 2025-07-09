@@ -1,26 +1,112 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Couleurs principales du podcast */
+  --chocolate-primary: #6b3e26; /* Brun chocolat foncé */
+  --chocolate-secondary: #a67c52; /* Brun chocolat moyen */
+  --chocolate-light: #d4a574; /* Brun chocolat clair */
+  --chocolate-cream: #f7f3ef; /* Crème chocolatée */
+  --chocolate-dark: #3d2b1f; /* Brun très foncé */
+
+  /* Couleurs d'accent */
+  --accent-gold: #d4af37; /* Or pour les éléments importants */
+  --accent-red: #8b2635; /* Rouge pour les alertes/CTA */
+
+  /* Couleurs neutres */
+  --white: #ffffff;
+  --black: #000000;
+  --gray-light: #f5f5f5;
+  --gray-medium: #9ca3af;
+  --gray-dark: #374151;
+
+  /* Couleurs de fond */
+  --bg-primary: var(--chocolate-cream);
+  --bg-secondary: var(--white);
+  --bg-dark: var(--chocolate-dark);
+
+  /* Couleurs de texte */
+  --text-primary: var(--chocolate-dark);
+  --text-secondary: var(--chocolate-secondary);
+  --text-light: var(--chocolate-light);
+  --text-white: var(--white);
+
+  /* Couleurs d'interaction */
+  --hover-primary: var(--chocolate-secondary);
+  --hover-secondary: var(--chocolate-light);
+  --focus-ring: var(--accent-gold);
+
+  /* Ombres */
+  --shadow-light: 0 2px 4px rgba(107, 62, 38, 0.1);
+  --shadow-medium: 0 4px 8px rgba(107, 62, 38, 0.15);
+  --shadow-heavy: 0 8px 16px rgba(107, 62, 38, 0.2);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Reset de base */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
+/* Compensation pour le header fixe lors du scroll vers les ancres */
+html {
+  scroll-padding-top: 60px;
+}
+
+html,
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  max-width: 100vw;
+  overflow-x: hidden;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Classes utilitaires pour les couleurs */
+.text-primary {
+  color: var(--text-primary);
+}
+.text-secondary {
+  color: var(--text-secondary);
+}
+.text-light {
+  color: var(--text-light);
+}
+.text-white {
+  color: var(--text-white);
+}
+
+.bg-primary {
+  background-color: var(--bg-primary);
+}
+.bg-secondary {
+  background-color: var(--bg-secondary);
+}
+.bg-dark {
+  background-color: var(--bg-dark);
+}
+.bg-chocolate {
+  background-color: var(--chocolate-primary);
+}
+
+.border-chocolate {
+  border-color: var(--chocolate-primary);
+}
+.border-light {
+  border-color: var(--chocolate-light);
 }

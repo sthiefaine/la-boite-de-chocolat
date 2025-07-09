@@ -1,0 +1,149 @@
+.cardArticle {
+  width: 100%;
+  background: linear-gradient(145deg, #f5f1eb, #e8dcc8);
+  border: 1px solid #d4c4a8;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 12px rgba(139, 69, 19, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.cardArticle:hover {
+  transform: translateY(-6px);
+  box-shadow: 
+    0 12px 24px rgba(139, 69, 19, 0.15),
+    0 4px 8px rgba(0, 0, 0, 0.1);
+  border-color: #8b4513;
+}
+
+.cardLink {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cardImageContainer {
+  position: relative;
+  display: block;
+  width: calc(100% - 12px);
+  height: 0;
+  padding-bottom: calc(75% - 9px);
+  overflow: hidden;
+  border-radius: 12px;
+  margin: 6px;
+  background: #fff;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.cardImage {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  color: transparent;
+}
+
+.noPoster {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 2rem;
+}
+
+.cardDuration {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.cardInformations {
+  padding: 1rem 1.25rem 1.25rem 1.25rem;
+  background: transparent;
+  border-top: none;
+}
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.cardTitle {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #2d1810;
+  margin: 0;
+  line-height: 1.4;
+  flex: 1;
+  min-width: 0;
+}
+
+.cardOptions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.cardBottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.episodeDate {
+  font-size: 0.75rem;
+  color: #8b4513;
+  font-weight: 600;
+}
+
+.episodeSlug {
+  font-size: 0.7rem;
+  color: #d2691e;
+  font-weight: 600;
+  background: rgba(210, 105, 30, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(210, 105, 30, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cardArticle {
+    flex: 1 1 100%;
+    max-width: 320px;
+    min-width: 280px;
+  }
+
+  .cardTitle {
+    font-size: 1rem;
+  }
+
+  .cardImageContainer {
+    padding-bottom: calc(70% - 12px);
+  }
+} 

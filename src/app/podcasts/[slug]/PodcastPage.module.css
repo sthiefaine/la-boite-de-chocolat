@@ -1,0 +1,243 @@
+.container {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+.header {
+  position: relative;
+  height: 60vh;
+  min-height: 500px;
+  overflow: hidden;
+  margin-bottom: 3rem;
+}
+
+.backgroundPoster {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.backgroundImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.backgroundOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(139, 69, 19, 0.8) 0%,
+    rgba(210, 105, 30, 0.7) 50%,
+    rgba(205, 133, 63, 0.6) 100%
+  );
+}
+
+.headerContent {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 3rem;
+  width: 100%;
+}
+
+.headerInfo {
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.titleSection {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+  max-width: 80vw;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: white;
+  margin: 0;
+  line-height: 1.1;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.9);
+  flex: 1;
+  min-width: 0;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+.year {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin-left: 0.5rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.director {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-style: italic;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.publicationDate {
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  margin-top: 1rem;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  max-width: 200px;
+  text-align: center;
+  justify-content: center;
+}
+
+.button:nth-child(1) {
+  background: #1db954;
+  color: white;
+}
+
+.button:nth-child(1):hover {
+  background: #1ed760;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.4);
+}
+
+.button:nth-child(2) {
+  background: #8b4513;
+  color: white;
+}
+
+.button:nth-child(2):hover {
+  background: #a0522d;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.4);
+}
+
+.button:nth-child(3) {
+  background: #01b4e4;
+  color: white;
+}
+
+.button:nth-child(3):hover {
+  background: #0099cc;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(1, 180, 228, 0.4);
+}
+
+.buttonIcon {
+  font-size: 1.25rem;
+}
+
+.meta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.date,
+.duration,
+.filmsCount {
+  font-size: 1rem;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+
+  .headerInfo {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .titleSection {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    max-width: 90vw;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    text-align: left;
+  }
+
+  .year {
+    font-size: 1rem;
+    margin-left: 0.25rem;
+  }
+
+  .publicationDate {
+    font-size: 1rem;
+  }
+
+  .director {
+    font-size: 1rem;
+    text-align: left;
+  }
+
+  .buttons {
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .button {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9rem;
+    max-width: 180px;
+  }
+}

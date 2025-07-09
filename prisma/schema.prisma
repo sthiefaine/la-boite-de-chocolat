@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model RssFeed {
+  id       String           @id @default(uuid())
+  name     String
+  url      String           @unique
+  nameId   String           @unique @default("la-boite-de-chocolat")
+  episodes PodcastEpisode[]
+}
+
+model PodcastEpisode {
+  id          String            @id @default(uuid())
+  rssFeedId   String
+  title       String
+  description String
+  pubDate     DateTime
+  audioUrl    String            @unique
+  duration    Int?              // Durée en secondes
+  slug        String?           @unique
+  rssFeed     RssFeed           @relation(fields: [rssFeedId], references: [id])
+  links       PodcastFilmLink[]
+}
+
+model Film {
+  id          String            @id @default(uuid())
+  title       String
+  slug        String            @unique
+  year        Int?
+  director    String?
+  imgFileName String?
+  tmdbId      Int?              @unique // ID TMDB du film
+  alloCineId  Int?              @unique // ID AlloCine du film
+  sagaId      String?
+  saga        Saga?             @relation(fields: [sagaId], references: [id])
+  links       PodcastFilmLink[]
+}
+
+model Saga {
+  id    String @id @default(uuid())
+  name  String
+  films Film[]
+}
+
+model PodcastFilmLink {
+  id        String         @id @default(uuid())
+  podcastId String
+  filmId    String
+  film      Film           @relation(fields: [filmId], references: [id])
+  podcast   PodcastEpisode @relation(fields: [podcastId], references: [id])
+}
