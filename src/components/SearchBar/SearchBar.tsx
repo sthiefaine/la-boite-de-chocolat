@@ -39,7 +39,7 @@ export default function SearchBar({
             onChange={(e) => yearFilter.onChange(e.target.value)}
             className={styles.yearFilter}
           >
-            <option value="">Tous les épisodes</option>
+            <option value="">Saison</option>
             {yearFilter.years.map((year) => (
               <option key={year} value={year.toString()}>
                 {year}

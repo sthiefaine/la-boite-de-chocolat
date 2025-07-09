@@ -101,7 +101,7 @@ export default function AddFilmForm({
     setStep("image");
   };
 
-  const filteredSagas = sagas.filter(saga =>
+  const filteredSagas = sagas.filter((saga) =>
     saga.name.toLowerCase().includes(sagaSearchQuery.toLowerCase())
   );
 
@@ -112,13 +112,13 @@ export default function AddFilmForm({
     // Créer le film avec les informations collectées
     let finalSagaId: string | undefined = selectedSaga;
     let detectedSagaName: string | undefined = undefined;
-    
+
     // Si on a sélectionné la saga détectée, utiliser son nom
     if (selectedSaga === "detected" && detectedSaga) {
       detectedSagaName = detectedSaga.name;
       finalSagaId = undefined; // La saga sera créée automatiquement
     }
-    
+
     createFilmFromTMDB(selectedMovie.id, finalSagaId, detectedSagaName).then(
       (result) => {
         if (result.success && result.film) {
@@ -161,9 +161,11 @@ export default function AddFilmForm({
             ×
           </button>
         </div>
-        
+
         <div className={styles.autoLinkNotice}>
-          <p>💡 Le film sera automatiquement lié à cet épisode une fois créé.</p>
+          <p>
+            💡 Le film sera automatiquement lié à cet épisode une fois créé.
+          </p>
         </div>
 
         {error && <div className={styles.error}>{error}</div>}
@@ -268,7 +270,8 @@ export default function AddFilmForm({
           <div className={styles.step}>
             <h4>Étape 3 : Choisir une saga (optionnel)</h4>
             <p className={styles.stepDescription}>
-              Sélectionnez une saga pour ce film ou laissez vide si aucune saga n'est nécessaire.
+              Sélectionnez une saga pour ce film ou laissez vide si aucune saga
+              n'est nécessaire.
             </p>
 
             {/* Option 1: Saga détectée automatiquement */}
@@ -276,12 +279,18 @@ export default function AddFilmForm({
               <div className={styles.sagaOption}>
                 <button
                   onClick={handleDetectedSagaSelect}
-                  className={`${styles.sagaButton} ${selectedSaga === "detected" ? styles.sagaButtonSelected : ""}`}
+                  className={`${styles.sagaButton} ${
+                    selectedSaga === "detected" ? styles.sagaButtonSelected : ""
+                  }`}
                 >
                   <div className={styles.sagaButtonContent}>
                     <div className={styles.sagaButtonInfo}>
-                      <span className={styles.sagaButtonTitle}>Utiliser la saga détectée</span>
-                      <span className={styles.sagaButtonName}>{detectedSaga.name}</span>
+                      <span className={styles.sagaButtonTitle}>
+                        Utiliser la saga détectée
+                      </span>
+                      <span className={styles.sagaButtonName}>
+                        {detectedSaga.name}
+                      </span>
                       {detectedSaga.overview && (
                         <p className={styles.sagaButtonOverview}>
                           {detectedSaga.overview.substring(0, 100)}...
@@ -307,12 +316,16 @@ export default function AddFilmForm({
             <div className={styles.sagaOption}>
               <button
                 onClick={handleNoSagaSelect}
-                className={`${styles.sagaButton} ${selectedSaga === "" ? styles.sagaButtonSelected : ""}`}
+                className={`${styles.sagaButton} ${
+                  selectedSaga === "" ? styles.sagaButtonSelected : ""
+                }`}
               >
                 <div className={styles.sagaButtonContent}>
                   <div className={styles.sagaButtonInfo}>
                     <span className={styles.sagaButtonTitle}>Aucune saga</span>
-                    <span className={styles.sagaButtonName}>Ce film n'appartient à aucune saga</span>
+                    <span className={styles.sagaButtonName}>
+                      Ce film n'appartient à aucune saga
+                    </span>
                   </div>
                 </div>
               </button>
@@ -322,13 +335,19 @@ export default function AddFilmForm({
             <div className={styles.sagaOption}>
               <button
                 onClick={() => setShowSagaSearch(!showSagaSearch)}
-                className={`${styles.sagaButton} ${showSagaSearch ? styles.sagaButtonSelected : ""}`}
+                className={`${styles.sagaButton} ${
+                  showSagaSearch ? styles.sagaButtonSelected : ""
+                }`}
               >
                 <div className={styles.sagaButtonContent}>
                   <div className={styles.sagaButtonInfo}>
-                    <span className={styles.sagaButtonTitle}>Choisir une saga existante</span>
+                    <span className={styles.sagaButtonTitle}>
+                      Choisir une saga existante
+                    </span>
                     <span className={styles.sagaButtonName}>
-                      {showSagaSearch ? "Masquer la recherche" : "Parcourir les sagas disponibles"}
+                      {showSagaSearch
+                        ? "Masquer la recherche"
+                        : "Parcourir les sagas disponibles"}
                     </span>
                   </div>
                 </div>
@@ -354,19 +373,29 @@ export default function AddFilmForm({
                       <button
                         key={saga.id}
                         onClick={() => handleSagaSelection(saga.id)}
-                        className={`${styles.sagaButton} ${selectedSaga === saga.id ? styles.sagaButtonSelected : ""}`}
+                        className={`${styles.sagaButton} ${
+                          selectedSaga === saga.id
+                            ? styles.sagaButtonSelected
+                            : ""
+                        }`}
                       >
                         <div className={styles.sagaButtonContent}>
                           <div className={styles.sagaButtonInfo}>
-                            <span className={styles.sagaButtonTitle}>{saga.name}</span>
-                            <span className={styles.sagaButtonName}>Saga existante</span>
+                            <span className={styles.sagaButtonTitle}>
+                              {saga.name}
+                            </span>
+                            <span className={styles.sagaButtonName}>
+                              Saga existante
+                            </span>
                           </div>
                         </div>
                       </button>
                     ))
                   ) : (
                     <p className={styles.noResults}>
-                      {sagaSearchQuery ? "Aucune saga trouvée" : "Aucune saga disponible"}
+                      {sagaSearchQuery
+                        ? "Aucune saga trouvée"
+                        : "Aucune saga disponible"}
                     </p>
                   )}
                 </div>

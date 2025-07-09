@@ -1,8 +1,15 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { prisma } from "@/lib/prisma";
 import styles from "./PodcastPage.module.css";
-import { Metadata } from "next";
+import {
+  formatEpisodeDescription,
+  truncateText,
+} from "@/lib/podcastHelpers";
+import FilmCard from "@/components/FilmCard/FilmCard";
+import { generateMetadata } from "./metadata";
+import { getEpisodeBySlug, getEpisodeNavigation } from "@/app/actions/episode";
+
+export { generateMetadata };
 
 interface PodcastPageProps {
   params: Promise<{
@@ -11,93 +18,37 @@ interface PodcastPageProps {
 }
 
 export async function generateStaticParams() {
-  const episodes = await prisma.podcastEpisode.findMany({
-    where: {
-      rssFeed: {
-        nameId: 'la-boite-de-chocolat'
-      }
-    },
-    select: {
-      slug: true,
-    },
-  });
+  const { getAllEpisodeSlugs } = await import("@/app/actions/episode");
+  const result = await getAllEpisodeSlugs();
 
-  return episodes.map((episode) => ({
+  if (!result.success || !result.data) {
+    return [];
+  }
+
+  return result.data.map((episode) => ({
     slug: episode.slug,
   }));
 }
 
-export async function generateMetadata({ params }: PodcastPageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const episode = await prisma.podcastEpisode.findUnique({
-    where: { slug },
-    include: {
-      links: {
-        include: {
-          film: true,
-        },
-      },
-    },
-  });
-
-  if (!episode) {
-    return {
-      title: 'Épisode non trouvé',
-    };
-  }
-
-  const mainFilm = episode.links[0]?.film;
-  const title = mainFilm?.title || episode.title;
-
-  return {
-    title: `${title} - La Boîte de Chocolat`,
-    description: episode.description?.substring(0, 160) || `Écoutez l'épisode sur ${title}`,
-    openGraph: {
-      title: `${title} - La Boîte de Chocolat`,
-      description: episode.description?.substring(0, 160) || `Écoutez l'épisode sur ${title}`,
-      type: 'article',
-      publishedTime: episode.pubDate.toISOString(),
-      images: mainFilm?.imgFileName ? [
-        {
-          url: `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/${mainFilm.imgFileName}`,
-          width: 500,
-          height: 750,
-          alt: `Poster de ${mainFilm.title}`,
-        }
-      ] : [],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: `${title} - La Boîte de Chocolat`,
-      description: episode.description?.substring(0, 160) || `Écoutez l'épisode sur ${title}`,
-      images: mainFilm?.imgFileName ? [
-        `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/${mainFilm.imgFileName}`
-      ] : [],
-    },
-  };
-}
-
 export default async function PodcastPage({ params }: PodcastPageProps) {
   const { slug } = await params;
-  const episode = await prisma.podcastEpisode.findUnique({
-    where: { slug },
-    include: {
-      links: {
-        include: {
-          film: {
-            include: {
-              saga: true,
-            },
-          },
-        },
-      },
-      rssFeed: true,
-    },
-  });
 
-  if (!episode) {
+  const episodeResult = await getEpisodeBySlug(slug);
+
+  if (!episodeResult.success || !episodeResult.data) {
     notFound();
   }
+
+  const episode = episodeResult.data;
+
+  const navigationResult = await getEpisodeNavigation(slug, episode.pubDate);
+
+  const previousEpisode = navigationResult.success
+    ? navigationResult.data?.previousEpisode
+    : null;
+  const nextEpisode = navigationResult.success
+    ? navigationResult.data?.nextEpisode
+    : null;
 
   const mainFilm = episode.links[0]?.film;
 
@@ -139,12 +90,16 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
                 href={episode.audioUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={styles.button}
+                className={`${styles.button} ${styles.listenButton}`}
               >
                 <span className={styles.buttonIcon}>🎧</span>
                 Écouter
               </a>
-              <a href={episode.audioUrl} download className={styles.button}>
+              <a
+                href={episode.audioUrl}
+                download
+                className={`${styles.button} ${styles.downloadButton}`}
+              >
                 <span className={styles.buttonIcon}>⬇️</span>
                 Télécharger
               </a>
@@ -153,10 +108,15 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
                   href={`https://www.themoviedb.org/movie/${mainFilm.tmdbId}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={styles.button}
+                  className={`${styles.button} ${styles.tmdbButton}`}
                 >
-                  <span className={styles.buttonIcon}>🎬</span>
-                  TMDB
+                  <Image
+                    src="/images/tmdb_icon.svg"
+                    alt="TMDB"
+                    width={100}
+                    height={30}
+                    className={styles.tmdbIcon}
+                  />
                 </a>
               )}
             </div>
@@ -169,9 +129,55 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
                 year: "numeric",
               })}
             </div>
+
+            {episode.description && (
+              <div className={styles.description}>
+                <h3 className={styles.descriptionTitle}>Description</h3>
+                <div className={styles.descriptionContent}>
+                  {truncateText(
+                    formatEpisodeDescription(episode.description),
+                    650
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Navigation entre épisodes */}
+      {(previousEpisode || nextEpisode) && (
+        <div className={styles.navigationSection}>
+          <div className={styles.navigationContainer}>
+            {nextEpisode && (
+              <div className={styles.navigationCard}>
+                <span className={styles.navigationLabel}>Suivant</span>
+                <FilmCard
+                  film={nextEpisode.links[0]?.film}
+                  episodeTitle={nextEpisode.title}
+                  episodeDate={nextEpisode.pubDate}
+                  episodeDuration={nextEpisode.duration}
+                  episodeSlug={nextEpisode.slug}
+                  variant="compact"
+                />
+              </div>
+            )}
+            {previousEpisode && (
+              <div className={styles.navigationCard}>
+                <span className={styles.navigationLabel}>Précédent</span>
+                <FilmCard
+                  film={previousEpisode.links[0]?.film}
+                  episodeTitle={previousEpisode.title}
+                  episodeDate={previousEpisode.pubDate}
+                  episodeDuration={previousEpisode.duration}
+                  episodeSlug={previousEpisode.slug}
+                  variant="compact"
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

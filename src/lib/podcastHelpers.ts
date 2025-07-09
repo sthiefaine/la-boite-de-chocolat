@@ -6,7 +6,9 @@ export interface PodcastDescriptionInfo {
   socialLinks: string[];
 }
 
-export function formatPodcastDescription(description: string): PodcastDescriptionInfo {
+export function formatPodcastDescription(
+  description: string
+): PodcastDescriptionInfo {
   const info: PodcastDescriptionInfo = {
     cleanDescription: description,
     socialLinks: [],
@@ -18,13 +20,17 @@ export function formatPodcastDescription(description: string): PodcastDescriptio
     info.socialLinks.push(`Instagram: ${instagramMatch[1]}`);
   }
 
-  const emailMatch = description.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+  const emailMatch = description.match(
+    /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/
+  );
   if (emailMatch) {
     info.email = emailMatch[1];
     info.socialLinks.push(`Email: ${emailMatch[1]}`);
   }
 
-  const hostsMatch = description.match(/(?:nous retrouvons|avec|participent?)\s*([^.!?]+)/i);
+  const hostsMatch = description.match(
+    /(?:nous retrouvons|avec|participent?)\s*([^.!?]+)/i
+  );
   if (hostsMatch) {
     const hostsText = hostsMatch[1];
     const names = hostsText
@@ -33,7 +39,9 @@ export function formatPodcastDescription(description: string): PodcastDescriptio
       .filter(
         (name) =>
           name.length > 0 &&
-          !name.match(/^(et|avec|nous|retrouvons|participent|ce soir|sur les bancs|la défor|s|a|ion)$/i) &&
+          !name.match(
+            /^(et|avec|nous|retrouvons|participent|ce soir|sur les bancs|la défor|s|a|ion)$/i
+          ) &&
           name.length > 1 &&
           !name.match(/^[a-z]$/i)
       );
@@ -50,15 +58,36 @@ export function formatPodcastDescription(description: string): PodcastDescriptio
 function cleanDescription(description: string): string {
   let cleaned = description;
 
-  cleaned = cleaned.replace(/^insta\s*:\s*[a-zA-Z0-9_.]+\s*(?:ou\s+[a-zA-Z0-9_.]+)?\s*/i, "");
+  cleaned = cleaned.replace(
+    /^insta\s*:\s*[a-zA-Z0-9_.]+\s*(?:ou\s+[a-zA-Z0-9_.]+)?\s*/i,
+    ""
+  );
   cleaned = cleaned.replace(/\s*Hébergé par [^.]*\.?\s*/gi, "");
   cleaned = cleaned.replace(/\s*Visitez [^.]*\.?\s*/gi, "");
-  cleaned = cleaned.replace(/\s*(?:PROFITEZ EN POUR VOUS SUIVRE SUR|SUIVEZ NOUS SUR|RETROUVEZ NOUS SUR)[^.!?]*[.!?]?\s*/gi, "");
-  cleaned = cleaned.replace(/\s*(?:N'?HÉSITEZ PAS|N'HÉSITEZ PAS D'AILLEURS) À NOUS LAISSER[^.!?]*[.!?]?\s*/gi, "");
-  cleaned = cleaned.replace(/\s*(?:N'?HÉSITEZ PAS|N'HÉSITEZ PAS D'AILLEURS) À[^.!?]*[.!?]?\s*/gi, "");
-  cleaned = cleaned.replace(/\s*VOUS ETES DE PLUS EN PLUS NOMBREUX[^.!?]*[.!?]?\s*/gi, "");
-  cleaned = cleaned.replace(/\s*SOYEZ DE MOINS EN MOINS TIMIDE[^.!?]*[.!?]?\s*/gi, "");
-  cleaned = cleaned.replace(/\s*ET AUSSI DES BONNES ETOILES[^.!?]*[.!?]?\s*/gi, "");
+  cleaned = cleaned.replace(
+    /\s*(?:PROFITEZ EN POUR VOUS SUIVRE SUR|SUIVEZ NOUS SUR|RETROUVEZ NOUS SUR)[^.!?]*[.!?]?\s*/gi,
+    ""
+  );
+  cleaned = cleaned.replace(
+    /\s*(?:N'?HÉSITEZ PAS|N'HÉSITEZ PAS D'AILLEURS) À NOUS LAISSER[^.!?]*[.!?]?\s*/gi,
+    ""
+  );
+  cleaned = cleaned.replace(
+    /\s*(?:N'?HÉSITEZ PAS|N'HÉSITEZ PAS D'AILLEURS) À[^.!?]*[.!?]?\s*/gi,
+    ""
+  );
+  cleaned = cleaned.replace(
+    /\s*VOUS ETES DE PLUS EN PLUS NOMBREUX[^.!?]*[.!?]?\s*/gi,
+    ""
+  );
+  cleaned = cleaned.replace(
+    /\s*SOYEZ DE MOINS EN MOINS TIMIDE[^.!?]*[.!?]?\s*/gi,
+    ""
+  );
+  cleaned = cleaned.replace(
+    /\s*ET AUSSI DES BONNES ETOILES[^.!?]*[.!?]?\s*/gi,
+    ""
+  );
   cleaned = cleaned.replace(/\s*ET AUSSI[^.!?]*[.!?]?\s*/gi, "");
   cleaned = cleaned.replace(/\s*SUGGEREZ NOUS[^.!?]*[.!?]?\s*/gi, "");
   cleaned = cleaned.replace(/\s*ON LES FERA[^.!?]*[.!?]?\s*/gi, "");
@@ -66,7 +95,10 @@ function cleanDescription(description: string): string {
   cleaned = cleaned.replace(/\s*insta\s*:\s*[a-zA-Z0-9_.]+\s*/gi, "");
   cleaned = cleaned.replace(/\s*https?:\/\/[^\s]*\s*/gi, "");
   cleaned = cleaned.replace(/\s*comcom\/[^\s]*\s*/gi, "");
-  cleaned = cleaned.replace(/\s*pour plus d'informations[^.!?]*[.!?]?\s*/gi, "");
+  cleaned = cleaned.replace(
+    /\s*pour plus d'informations[^.!?]*[.!?]?\s*/gi,
+    ""
+  );
 
   cleaned = cleaned.replace(/\s+/g, " ").trim();
   cleaned = formatParagraphs(cleaned);
@@ -83,7 +115,9 @@ function formatParagraphs(text: string): string {
     if (sentence.trim().length === 0) continue;
 
     const isNewParagraph =
-      sentence.match(/^(Et oui|Et bien|Et là|Alors|Du coup|Pour ce|Là-bas|Entre en scène)/i) ||
+      sentence.match(
+        /^(Et oui|Et bien|Et là|Alors|Du coup|Pour ce|Là-bas|Entre en scène)/i
+      ) ||
       sentence.match(/^(Oui\.|Non\.|Alors\.|Du coup\.|Et là\.)/i) ||
       (currentParagraph.length > 0 && sentence.length > 100);
 
@@ -110,7 +144,9 @@ export function extractSocialLinks(description: string): string[] {
     links.push(`Instagram: ${instagramMatch[1]}`);
   }
 
-  const emailMatch = description.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+  const emailMatch = description.match(
+    /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/
+  );
   if (emailMatch) {
     links.push(`Email: ${emailMatch[1]}`);
   }
@@ -119,7 +155,9 @@ export function extractSocialLinks(description: string): string[] {
 }
 
 export function extractHosts(description: string): string[] {
-  const hostsMatch = description.match(/(?:nous retrouvons|avec|participent?)\s*([^.!?]+)/i);
+  const hostsMatch = description.match(
+    /(?:nous retrouvons|avec|participent?)\s*([^.!?]+)/i
+  );
   if (!hostsMatch) return [];
 
   const hostsText = hostsMatch[1];
@@ -129,7 +167,9 @@ export function extractHosts(description: string): string[] {
     .filter(
       (name) =>
         name.length > 0 &&
-        !name.match(/^(et|avec|nous|retrouvons|participent|ce soir|sur les bancs|la défor|s|a|ion)$/i) &&
+        !name.match(
+          /^(et|avec|nous|retrouvons|participent|ce soir|sur les bancs|la défor|s|a|ion)$/i
+        ) &&
         name.length > 1 &&
         !name.match(/^[a-z]$/i)
     );
@@ -137,57 +177,68 @@ export function extractHosts(description: string): string[] {
 
 export function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
-  
+
   const truncated = text.substring(0, maxLength);
   const lastSpace = truncated.lastIndexOf(" ");
-  
+
   if (lastSpace > 0) {
     return truncated.substring(0, lastSpace) + "...";
   }
-  
+
   return truncated + "...";
+}
+
+export function truncateToLines(text: string, maxLines: number = 3): string {
+  const lines = text.split("\n");
+
+  if (lines.length <= maxLines) {
+    return text;
+  }
+
+  const truncatedLines = lines.slice(0, maxLines);
+  return truncatedLines.join("\n") + "...";
 }
 
 export function generateSlug(title: string): string {
   return title
     .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
     .trim()
-    .replace(/^-+|-+$/g, '');
+    .replace(/^-+|-+$/g, "");
 }
 
 export function formatDuration(seconds: number | null): string {
-  if (!seconds) return '';
-  
+  if (!seconds) return "";
+
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
-  
+
   if (hours > 0) {
-    return `${hours}h${minutes.toString().padStart(2, '0')}`;
+    return `${hours}h${minutes.toString().padStart(2, "0")}`;
   } else {
     return `${minutes}min`;
   }
 }
 
-export function formatEpisodeDescription(description: string, maxLength: number = 200): string {
-  let cleanDescription = description.replace(/<[^>]*>/g, '');
-  
+export function formatEpisodeDescription(description: string): string {
+  let cleanDescription = description.replace(/<[^>]*>/g, "");
+
   cleanDescription = cleanDescription
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
-    .replace(/\s+/g, ' ')
+    .replace(/\s+/g, " ")
     .trim();
-  
-  cleanDescription = cleanDescription.replace(/https?:\/\/[^\s]+/g, '');
-  
+
+  cleanDescription = cleanDescription.replace(/https?:\/\/[^\s]+/g, "");
+
   const platformMentions = [
     /spotify\.com/gi,
     /apple\.co/gi,
@@ -195,26 +246,31 @@ export function formatEpisodeDescription(description: string, maxLength: number 
     /youtube\.com/gi,
     /youtu\.be/gi,
     /acast\.com/gi,
-    /rss\.acast\.com/gi
+    /rss\.acast\.com/gi,
   ];
-  
-  platformMentions.forEach(pattern => {
-    cleanDescription = cleanDescription.replace(pattern, '');
+
+  platformMentions.forEach((pattern) => {
+    cleanDescription = cleanDescription.replace(pattern, "");
   });
-  
-  const instagramPhrase = /insta\s*:\s*laboite2chocolat\s+ou\s+la_boitedechocolat/gi;
-  cleanDescription = cleanDescription.replace(instagramPhrase, '');
-  
-  cleanDescription = cleanDescription.replace(/\s+/g, ' ').trim();
-  
-  if (cleanDescription.length > maxLength) {
-    cleanDescription = cleanDescription.substring(0, maxLength);
-    const lastSpace = cleanDescription.lastIndexOf(' ');
-    if (lastSpace > maxLength * 0.8) {
-      cleanDescription = cleanDescription.substring(0, lastSpace);
-    }
-    cleanDescription += '...';
-  }
-  
+
+  const instagramPhrase =
+    /insta\s*:\s*laboite2chocolat\s+ou\s+la_boitedechocolat/gi;
+  cleanDescription = cleanDescription.replace(instagramPhrase, "");
+
+  // Supprimer les phrases "Visitez blablabla pour plus d'informations"
+  cleanDescription = cleanDescription.replace(
+    /\s*Visitez [^.!?]*pour plus d'informations[^.!?]*[.!?]?\s*/gi,
+    ""
+  );
+  cleanDescription = cleanDescription.replace(
+    /\s*pour plus d'informations[^.!?]*[.!?]?\s*/gi,
+    ""
+  );
+
+  cleanDescription = cleanDescription.replace(/\s+/g, " ").trim();
+
+  // Utiliser la même logique de formatage des paragraphes que formatPodcastDescription
+  cleanDescription = formatParagraphs(cleanDescription);
+
   return cleanDescription;
 }

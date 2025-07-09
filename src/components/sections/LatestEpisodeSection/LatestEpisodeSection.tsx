@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getLatestEpisode } from "@/app/actions/episode";
-import { formatEpisodeDescription, formatDuration } from "@/lib/podcastHelpers";
+import { formatEpisodeDescription, formatDuration, truncateToLines } from "@/lib/podcastHelpers";
 import styles from "./LatestEpisodeSection.module.css";
 
 export default async function LatestEpisodeSection() {
@@ -52,7 +52,7 @@ export default async function LatestEpisodeSection() {
             <h3 className={styles.episodeTitle}>{episode.title}</h3>
 
             <p className={styles.episodeDescription}>
-              {formatEpisodeDescription(episode.description, 200)}
+              {truncateToLines(formatEpisodeDescription(episode.description), 3)}
             </p>
 
             <div className={styles.episodeMeta}>

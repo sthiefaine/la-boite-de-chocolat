@@ -7,8 +7,6 @@ import { getEpisodesWithFilms } from "./actions/episode";
 export default async function Home() {
   const episodesResult = await getEpisodesWithFilms();
   const episodes = episodesResult.success ? episodesResult.data : [];
-
-  console.log("HOME RENDER");
   return (
       <main className={styles.main}>
         <HeroSection />

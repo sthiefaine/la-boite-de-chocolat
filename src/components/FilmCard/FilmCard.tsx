@@ -20,6 +20,7 @@ interface FilmCardProps {
   episodeDuration?: number | null;
   episodeSlug?: string | null;
   isNoResults?: boolean;
+  variant?: 'default' | 'compact';
 }
 
 export default function FilmCard({
@@ -29,6 +30,7 @@ export default function FilmCard({
   episodeDuration,
   episodeSlug,
   isNoResults = false,
+  variant = 'default',
 }: FilmCardProps) {
   // Carte spéciale pour "aucun résultat"
   if (isNoResults) {
@@ -62,7 +64,7 @@ export default function FilmCard({
   if (!film) return null;
 
   return (
-    <article className={styles.cardArticle}>
+    <article className={`${styles.cardArticle} ${variant === 'compact' ? styles.cardArticleCompact : ''}`}>
       <Link href={`/podcasts/${episodeSlug}`} className={styles.cardLink}>
         <span className={styles.cardImageContainer}>
           {film.imgFileName ? (

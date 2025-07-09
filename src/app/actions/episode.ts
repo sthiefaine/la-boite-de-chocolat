@@ -1,122 +1,137 @@
-'use server';
+"use server";
 
-import { prisma } from '@/lib/prisma';
-import { revalidatePath } from 'next/cache';
+import { prisma } from "@/lib/prisma";
 
-export async function linkEpisodeToFilm(episodeId: string, filmId: string) {
+export async function getEpisodeBySlug(slug: string) {
   try {
-    // Vérifier que l'épisode existe
     const episode = await prisma.podcastEpisode.findUnique({
-      where: { id: episodeId },
-      include: { rssFeed: true }
+      where: { slug },
+      include: {
+        links: {
+          include: {
+            film: {
+              include: {
+                saga: true,
+              },
+            },
+          },
+        },
+        rssFeed: true,
+      },
     });
 
-    if (!episode) {
-      throw new Error('Épisode non trouvé');
-    }
-
-    // Vérifier que le film existe
-    const film = await prisma.film.findUnique({
-      where: { id: filmId }
-    });
-
-    if (!film) {
-      throw new Error('Film non trouvé');
-    }
-
-    // Vérifier si le lien existe déjà
-    const existingLink = await prisma.podcastFilmLink.findFirst({
-      where: {
-        podcastId: episodeId,
-        filmId: filmId
-      }
-    });
-
-    if (existingLink) {
-      throw new Error('Ce lien existe déjà');
-    }
-
-    // Créer le lien
-    await prisma.podcastFilmLink.create({
-      data: {
-        podcastId: episodeId,
-        filmId: filmId
-      }
-    });
-
-    // Revalider la page
-    revalidatePath(`/admin/episode/${episodeId}/edit`);
-    revalidatePath(`/admin/list/podcast/${episode.rssFeed.nameId}`);
-
-    return { success: true, message: 'Film lié avec succès' };
-
+    return { success: true, data: episode };
   } catch (error) {
-    console.error('Erreur lors de la liaison:', error);
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Erreur interne du serveur' 
+    console.error("Erreur lors de la récupération de l'épisode:", error);
+    return {
+      success: false,
+      error: "Erreur lors de la récupération de l'épisode",
     };
   }
 }
 
-export async function unlinkEpisodeFromFilm(episodeId: string, filmId: string) {
+export async function getEpisodeNavigation(
+  currentSlug: string,
+  currentPubDate: Date
+) {
   try {
-    // Vérifier que l'épisode existe
-    const episode = await prisma.podcastEpisode.findUnique({
-      where: { id: episodeId },
-      include: { rssFeed: true }
-    });
+    const [previousEpisode, nextEpisode] = await Promise.all([
+      prisma.podcastEpisode.findFirst({
+        where: {
+          rssFeed: {
+            nameId: "la-boite-de-chocolat",
+          },
+          pubDate: {
+            lt: currentPubDate,
+          },
+        },
+        include: {
+          links: {
+            include: {
+              film: {
+                include: {
+                  saga: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: {
+          pubDate: "desc",
+        },
+      }),
+      prisma.podcastEpisode.findFirst({
+        where: {
+          rssFeed: {
+            nameId: "la-boite-de-chocolat",
+          },
+          pubDate: {
+            gt: currentPubDate,
+          },
+        },
+        include: {
+          links: {
+            include: {
+              film: {
+                include: {
+                  saga: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: {
+          pubDate: "asc",
+        },
+      }),
+    ]);
 
-    if (!episode) {
-      throw new Error('Épisode non trouvé');
-    }
-
-    // Vérifier que le film existe
-    const film = await prisma.film.findUnique({
-      where: { id: filmId }
-    });
-
-    if (!film) {
-      throw new Error('Film non trouvé');
-    }
-
-    // Supprimer le lien
-    const deletedLink = await prisma.podcastFilmLink.deleteMany({
-      where: {
-        podcastId: episodeId,
-        filmId: filmId
-      }
-    });
-
-    if (deletedLink.count === 0) {
-      throw new Error('Lien non trouvé');
-    }
-
-    // Revalider la page
-    revalidatePath(`/admin/episode/${episodeId}/edit`);
-    revalidatePath(`/admin/list/podcast/${episode.rssFeed.nameId}`);
-
-    return { success: true, message: 'Lien supprimé avec succès' };
-
+    return {
+      success: true,
+      data: { previousEpisode, nextEpisode },
+    };
   } catch (error) {
-    console.error('Erreur lors de la suppression du lien:', error);
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Erreur interne du serveur' 
+    console.error("Erreur lors de la récupération de la navigation:", error);
+    return {
+      success: false,
+      error: "Erreur lors de la récupération de la navigation",
     };
   }
-} 
+}
+
+export async function getAllEpisodeSlugs() {
+  try {
+    const episodes = await prisma.podcastEpisode.findMany({
+      where: {
+        rssFeed: {
+          nameId: "la-boite-de-chocolat",
+        },
+      },
+      select: {
+        slug: true,
+      },
+    });
+
+    return { success: true, data: episodes };
+  } catch (error) {
+    console.error("Erreur lors de la récupération des slugs:", error);
+    return {
+      success: false,
+      error: "Erreur lors de la récupération des slugs",
+    };
+  }
+}
 
 export async function getEpisodesWithFilms() {
   try {
     const episodes = await prisma.podcastEpisode.findMany({
       where: {
         rssFeed: {
-          nameId: 'la-boite-de-chocolat'
+          nameId: "la-boite-de-chocolat",
         },
         links: {
-          some: {}
-        }
+          some: {},
+        },
       },
       select: {
         id: true,
@@ -138,43 +153,49 @@ export async function getEpisodesWithFilms() {
                 saga: {
                   select: {
                     id: true,
-                    name: true
-                  }
-                }
-              }
-            }
-          }
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
         },
         rssFeed: {
           select: {
             id: true,
             name: true,
-            nameId: true
-          }
-        }
+            nameId: true,
+          },
+        },
       },
       orderBy: {
-        pubDate: 'desc'
+        pubDate: "desc",
       },
     });
 
     return { success: true, data: episodes };
   } catch (error) {
-    console.error('Erreur lors de la récupération des épisodes avec films:', error);
-    return { success: false, error: 'Erreur lors de la récupération des épisodes' };
+    console.error(
+      "Erreur lors de la récupération des épisodes avec films:",
+      error
+    );
+    return {
+      success: false,
+      error: "Erreur lors de la récupération des épisodes",
+    };
   }
-} 
+}
 
 export async function getLatestEpisode() {
   try {
     const latestEpisode = await prisma.podcastEpisode.findFirst({
       where: {
         rssFeed: {
-          nameId: 'la-boite-de-chocolat'
-        }
+          nameId: "la-boite-de-chocolat",
+        },
       },
       orderBy: {
-        pubDate: 'desc'
+        pubDate: "desc",
       },
       select: {
         id: true,
@@ -191,20 +212,66 @@ export async function getLatestEpisode() {
                 id: true,
                 title: true,
                 year: true,
-              }
-            }
-          }
-        }
-      }
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!latestEpisode) {
-      return { success: false, error: 'Aucun épisode trouvé' };
+      return { success: false, error: "Aucun épisode trouvé" };
     }
 
     return { success: true, data: latestEpisode };
   } catch (error) {
-    console.error('Erreur lors de la récupération du dernier épisode:', error);
-    return { success: false, error: 'Erreur lors de la récupération du dernier épisode' };
+    console.error("Erreur lors de la récupération du dernier épisode:", error);
+    return {
+      success: false,
+      error: "Erreur lors de la récupération du dernier épisode",
+    };
   }
-} 
+}
+
+export async function linkEpisodeToFilm(episodeId: string, filmId: string) {
+  try {
+    const existingLink = await prisma.podcastFilmLink.findFirst({
+      where: {
+        podcastId: episodeId,
+        filmId,
+      },
+    });
+
+    if (existingLink) {
+      return { success: false, error: "Ce lien existe déjà" };
+    }
+
+    await prisma.podcastFilmLink.create({
+      data: {
+        podcastId: episodeId,
+        filmId,
+      },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Erreur lors de la liaison épisode-film:", error);
+    return { success: false, error: "Erreur lors de la liaison épisode-film" };
+  }
+}
+
+export async function unlinkEpisodeFromFilm(episodeId: string, filmId: string) {
+  try {
+    await prisma.podcastFilmLink.deleteMany({
+      where: {
+        podcastId: episodeId,
+        filmId,
+      },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Erreur lors de la suppression du lien épisode-film:", error);
+    return { success: false, error: "Erreur lors de la suppression du lien" };
+  }
+}
