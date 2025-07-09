@@ -4,7 +4,7 @@ import { formatDuration } from "@/lib/podcastHelpers";
 import styles from "./FilmCard.module.css";
 
 interface FilmCardProps {
-  film: {
+  film?: {
     id: string;
     title: string;
     slug: string;
@@ -19,6 +19,7 @@ interface FilmCardProps {
   episodeDate?: Date;
   episodeDuration?: number | null;
   episodeSlug?: string | null;
+  isNoResults?: boolean;
 }
 
 export default function FilmCard({
@@ -27,13 +28,42 @@ export default function FilmCard({
   episodeDate,
   episodeDuration,
   episodeSlug,
+  isNoResults = false,
 }: FilmCardProps) {
+  // Carte spéciale pour "aucun résultat"
+  if (isNoResults) {
+    return (
+      <article className={`${styles.cardArticle} ${styles.noResultsCard}`}>
+        <div className={styles.cardImageContainer}>
+          <Image
+            alt="Navet - Aucun résultat"
+            fill
+            sizes="(max-width: 768px) 320px, 180px"
+            className={styles.cardImage}
+            src="/images/navet.png"
+            priority={false}
+          />
+        </div>
+        <div className={styles.cardInformations}>
+          <div className={styles.cardTop}>
+            <h2 className={styles.cardTitle}>Aucun résultat trouvé</h2>
+          </div>
+          <span className={styles.episodeDate}>
+            {new Date().toLocaleDateString("fr-FR", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })}
+          </span>
+        </div>
+      </article>
+    );
+  }
+  if (!film) return null;
+
   return (
     <article className={styles.cardArticle}>
-      <Link
-        href={`/podcasts/${episodeSlug}`}
-        className={styles.cardLink}
-      >
+      <Link href={`/podcasts/${episodeSlug}`} className={styles.cardLink}>
         <span className={styles.cardImageContainer}>
           {film.imgFileName ? (
             <Image

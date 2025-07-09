@@ -21,8 +21,9 @@
   font-size: 0.875rem;
   background: #fff;
   color: #1f2937;
-  transition: all 0.2s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
   box-shadow: 0 2px 4px rgba(139, 69, 19, 0.1);
+  will-change: border-color, box-shadow;
 }
 
 .searchInput:focus {
@@ -42,10 +43,11 @@
   font-size: 0.875rem;
   background: #fff;
   color: #1f2937;
-  transition: all 0.2s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
   box-shadow: 0 2px 4px rgba(139, 69, 19, 0.1);
   cursor: pointer;
   min-width: 150px;
+  will-change: border-color, box-shadow;
 }
 
 .yearFilter:focus {

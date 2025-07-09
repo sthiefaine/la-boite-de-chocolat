@@ -11,9 +11,9 @@ import FormattedDescription from "@/components/PodcastDescription";
 import TabNavigation from "./TabNavigation";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 async function getEpisode(id: string) {

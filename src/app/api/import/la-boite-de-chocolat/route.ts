@@ -1,6 +1,7 @@
 import Parser from "rss-parser";
 import { prisma } from "@/lib/prisma";
 import { generateSlug } from "@/lib/podcastHelpers";
+import { shouldRunImport } from "@/lib/timeHelpers";
 
 const parser = new Parser();
 
@@ -9,6 +10,16 @@ const FEED_URL =
 
 export async function GET() {
   try {
+    // Vérifier si on doit exécuter l'import selon l'heure
+    const shouldRun = await shouldRunImport();
+    if (!shouldRun) {
+      return Response.json({ 
+        message: "Import ignoré - pas l'heure appropriée",
+        currentTime: new Date().toISOString(),
+        shouldRun: false
+      });
+    }
+
     const feed = await parser.parseURL(FEED_URL);
     let rssFeed = await prisma.rssFeed.findUnique({ where: { url: FEED_URL } });
     if (!rssFeed) {
@@ -64,7 +75,6 @@ export async function GET() {
           description: item.contentSnippet || item.content || "",
           pubDate: item.pubDate ? new Date(item.pubDate) : new Date(),
           duration: duration,
-          slug: finalSlug,
         },
         create: {
           rssFeedId: rssFeed.id,
@@ -89,7 +99,13 @@ export async function GET() {
         imported++;
       }
     }
-    return Response.json({ message: `Import terminé`, imported, updated });
+    return Response.json({ 
+      message: `Import terminé`, 
+      imported, 
+      updated,
+      currentTime: new Date().toISOString(),
+      shouldRun: true
+    });
   } catch (e: unknown) {
     if (e instanceof Error) {
       return Response.json({ error: e.message }, { status: 500 });

@@ -75,7 +75,6 @@
   margin: 0;
   line-height: 1.1;
   text-shadow: 0 4px 8px rgba(0, 0, 0, 0.9);
-  flex: 1;
   min-width: 0;
   word-wrap: break-word;
   hyphens: auto;
@@ -193,10 +192,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
-
-
   .headerInfo {
     max-width: 100%;
     text-align: center;

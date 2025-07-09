@@ -30,7 +30,9 @@ export default function SearchBar({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className={styles.searchInput}
+          autoComplete="off"
         />
+        
         {yearFilter && (
           <select
             value={yearFilter.value}

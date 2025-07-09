@@ -2,16 +2,85 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import styles from "./PodcastPage.module.css";
+import { Metadata } from "next";
 
 interface PodcastPageProps {
-  params: {
+  params: Promise<{
     slug: string;
+  }>;
+}
+
+export async function generateStaticParams() {
+  const episodes = await prisma.podcastEpisode.findMany({
+    where: {
+      rssFeed: {
+        nameId: 'la-boite-de-chocolat'
+      }
+    },
+    select: {
+      slug: true,
+    },
+  });
+
+  return episodes.map((episode) => ({
+    slug: episode.slug,
+  }));
+}
+
+export async function generateMetadata({ params }: PodcastPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const episode = await prisma.podcastEpisode.findUnique({
+    where: { slug },
+    include: {
+      links: {
+        include: {
+          film: true,
+        },
+      },
+    },
+  });
+
+  if (!episode) {
+    return {
+      title: 'Épisode non trouvé',
+    };
+  }
+
+  const mainFilm = episode.links[0]?.film;
+  const title = mainFilm?.title || episode.title;
+
+  return {
+    title: `${title} - La Boîte de Chocolat`,
+    description: episode.description?.substring(0, 160) || `Écoutez l'épisode sur ${title}`,
+    openGraph: {
+      title: `${title} - La Boîte de Chocolat`,
+      description: episode.description?.substring(0, 160) || `Écoutez l'épisode sur ${title}`,
+      type: 'article',
+      publishedTime: episode.pubDate.toISOString(),
+      images: mainFilm?.imgFileName ? [
+        {
+          url: `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/${mainFilm.imgFileName}`,
+          width: 500,
+          height: 750,
+          alt: `Poster de ${mainFilm.title}`,
+        }
+      ] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${title} - La Boîte de Chocolat`,
+      description: episode.description?.substring(0, 160) || `Écoutez l'épisode sur ${title}`,
+      images: mainFilm?.imgFileName ? [
+        `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/${mainFilm.imgFileName}`
+      ] : [],
+    },
   };
 }
 
 export default async function PodcastPage({ params }: PodcastPageProps) {
+  const { slug } = await params;
   const episode = await prisma.podcastEpisode.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
     include: {
       links: {
         include: {

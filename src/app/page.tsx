@@ -1,14 +1,19 @@
 import styles from "./Home.module.css";
 import HeroSection from "../components/sections/HeroSection/HeroSection";
 import LatestEpisodeSection from "../components/sections/LatestEpisodeSection/LatestEpisodeSection";
-import EpisodesWithFilmsSection from "../components/sections/EpisodesWithFilmsSection";
+import EpisodesWithFilmsSection from "../components/sections/EpisodesWithFilmsSection/EpisodesWithFilmsSection";
+import { getEpisodesWithFilms } from "./actions/episode";
 
-export default function Home() {
+export default async function Home() {
+  const episodesResult = await getEpisodesWithFilms();
+  const episodes = episodesResult.success ? episodesResult.data : [];
+
+  console.log("HOME RENDER");
   return (
-    <main className={styles.main}>
-      <HeroSection />
-      <LatestEpisodeSection />
-      <EpisodesWithFilmsSection />
-    </main>
+      <main className={styles.main}>
+        <HeroSection />
+        <LatestEpisodeSection />
+        <EpisodesWithFilmsSection episodes={episodes || []} />
+      </main>
   );
 }

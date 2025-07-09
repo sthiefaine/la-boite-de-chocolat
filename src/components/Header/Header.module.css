@@ -1,11 +1,14 @@
 .header {
   position: sticky;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
   background: linear-gradient(135deg, #8b4513 0%, #d2691e 100%);
   border-bottom: 3px solid #5d2e0c;
   box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
   backdrop-filter: blur(10px);
+  width: 100%;
 }
 
 .container {
