@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import styles from "./PlayerBar.module.css";
 import { useShallow } from "zustand/shallow";
+import { AudioVisualizer } from "./AudioVisualizer";
 
 export const PlayerBar = () => {
   const [
@@ -37,15 +38,18 @@ export const PlayerBar = () => {
   const [durationTotal, setDurationTotal] = useState(0);
   const [formattedDurationTotal, setFormattedDurationTotal] =
     useState("00:00:00");
-  const progressBarRef = useRef<HTMLDivElement>(null);
   const [backgroundColor, setBackgroundColor] = useState<number[]>([0, 0, 0]);
 
   const setData = () => {
-    if (podcast?.url === audioRef.current?.src) {
-      setDuration(currentPlayTime);
-      setTotalDuration(totalDuration);
-      const progressPercentage = (currentPlayTime / totalDuration) * 100;
-      setProgress(progressPercentage);
+    if (podcast?.url === audioRef.current?.src && audioRef.current) {
+      const audioDuration = audioRef.current.duration;
+      if (audioDuration && audioDuration > 0) {
+        setDurationTotal(audioDuration);
+        setTotalDuration(audioDuration);
+        setDuration(currentPlayTime);
+        const progressPercentage = (currentPlayTime / audioDuration) * 100;
+        setProgress(progressPercentage);
+      }
     }
   };
 
@@ -80,24 +84,33 @@ export const PlayerBar = () => {
   }, [podcast]);
 
   useEffect(() => {
-    setFormattedDurationTotal("00:00:00");
-
     const audioElement = audioRef.current;
     if (!audioElement) return;
 
     const setAudioData = () => {
-      setDurationTotal(audioElement.duration);
-      setTotalDuration(audioElement.duration);
+      const audioDuration = audioElement.duration;
+      if (audioDuration && audioDuration > 0) {
+        setDurationTotal(audioDuration);
+        setTotalDuration(audioDuration);
+        
+        if (currentPlayTime > 0 && totalDuration > 0) {
+          const progressPercentage = (currentPlayTime / audioDuration) * 100;
+          setProgress(progressPercentage);
+          setDuration(currentPlayTime);
+        }
+      }
     };
 
     const updateProgress = () => {
       if (podcast?.url === audioElement.src) {
         const currentTime = audioElement.currentTime;
         const duration = audioElement.duration;
-        const progressPercentage = (currentTime / duration) * 100;
-        setDuration(currentTime);
-        setProgress(progressPercentage);
-        setCurrentPlayTime(currentTime);
+        if (duration > 0) {
+          const progressPercentage = (currentTime / duration) * 100;
+          setDuration(currentTime);
+          setProgress(progressPercentage);
+          setCurrentPlayTime(currentTime);
+        }
       }
     };
 
@@ -110,17 +123,20 @@ export const PlayerBar = () => {
     audioElement.addEventListener("timeupdate", updateProgress);
 
     return () => {
+      audioElement.removeEventListener("loadedmetadata", setAudioData);
       audioElement.removeEventListener("timeupdate", updateProgress);
     };
-  }, [podcast?.url, setCurrentPlayTime, setTotalDuration]);
+  }, [podcast?.url, setCurrentPlayTime, setTotalDuration, currentPlayTime, totalDuration]);
 
   useEffect(() => {
-    const hours = Math.floor(durationTotal / 3600);
-    const minutes = Math.floor((durationTotal % 3600) / 60);
-    const seconds = Math.floor(durationTotal % 60);
-    setFormattedDurationTotal(
-      `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`
-    );
+    if (durationTotal > 0) {
+      const hours = Math.floor(durationTotal / 3600);
+      const minutes = Math.floor((durationTotal % 3600) / 60);
+      const seconds = Math.floor(durationTotal % 60);
+      setFormattedDurationTotal(
+        `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`
+      );
+    }
   }, [durationTotal]);
 
   useEffect(() => {
@@ -167,11 +183,9 @@ export const PlayerBar = () => {
   };
 
   const handleProgressBarClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    const progressBar = progressBarRef.current;
-    if (!progressBar) return;
-
-    const clickX = event.pageX - progressBar.getBoundingClientRect().left;
-    const progressBarWidth = progressBar.offsetWidth;
+    const target = event.currentTarget;
+    const clickX = event.pageX - target.getBoundingClientRect().left;
+    const progressBarWidth = target.offsetWidth;
     const clickPercentage = (clickX / progressBarWidth) * 100;
     const newTime = (clickPercentage * durationTotal) / 100;
     if (!isNaN(newTime) && newTime >= 0 && audioRef.current) {
@@ -213,17 +227,18 @@ export const PlayerBar = () => {
         <button className={styles.player_button} onClick={togglePlay}>
           {isPlaying ? <PauseIcon /> : <PlayIcon />}
         </button>
-        <div
-          ref={progressBarRef}
-          className={styles.player_bar}
-          style={{
-            background: `linear-gradient(to right, rgb(139, 69, 19), rgb(210, 180, 140) ${progress}%, transparent ${progress}%)`,
-          }}
-          onClick={handleProgressBarClick}
-        >
-          <span className={styles.player_bar_timer}>
-            {formattedDuration} / {formattedDurationTotal}
-          </span>
+        <div className={styles.visualizer_section}>
+          <AudioVisualizer
+            isPlaying={isPlaying}
+            progress={progress}
+            totalDuration={totalDuration}
+            onProgressClick={handleProgressBarClick}
+          />
+          <div className={styles.timer_container}>
+            <span className={styles.player_bar_timer}>
+              {formattedDuration} / {formattedDurationTotal}
+            </span>
+          </div>
         </div>
         <div className={styles.button_container}>
           <button className={styles.button} title="afficher la page">

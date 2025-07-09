@@ -26,7 +26,6 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -55,30 +54,39 @@
   height: 1.25rem;
 }
 
-.player_bar {
+.visualizer_section {
   position: relative;
   flex: 1;
-  height: 34px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 0.75rem;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
 }
 
-.player_bar:hover {
-  background: rgba(255, 255, 255, 0.3);
+.timer_container {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 0.2rem 0.25rem;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10;
 }
 
 .player_bar_timer {
-  position: absolute;
-  left: 0;
-  top: 12px;
-  right: 0;
-  text-align: center;
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .button_container {

@@ -34,7 +34,7 @@ export const defaultInitState: PlayerState = {
   launchPlay: false,
   currentPlayTime: 0,
   totalDuration: 0,
-  podcast: null,
+  podcast: null
 };
 
 export const usePlayerStore = create(
