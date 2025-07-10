@@ -1,24 +1,100 @@
 "use client";
 
-import Link from "next/link";
-import {
-  PODCAST_URLS,
-  SOCIAL_URLS,
-  CONTACT_URLS,
-  INTERNAL_URLS,
-} from "../../lib/config";
+import { useState } from "react";
+import { PODCAST_URLS, SOCIAL_URLS, CONTACT_URLS } from "../../lib/config";
 import styles from "./ChocolateBox.module.css";
+import { usePlayerStore } from "@/lib/store/player";
+import { useShallow } from "zustand/shallow";
+
+interface Episode {
+  id: string;
+  title: string;
+  description: string;
+  pubDate: Date;
+  audioUrl: string;
+  duration?: number | null;
+  slug: string | null;
+  links: Array<{
+    film: {
+      id: string;
+      title: string;
+      slug: string;
+      year: number | null;
+      imgFileName: string | null;
+      saga: {
+        name: string;
+        id: string;
+      } | null;
+    };
+  }>;
+}
 
 interface ChocolateBoxProps {
   className?: string;
+  episodes?: Episode[];
 }
 
-export default function ChocolateBox({ className }: ChocolateBoxProps) {
+export default function ChocolateBox({
+  className,
+  episodes = [],
+}: ChocolateBoxProps) {
+  const [setPodcast, setLaunchPlay] = usePlayerStore(
+    useShallow((state) => [state.setPodcast, state.setLaunchPlay])
+  );
+
+  const [randomEpisode, setRandomEpisode] = useState<Episode | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [playedEpisodeIds, setPlayedEpisodeIds] = useState<Set<string>>(
+    new Set()
+  );
+
+  const handleRandomEpisode = async () => {
+    if (!episodes || episodes.length === 0) return;
+
+    setIsLoading(true);
+
+    setTimeout(() => {
+      const availableEpisodes = episodes.filter(
+        (episode) => !playedEpisodeIds.has(episode.id)
+      );
+
+      let selectedEpisode: Episode;
+      let newPlayedIds: Set<string>;
+      if (availableEpisodes.length === 0) {
+        const randomIndex = Math.floor(Math.random() * episodes.length);
+        selectedEpisode = episodes[randomIndex];
+        newPlayedIds = new Set([selectedEpisode.id]);
+      } else {
+        const randomIndex = Math.floor(
+          Math.random() * availableEpisodes.length
+        );
+        selectedEpisode = availableEpisodes[randomIndex];
+        newPlayedIds = new Set([...playedEpisodeIds, selectedEpisode.id]);
+      }
+
+      setRandomEpisode(selectedEpisode);
+      setPlayedEpisodeIds(newPlayedIds);
+
+      const mainFilm = selectedEpisode.links[0]?.film;
+
+      setPodcast({
+        id: selectedEpisode.id,
+        title: selectedEpisode.title,
+        url: selectedEpisode.audioUrl,
+        img: mainFilm?.imgFileName ?? "",
+        slug: selectedEpisode.slug ?? "",
+        artist: "La Boîte de Chocolat",
+      });
+      setLaunchPlay(true);
+      setIsLoading(false);
+    }, 300);
+  };
+
   return (
     <div className={`${styles.chocolateBox} ${className || ""}`}>
       <div className={styles.coffret}>
         <div className={styles.box3D}>
-        <div className={styles.hole}>
+          <div className={styles.hole}>
             <a
               href={PODCAST_URLS.apple}
               target="_blank"
@@ -54,6 +130,18 @@ export default function ChocolateBox({ className }: ChocolateBoxProps) {
               <span className={styles.chocoLabel}>Deezer</span>
             </a>
           </div>
+          <div className={`${styles.hole} ${styles.holeDouble}`}>
+            <a
+              href={`${SOCIAL_URLS.instagramBase}${SOCIAL_URLS.instagram1}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${styles.choco} ${styles.instagram1}`}
+              data-platform="instagram1"
+            >
+              <span className={styles.chocoIcon}>📸</span>
+              <span className={styles.chocoLabel}>@{SOCIAL_URLS.instagram1}</span>
+            </a>
+          </div>
           <div className={styles.hole}>
             <a
               href={CONTACT_URLS.email}
@@ -62,30 +150,6 @@ export default function ChocolateBox({ className }: ChocolateBoxProps) {
             >
               <span className={styles.chocoIcon}>✉️</span>
               <span className={styles.chocoLabel}>Mail</span>
-            </a>
-          </div>
-          <div className={styles.hole}>
-            <a
-              href={SOCIAL_URLS.instagram1}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`${styles.choco} ${styles.instagram1}`}
-              data-platform="instagram1"
-            >
-              <span className={styles.chocoIcon}>📸</span>
-              <span className={styles.chocoLabel}>@laboite2</span>
-            </a>
-          </div>
-          <div className={styles.hole}>
-            <a
-              href={SOCIAL_URLS.instagram2}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`${styles.choco} ${styles.instagram2}`}
-              data-platform="instagram2"
-            >
-              <span className={styles.chocoIcon}>📱</span>
-              <span className={styles.chocoLabel}>@la_boite</span>
             </a>
           </div>
           <div className={styles.hole}>
@@ -100,17 +164,20 @@ export default function ChocolateBox({ className }: ChocolateBoxProps) {
               <span className={styles.chocoLabel}>RSS</span>
             </a>
           </div>
-          <div className={styles.hole}>
-          </div>
-          <div className={styles.hole}>
-            <Link
-              href={INTERNAL_URLS.bonus}
-              className={`${styles.choco} ${styles.bonus}`}
-              data-platform="bonus"
+          <div className={`${styles.hole} ${styles.holeDouble}`}>
+            <button
+              onClick={handleRandomEpisode}
+              disabled={isLoading || !episodes || episodes.length === 0}
+              className={`${styles.choco} ${styles.randomEpisode}`}
+              title={
+                !episodes || episodes.length === 0
+                  ? "Aucun épisode disponible"
+                  : "Sélectionner un épisode aléatoire"
+              }
             >
-              <span className={styles.chocoIcon}>🎁</span>
-              <span className={styles.chocoLabel}>Bonus</span>
-            </Link>
+              <span className={styles.chocoIcon}>{"🎲"}</span>
+              <span className={styles.chocoLabel}>Écouter au hasard</span>
+            </button>
           </div>
         </div>
       </div>

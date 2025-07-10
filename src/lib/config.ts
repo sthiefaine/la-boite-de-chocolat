@@ -6,15 +6,11 @@ export const PODCAST_URLS = {
 } as const;
 
 export const SOCIAL_URLS = {
-  instagram1: "https://www.instagram.com/laboite2chocolat",
-  instagram2: "https://www.instagram.com/la_boitedechocolat"
+  instagramBase: "https://www.instagram.com/",
+  instagram1: "laboite2chocolat",
+  instagram2: "la_boitedechocolat",
 } as const;
 
 export const CONTACT_URLS = {
   email: "mailto:laboitedechocolatmail@gmail.com"
 } as const;
-
-export const INTERNAL_URLS = {
-  episodes: "#episodes",
-  bonus: "/bonus"
-} as const; 

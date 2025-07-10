@@ -71,3 +71,25 @@ export async function getAverageRGB(src: string): Promise<number[]> {
     };
   });
 }
+
+export const PODCAST_CATEGORIES = {
+  MARVEL: {
+    id: 'marvel',
+    name: 'Marvel Cinematic Universe',
+    icon: '🦸‍♂️',
+    color: '#e62429',
+    sagaNames: [
+      'Marvel Cinematic Universe',
+      'Avengers - Saga',
+      'Iron Man - Saga',
+      'Doctor Strange - Saga',
+      'Ant-Man - Saga',
+      'Captain America - Saga',
+      'Thor - Saga',
+      'Spider-Man (Avengers) - Saga',
+      'Les Gardiens de la Galaxie - Saga'
+    ]
+  },
+} as const;
+
+export type PodcastCategory = keyof typeof PODCAST_CATEGORIES;

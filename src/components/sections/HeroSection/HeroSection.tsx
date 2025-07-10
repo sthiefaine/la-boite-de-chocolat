@@ -1,10 +1,35 @@
-"use client";
-
 import Link from "next/link";
 import ChocolateBox from "../../ChocolateBox/ChocolateBox";
 import styles from "./HeroSection.module.css";
 
-export default function HeroSection() {
+interface Episode {
+  id: string;
+  title: string;
+  description: string;
+  pubDate: Date;
+  audioUrl: string;
+  duration?: number | null;
+  slug: string | null;
+  links: Array<{
+    film: {
+      id: string;
+      title: string;
+      slug: string;
+      year: number | null;
+      imgFileName: string | null;
+      saga: {
+        name: string;
+        id: string;
+      } | null;
+    };
+  }>;
+}
+
+interface HeroSectionProps {
+  episodes: Episode[];
+}
+
+export default function HeroSection({ episodes }: HeroSectionProps) {
   return (
     <section className={styles.hero}>
       <div className={styles.heroContent}>
@@ -31,7 +56,7 @@ export default function HeroSection() {
           </div>
         </div>
 
-        <ChocolateBox />
+        <ChocolateBox episodes={episodes} />
       </div>
     </section>
   );

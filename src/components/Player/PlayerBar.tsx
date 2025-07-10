@@ -97,7 +97,13 @@ export const PlayerBar = () => {
 
   useEffect(() => {
     if (podcast?.img) {
-      getAverageRGB(podcast.img)
+      const imageUrl = podcast.img.startsWith("http")
+        ? podcast.img
+        : podcast.img
+        ? `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/${podcast.img}`
+        : "/images/navet.png";
+
+      getAverageRGB(imageUrl)
         .then((res: number[]) => {
           setBackgroundColor(res);
         })
@@ -111,12 +117,19 @@ export const PlayerBar = () => {
 
   useEffect(() => {
     if ("mediaSession" in navigator && podcast) {
+      // Construire l'URL complète si c'est juste un imgFileName
+      const imageUrl = podcast.img.startsWith("http")
+        ? podcast.img
+        : podcast.img
+        ? `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/${podcast.img}`
+        : "/images/navet.png";
+
       navigator.mediaSession.metadata = new MediaMetadata({
         title: podcast.title,
         artist: podcast.artist,
         artwork: [
           {
-            src: podcast.img,
+            src: imageUrl,
             sizes: "1280x720",
             type: "image/png",
           },
@@ -365,18 +378,20 @@ export const PlayerBar = () => {
           </div>
         </div>
         <button
-            className={styles.button}
-            onClick={toggleMinimize}
-            title={isMinimized ? "Agrandir le lecteur" : "Réduire le lecteur"}
-          >
-            {isMinimized ? <Maximize2 /> : <Minimize2 />}
-          </button>
+          className={styles.button}
+          onClick={toggleMinimize}
+          title={isMinimized ? "Agrandir le lecteur" : "Réduire le lecteur"}
+        >
+          {isMinimized ? <Maximize2 /> : <Minimize2 />}
+        </button>
         {/* Desktop only: options inline */}
         <div className={styles.button_container + " " + styles.desktopOnly}>
           <button
             className={styles.button}
             onClick={toggleQueue}
-            title={`${showQueue ? "Masquer" : "Afficher"} la file d'attente (${queue.length})`}
+            title={`${showQueue ? "Masquer" : "Afficher"} la file d'attente (${
+              queue.length
+            })`}
           >
             <List />
           </button>
@@ -418,7 +433,9 @@ export const PlayerBar = () => {
         <button
           className={styles.button}
           onClick={toggleQueue}
-          title={`${showQueue ? "Masquer" : "Afficher"} la file d'attente (${queue.length})`}
+          title={`${showQueue ? "Masquer" : "Afficher"} la file d'attente (${
+            queue.length
+          })`}
         >
           <List />
         </button>

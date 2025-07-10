@@ -1,5 +1,6 @@
 "use server";
 
+import { PODCAST_CATEGORIES } from "@/lib/helpers";
 import { prisma } from "@/lib/prisma";
 
 export async function getEpisodeBySlug(slug: string) {
@@ -45,8 +46,8 @@ export async function getEpisodeNavigation(
             lt: currentPubDate,
           },
           links: {
-            some: {}
-          }
+            some: {},
+          },
         },
         include: {
           links: {
@@ -72,8 +73,8 @@ export async function getEpisodeNavigation(
             gt: currentPubDate,
           },
           links: {
-            some: {}
-          }
+            some: {},
+          },
         },
         include: {
           links: {
@@ -179,7 +180,41 @@ export async function getEpisodesWithFilms() {
       },
     });
 
-    return { success: true, data: episodes };
+    const episodesWithCategories = episodes.map((episode) => {
+      const category = Object.keys(PODCAST_CATEGORIES).find((categoryKey) => {
+        const categoryInfo =
+          PODCAST_CATEGORIES[categoryKey as keyof typeof PODCAST_CATEGORIES];
+        return episode.links.some((link) => {
+          const sagaName = link?.film?.saga?.name;
+          return (
+            sagaName &&
+            categoryInfo.sagaNames.some((sagaNameFromCategory) =>
+              sagaName
+                .toLowerCase()
+                .includes(sagaNameFromCategory.toLowerCase())
+            )
+          );
+        });
+      });
+
+      const parentSaga = category
+        ? PODCAST_CATEGORIES[category as keyof typeof PODCAST_CATEGORIES]
+        : null;
+
+      return {
+        ...episode,
+        parentSaga: parentSaga
+          ? {
+              id: parentSaga.id,
+              name: parentSaga.name,
+              icon: parentSaga.icon,
+              color: parentSaga.color,
+            }
+          : null,
+      };
+    });
+
+    return { success: true, data: episodesWithCategories };
   } catch (error) {
     console.error(
       "Erreur lors de la récupération des épisodes avec films:",
@@ -210,6 +245,9 @@ export async function getLatestEpisode() {
         pubDate: true,
         audioUrl: true,
         duration: true,
+        slug: true,
+        season: true,
+        episode: true,
         links: {
           select: {
             id: true,
@@ -218,6 +256,7 @@ export async function getLatestEpisode() {
                 id: true,
                 title: true,
                 year: true,
+                imgFileName: true,
               },
             },
           },
@@ -279,5 +318,68 @@ export async function unlinkEpisodeFromFilm(episodeId: string, filmId: string) {
   } catch (error) {
     console.error("Erreur lors de la suppression du lien épisode-film:", error);
     return { success: false, error: "Erreur lors de la suppression du lien" };
+  }
+}
+
+export async function getRandomEpisode() {
+  try {
+    const totalEpisodes = await prisma.podcastEpisode.count({
+      where: {
+        rssFeed: {
+          nameId: "la-boite-de-chocolat",
+        },
+      },
+    });
+
+    if (totalEpisodes === 0) {
+      return { success: false, error: "Aucun épisode trouvé" };
+    }
+
+    const randomOffset = Math.floor(Math.random() * totalEpisodes);
+
+    const randomEpisode = await prisma.podcastEpisode.findFirst({
+      where: {
+        rssFeed: {
+          nameId: "la-boite-de-chocolat",
+        },
+      },
+      orderBy: {
+        pubDate: "desc",
+      },
+      skip: randomOffset,
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        audioUrl: true,
+        links: {
+          select: {
+            film: {
+              select: {
+                imgFileName: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!randomEpisode) {
+      return {
+        success: false,
+        error: "Erreur lors de la récupération de l'épisode aléatoire",
+      };
+    }
+
+    return { success: true, data: randomEpisode };
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération de l'épisode aléatoire:",
+      error
+    );
+    return {
+      success: false,
+      error: "Erreur lors de la récupération de l'épisode aléatoire",
+    };
   }
 }

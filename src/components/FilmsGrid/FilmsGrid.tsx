@@ -26,6 +26,12 @@ interface Episode {
   audioUrl: string;
   duration?: number | null;
   slug: string | null;
+  parentSaga?: {
+    id: string;
+    name: string;
+    icon: string;
+    color: string;
+  } | null;
   links: Array<{
     film: Film;
   }>;
@@ -50,6 +56,7 @@ export default function FilmsGrid({ episodes }: FilmsGridProps) {
           episodeDate: episode.pubDate,
           episodeDuration: episode.duration,
           episodeSlug: episode.slug,
+          parentSaga: episode.parentSaga,
         }))
       ),
     [episodes]
@@ -76,7 +83,8 @@ export default function FilmsGrid({ episodes }: FilmsGridProps) {
           film.title.toLowerCase().includes(query) ||
           (film.year && film.year.toString().includes(query)) ||
           (film.saga && film.saga.name.toLowerCase().includes(query)) ||
-          (film.episodeTitle && film.episodeTitle.toLowerCase().includes(query))
+          (film.episodeTitle && film.episodeTitle.toLowerCase().includes(query)) ||
+          (film.parentSaga && film.parentSaga.name.toLowerCase().includes(query))
       );
     }
 
@@ -105,7 +113,7 @@ export default function FilmsGrid({ episodes }: FilmsGridProps) {
       <SearchBar
         value={searchQuery}
         onChange={handleSearchChange}
-        placeholder="Rechercher un film, une saga, une année..."
+        placeholder="Rechercher un film, une saga, Marvel, une année..."
         yearFilter={{
           value: yearFilter,
           onChange: handleYearChange,
