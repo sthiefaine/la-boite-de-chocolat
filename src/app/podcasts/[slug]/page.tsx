@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import { IMAGE_CONFIG, getVercelBlobUrl } from "@/lib/imageConfig";
 import styles from "./PodcastPage.module.css";
 import { formatEpisodeDescription, truncateText } from "@/lib/podcastHelpers";
 import FilmCard from "@/components/FilmCard/FilmCard";
@@ -65,12 +66,15 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
         {mainFilm?.imgFileName && (
           <div className={styles.backgroundPoster}>
             <Image
-              src={`https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/${mainFilm.imgFileName}`}
-              alt={`Poster de ${mainFilm.title}`}
               fill
+              src={getVercelBlobUrl(mainFilm.imgFileName)}
+              alt={`Poster de ${mainFilm.title}`}
               className={styles.backgroundImage}
-              sizes="100vw"
+              sizes={IMAGE_CONFIG.sizes.background}
               priority
+              placeholder="blur"
+              blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
+              quality={IMAGE_CONFIG.defaultQuality}
             />
             <div className={styles.backgroundOverlay}></div>
           </div>
@@ -97,7 +101,7 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
                 audioUrl={episode.audioUrl}
                 imageUrl={
                   mainFilm?.imgFileName
-                    ? `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/${mainFilm.imgFileName}`
+                    ? getVercelBlobUrl(mainFilm.imgFileName)
                     : undefined
                 }
                 artist="La Boîte de Chocolat"
@@ -115,7 +119,7 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
                   artist: "La Boîte de Chocolat",
                   url: episode.audioUrl,
                   img: mainFilm?.imgFileName
-                    ? `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/${mainFilm.imgFileName}`
+                    ? getVercelBlobUrl(mainFilm.imgFileName)
                     : "/images/navet.png",
                   slug: episode.slug ?? "",
                 }}

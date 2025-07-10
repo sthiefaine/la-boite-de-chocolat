@@ -37,4 +37,4 @@ export default function NumberFlow({
   }, [value, duration]);
 
   return <span>{displayValue.toLocaleString()}</span>;
-} 
+}

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { usePlayerStore } from "@/lib/store/player";
 import { Play, Pause, Download, MessageCircleHeart } from "lucide-react";
+import { IMAGE_CONFIG, getVercelBlobUrl } from "@/lib/imageConfig";
 import styles from "./PodcastDetail.module.css";
 import { useShallow } from "zustand/shallow";
 
@@ -119,14 +120,18 @@ export const PodcastDetail = ({
           className={styles.landingImage}
           src={
             episode?.poster && episode?.poster !== "null"
-              ? episode?.poster
+              ? episode?.poster.startsWith("http")
+                ? episode?.poster
+                : getVercelBlobUrl(episode?.poster)
               : "/images/boite-de-chocolat-404.png"
           }
           style={{ objectFit: "cover" }}
           alt="Poster of the movie"
-          quality={100}
+          quality={IMAGE_CONFIG.defaultQuality}
           fill={true}
           priority={true}
+          placeholder="blur"
+          blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
         />
         <div className={styles.informations}>
           <h1 className={styles.title}>

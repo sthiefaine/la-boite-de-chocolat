@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { formatDuration } from "@/lib/podcastHelpers";
+import { IMAGE_CONFIG, getVercelBlobUrl } from "@/lib/imageConfig";
 import styles from "./FilmCard.module.css";
 
 interface FilmCardProps {
@@ -30,9 +31,8 @@ export default function FilmCard({
   episodeDuration,
   episodeSlug,
   isNoResults = false,
-  variant = 'default',
+  variant = "default",
 }: FilmCardProps) {
-  // Carte spéciale pour "aucun résultat"
   if (isNoResults) {
     return (
       <article className={`${styles.cardArticle} ${styles.noResultsCard}`}>
@@ -71,10 +71,14 @@ export default function FilmCard({
             <Image
               alt={`Poster de ${film.title}`}
               fill
-              sizes="(max-width: 768px) 320px, 180px"
+              sizes={variant === 'compact' ? IMAGE_CONFIG.sizes.filmCardCompact : IMAGE_CONFIG.sizes.filmCard}
               className={styles.cardImage}
-              src={`https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/${film.imgFileName}`}
+              src={getVercelBlobUrl(film.imgFileName)}
               priority={false}
+              loading="lazy"
+              placeholder="blur"
+              blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
+              quality={IMAGE_CONFIG.defaultQuality}
             />
           ) : (
             <div className={styles.noPoster}>

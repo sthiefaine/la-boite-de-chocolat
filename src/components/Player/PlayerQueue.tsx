@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { useShallow } from "zustand/shallow";
+import { IMAGE_CONFIG, getVercelBlobUrl } from "@/lib/imageConfig";
 import styles from "./PlayerBar.module.css";
 
 interface PlayerQueueProps {
@@ -92,12 +93,16 @@ export const PlayerQueue = ({ showQueue }: PlayerQueueProps) => {
               src={item.img.startsWith("http")
                 ? item.img
                 : item.img
-                ? `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/${item.img}`
+                ? getVercelBlobUrl(item.img)
                 : "/images/navet.png"}
               width={40}
               height={40}
               alt={item.title}
               className={styles.queueItemImage}
+              loading="lazy"
+              placeholder="blur"
+              blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
+              quality={IMAGE_CONFIG.defaultQuality}
             />
             <div className={styles.queueItemInfo}>
               <span className={styles.queueItemTitle}>{item.title}</span>

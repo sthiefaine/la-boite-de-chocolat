@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ChocolateBox from "../../ChocolateBox/ChocolateBox";
 import NumberFlow from "../../NumberFlow/NumberFlow";
+import { IMAGE_CONFIG, getVercelBlobUrl } from "@/lib/imageConfig";
 import styles from "./HeroSection.module.css";
 
 interface Episode {

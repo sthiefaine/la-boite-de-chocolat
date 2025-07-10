@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { IMAGE_CONFIG, getVercelBlobUrl } from "@/lib/imageConfig";
 
 interface FilmPosterProps {
   imgFileName?: string | null;
@@ -35,7 +36,7 @@ export default function FilmPoster({
   }
 
   // Construire l'URL Vercel Blob
-  const imageUrl = `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/${imgFileName}`;
+  const imageUrl = getVercelBlobUrl(imgFileName);
 
   return (
     <div className={`${sizeClasses[size]} relative ${className}`}>
@@ -46,6 +47,10 @@ export default function FilmPoster({
         onError={() => setImageError(true)}
         width={75}
         height={100}
+        loading="lazy"
+        placeholder="blur"
+        blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
+        quality={IMAGE_CONFIG.defaultQuality}
       />
     </div>
   );

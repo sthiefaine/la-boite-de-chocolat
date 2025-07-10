@@ -5,6 +5,7 @@ import FilmCard from "../FilmCard/FilmCard";
 import SearchBar from "../SearchBar/SearchBar";
 import styles from "./FilmsGrid.module.css";
 import { PreserveScroll } from "@/hooks/preservScroll";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 interface Film {
   id: string;
@@ -115,6 +116,17 @@ export default function FilmsGrid({
     setYearFilter(value);
   }, []);
 
+  const {
+    displayedItems: displayedFilms,
+    hasMore,
+    observerRef,
+  } = useInfiniteScroll({
+    items: filteredFilms,
+    itemsPerPage: 12,
+    rootMargin: "300px",
+    resetDependencies: [deferredSearchQuery, yearFilter],
+  });
+
   return (
     <div className={styles.container}>
       <PreserveScroll />
@@ -141,19 +153,29 @@ export default function FilmsGrid({
       </div>
 
       <div className={styles.filmsGrid}>
-        {filteredFilms.length === 0 ? (
+        {displayedFilms.length === 0 ? (
           <FilmCard isNoResults={true} />
         ) : (
-          filteredFilms.map((film) => (
-            <FilmCard
-              key={film.id}
-              film={film}
-              episodeTitle={film.episodeTitle}
-              episodeDate={film.episodeDate}
-              episodeDuration={film.episodeDuration}
-              episodeSlug={film.episodeSlug}
-            />
-          ))
+          <>
+            {displayedFilms.map((film) => (
+              <FilmCard
+                key={film.id}
+                film={film}
+                episodeTitle={film.episodeTitle}
+                episodeDate={film.episodeDate}
+                episodeDuration={film.episodeDuration}
+                episodeSlug={film.episodeSlug}
+              />
+            ))}
+            {/* Observer pour l'infinite scroll */}
+            {hasMore && (
+              <div ref={observerRef} className={styles.loadingObserver}>
+                <div className={styles.loadingText}>
+                  <span>Plus de films...</span>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
