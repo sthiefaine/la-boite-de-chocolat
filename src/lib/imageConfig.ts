@@ -51,7 +51,6 @@ export const IMAGE_CONFIG = {
 // Fonction utilitaire pour construire l'URL Vercel Blob
 export function getVercelBlobUrl(imgFileName: string, folder: string = "films"): string {
   const imgFolder = folder.endsWith("s") ? folder : `${folder}s`;
-  console.log('imgFolder', imgFolder)
   return `https://${IMAGE_CONFIG.domains.vercelBlob}/${imgFolder}/${imgFileName}`;
 }
 
