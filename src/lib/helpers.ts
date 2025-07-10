@@ -27,7 +27,7 @@ function adjustColorBrightness(
   }
 }
 
-function adjustColorBrown(
+/* function adjustColorBrown(
   rgb: number[],
   threshold: number,
   adjustment: number
@@ -45,7 +45,7 @@ function adjustColorBrown(
   } else {
     return rgb;
   }
-}
+} */
 
 export async function getAverageRGB(src: string): Promise<number[]> {
   /* https://stackoverflow.com/questions/2541481/get-average-color-of-image-via-javascript */
@@ -66,7 +66,7 @@ export async function getAverageRGB(src: string): Promise<number[]> {
       // Seuil plus bas et ajustement plus agressif
       let adjustedRGB = adjustColorBrightness(Array.from(rgb), 0.6, 30);
 
-      adjustedRGB = adjustColorBrown(adjustedRGB, 2, 20);
+      // adjustedRGB = adjustColorBrown(adjustedRGB, 2, 20);
       resolve(adjustedRGB);
     };
   });

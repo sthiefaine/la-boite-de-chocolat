@@ -2,6 +2,7 @@
 import { getAverageRGB } from "@/lib/helpers";
 import { usePlayerStore } from "@/lib/store/player";
 import { useQueueStore } from "@/lib/store/queue";
+import { getVercelBlobUrl } from "@/lib/imageConfig";
 import {
   CircleX,
   Eye,
@@ -55,9 +56,6 @@ export const PlayerBar = () => {
     getNextPodcast,
     getPreviousPodcast,
     setCurrentIndex,
-    removeFromQueue,
-    clearQueue,
-    moveInQueue,
   } = useQueueStore(
     useShallow((state) => ({
       queue: state.queue,
@@ -65,9 +63,6 @@ export const PlayerBar = () => {
       getNextPodcast: state.getNextPodcast,
       getPreviousPodcast: state.getPreviousPodcast,
       setCurrentIndex: state.setCurrentIndex,
-      removeFromQueue: state.removeFromQueue,
-      clearQueue: state.clearQueue,
-      moveInQueue: state.moveInQueue,
     }))
   );
 
@@ -99,7 +94,7 @@ export const PlayerBar = () => {
       const imageUrl = podcast.img.startsWith("http")
         ? podcast.img
         : podcast.img
-        ? `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/${podcast.img}`
+        ? getVercelBlobUrl(podcast.img)
         : "/images/navet.png";
 
       getAverageRGB(imageUrl)
@@ -120,7 +115,7 @@ export const PlayerBar = () => {
       const imageUrl = podcast.img.startsWith("http")
         ? podcast.img
         : podcast.img
-        ? `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/${podcast.img}`
+        ? getVercelBlobUrl(podcast.img)
         : "/images/navet.png";
 
       navigator.mediaSession.metadata = new MediaMetadata({
