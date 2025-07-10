@@ -8,15 +8,28 @@ const parser = new Parser();
 const FEED_URL =
   "https://feeds.acast.com/public/shows/la-boite-de-chocolat-la-bdc";
 
+interface RssItemWithItunes {
+  title?: string;
+  content?: string;
+  contentSnippet?: string;
+  pubDate?: string;
+  enclosure?: { url: string };
+  itunes?: {
+    duration?: string;
+    season?: string | number;
+    episode?: string | number;
+  };
+}
+
 export async function GET() {
   try {
     // Vérifier si on doit exécuter l'import selon l'heure
     const shouldRun = await shouldRunImport();
     if (!shouldRun) {
-      return Response.json({ 
+      return Response.json({
         message: "Import ignoré - pas l'heure appropriée",
         currentTime: new Date().toISOString(),
-        shouldRun: false
+        shouldRun: false,
       });
     }
 
@@ -34,7 +47,8 @@ export async function GET() {
 
     let imported = 0;
     let updated = 0;
-    for (const item of feed.items) {
+    for (const itemRaw of feed.items) {
+      const item = itemRaw as RssItemWithItunes;
       if (!item.enclosure?.url) continue;
 
       // Extraire la durée si disponible
@@ -42,8 +56,8 @@ export async function GET() {
       if (item.itunes?.duration) {
         // Convertir la durée en secondes
         const durationStr = item.itunes.duration;
-        if (durationStr.includes(':')) {
-          const parts = durationStr.split(':').map(Number);
+        if (durationStr.includes(":")) {
+          const parts = durationStr.split(":").map(Number);
           if (parts.length === 2) {
             // Format MM:SS
             duration = parts[0] * 60 + parts[1];
@@ -57,14 +71,34 @@ export async function GET() {
         }
       }
 
+      // Extraire saison et épisode
+      let season: number | null = null;
+      let episode: number | null = null;
+      if (item.itunes?.season) {
+        season =
+          typeof item.itunes.season === "string"
+            ? parseInt(item.itunes.season)
+            : item.itunes.season;
+        if (isNaN(season as number)) season = null;
+      }
+      if (item.itunes?.episode) {
+        episode =
+          typeof item.itunes.episode === "string"
+            ? parseInt(item.itunes.episode)
+            : item.itunes.episode;
+        if (isNaN(episode as number)) episode = null;
+      }
+
       // Générer un slug unique
       let baseSlug = generateSlug(item.title || "");
       let year = item.pubDate ? new Date(item.pubDate).getFullYear() : "";
       let slug = `${baseSlug}-${year}`;
       let finalSlug = slug;
       let counter = 1;
-      while (await prisma.podcastEpisode.findUnique({ where: { slug: finalSlug } })) {
-        finalSlug =  counter > 1 ? `${slug}-${counter}` : slug;
+      while (
+        await prisma.podcastEpisode.findUnique({ where: { slug: finalSlug } })
+      ) {
+        finalSlug = counter > 1 ? `${slug}-${counter}` : slug;
         counter++;
       }
 
@@ -75,6 +109,8 @@ export async function GET() {
           description: item.contentSnippet || item.content || "",
           pubDate: item.pubDate ? new Date(item.pubDate) : new Date(),
           duration: duration,
+          season: season ?? undefined,
+          episode: episode ?? undefined,
         },
         create: {
           rssFeedId: rssFeed.id,
@@ -84,6 +120,8 @@ export async function GET() {
           audioUrl: item.enclosure.url,
           duration: duration,
           slug: finalSlug,
+          season: season ?? undefined,
+          episode: episode ?? undefined,
         },
       });
 
@@ -99,12 +137,12 @@ export async function GET() {
         imported++;
       }
     }
-    return Response.json({ 
-      message: `Import terminé`, 
-      imported, 
+    return Response.json({
+      message: `Import terminé`,
+      imported,
       updated,
       currentTime: new Date().toISOString(),
-      shouldRun: true
+      shouldRun: true,
     });
   } catch (e: unknown) {
     if (e instanceof Error) {

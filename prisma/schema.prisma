@@ -22,8 +22,10 @@ model PodcastEpisode {
   description String
   pubDate     DateTime
   audioUrl    String            @unique
-  duration    Int?              // Durée en secondes
+  duration    Int? // Durée en secondes
   slug        String?           @unique
+  season      Int?
+  episode     Int?
   rssFeed     RssFeed           @relation(fields: [rssFeedId], references: [id])
   links       PodcastFilmLink[]
 }

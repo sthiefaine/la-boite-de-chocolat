@@ -1,0 +1,243 @@
+/* Boîte de chocolat 3D */
+.chocolateBox {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
+}
+
+.coffret {
+  background: #d32f2f;
+  padding: 10px;
+  border-radius: 3px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.1);
+  transform: rotateX(8deg) rotateY(2deg);
+  transition: all 0.3s ease;
+}
+
+.coffret:hover {
+  transform: rotateX(5deg) rotateY(1deg) scale(1.02);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.15);
+}
+
+.box3D {
+  width: 340px;
+  height: 340px;
+  background: var(--chocolate-primary);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  transition: all 0.3s ease;
+}
+
+.hole {
+  background: radial-gradient(circle at 30% 30%, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6));
+  border-radius: 16px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 95px;
+  height: 95px;
+  box-shadow:
+    inset -6px -6px 12px rgba(255, 255, 255, 0.1),
+    inset 6px 6px 12px rgba(0, 0, 0, 0.4),
+    0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  background-color: #1c120b;
+}
+
+.choco {
+  background: linear-gradient(145deg, #3e2f1c, #2c1e12);
+  border-radius: 12px;
+  box-shadow: inset -2px -2px 4px rgba(0, 0, 0, 0.3),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.1), 0 2px 8px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  padding: 10px;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.choco::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.choco:hover::before {
+  left: 100%;
+}
+
+.choco:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: inset -2px -2px 4px rgba(0, 0, 0, 0.3),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.1), 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.chocoIcon {
+  font-size: 1.5rem;
+  margin-bottom: 2px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.chocoLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Couleurs spécifiques pour chaque plateforme */
+.spotify {
+  background: linear-gradient(145deg, #1db954, #1ed760);
+}
+
+.apple {
+  background: linear-gradient(145deg, #872ec4, #a855f7);
+}
+
+.rss {
+  background: linear-gradient(145deg, #ff6b35, #ff8c42);
+}
+
+.deezer {
+  background: linear-gradient(145deg, #00c7f2, #00d4ff);
+}
+
+.instagram1,
+.instagram2 {
+  background: linear-gradient(145deg, #e4405f, #f09433);
+}
+
+.email {
+  background: linear-gradient(145deg, #e74c3c, #ff6b6b);
+}
+
+.episodes {
+  background: linear-gradient(145deg, var(--accent-gold), #f39c12);
+}
+
+.bonus {
+  background: linear-gradient(145deg, #9b59b6, #8e44ad);
+}
+
+.boxCaption {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.boxCaption p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin: 0;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .chocolateBox {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .coffret {
+    padding: 16px;
+  }
+  
+  .box3D {
+    width: 280px;
+    height: 280px;
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .hole {
+    padding: 6px;
+    width: 75px;
+    height: 75px;
+  }
+
+  .choco {
+    padding: 8px;
+  }
+
+  .chocoIcon {
+    font-size: 1.25rem;
+  }
+
+  .chocoLabel {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .coffret {
+    padding: 12px;
+  }
+  
+  .box3D {
+    width: 240px;
+    height: 240px;
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .hole {
+    padding: 5px;
+    width: 65px;
+    height: 65px;
+  }
+
+  .choco {
+    padding: 6px;
+  }
+
+  .chocoIcon {
+    font-size: 1rem;
+  }
+
+  .chocoLabel {
+    font-size: 0.65rem;
+  }
+}

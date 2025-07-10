@@ -32,7 +32,7 @@
   gap: 8px;
   background: none;
   border: none;
-  color: white;
+  color: var(--text-white);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -78,15 +78,15 @@
 .clearButton:hover,
 .closeButton:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: white;
+  color: var(--text-white);
 }
 
 .clearButton:hover {
-  color: #ff6b6b;
+  color: var(--accent-red);
 }
 
 .closeButton:hover {
-  color: #ff6b6b;
+  color: var(--accent-red);
 }
 
 .queueContent {
@@ -138,8 +138,8 @@
 }
 
 .queueItem.current {
-  background: rgba(139, 69, 19, 0.3);
-  border-left: 3px solid #8b4513;
+  background: rgba(107, 62, 38, 0.3);
+  border-left: 3px solid var(--chocolate-primary);
 }
 
 .podcastInfo {
@@ -167,7 +167,7 @@
   margin: 0 0 4px 0;
   font-size: 13px;
   font-weight: 500;
-  color: white;
+  color: var(--text-white);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

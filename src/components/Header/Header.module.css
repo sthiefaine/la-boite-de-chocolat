@@ -4,9 +4,9 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  background: linear-gradient(135deg, #8b4513 0%, #d2691e 100%);
-  border-bottom: 3px solid #5d2e0c;
-  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+  background: linear-gradient(135deg, var(--chocolate-primary) 0%, var(--chocolate-secondary) 100%);
+  border-bottom: 3px solid var(--chocolate-dark);
+  box-shadow: var(--shadow-heavy);
   backdrop-filter: blur(10px);
   width: 100%;
 }
@@ -26,7 +26,7 @@
   align-items: center;
   gap: 0.75rem;
   text-decoration: none;
-  color: white;
+  color: var(--text-white);
   font-weight: 700;
   font-size: 1.25rem;
   transition: transform 0.2s ease;
@@ -52,7 +52,7 @@
 }
 
 .navLink {
-  color: white;
+  color: var(--text-white);
   text-decoration: none;
   font-weight: 600;
   font-size: 0.875rem;
@@ -74,7 +74,7 @@
   left: 50%;
   width: 0;
   height: 2px;
-  background: white;
+  background: var(--text-white);
   transition: all 0.2s ease;
   transform: translateX(-50%);
 }

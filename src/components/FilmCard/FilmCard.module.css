@@ -1,12 +1,12 @@
 .cardArticle {
   width: 100%;
-  background: linear-gradient(145deg, #f5f1eb, #e8dcc8);
-  border: 1px solid #d4c4a8;
+  background: linear-gradient(145deg, var(--bg-primary), var(--chocolate-light));
+  border: 1px solid var(--chocolate-light);
   border-radius: 16px;
   overflow: hidden;
   transition: all 0.3s ease;
   box-shadow: 
-    0 4px 12px rgba(139, 69, 19, 0.1),
+    var(--shadow-medium),
     0 2px 4px rgba(0, 0, 0, 0.05);
   position: relative;
 }
@@ -14,9 +14,9 @@
 .cardArticle:hover {
   transform: translateY(-6px);
   box-shadow: 
-    0 12px 24px rgba(139, 69, 19, 0.15),
+    var(--shadow-heavy),
     0 4px 8px rgba(0, 0, 0, 0.1);
-  border-color: #8b4513;
+  border-color: var(--chocolate-primary);
 }
 
 .cardArticleCompact {
@@ -73,7 +73,7 @@
   overflow: hidden;
   border-radius: 12px;
   margin: 6px;
-  background: #fff;
+  background: var(--bg-secondary);
   border: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
@@ -98,7 +98,7 @@
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  color: var(--text-white);
   font-size: 2rem;
 }
 
@@ -107,7 +107,7 @@
   bottom: 8px;
   right: 8px;
   background: rgba(0, 0, 0, 0.8);
-  color: white;
+  color: var(--text-white);
   padding: 2px 6px;
   border-radius: 4px;
   font-size: 0.75rem;
@@ -116,6 +116,7 @@
 
 .cardInformations {
   padding: 0.5rem 0.8rem;
+  padding-top: 0;
   background: transparent;
   border-top: none;
 }
@@ -131,7 +132,7 @@
 .cardTitle {
   font-size: 0.875rem;
   font-weight: 700;
-  color: #2d1810;
+  color: var(--text-primary);
   margin: 0;
   line-height: 1.4;
   flex: 1;
@@ -156,18 +157,18 @@
 
 .episodeDate {
   font-size: 0.75rem;
-  color: #8b4513;
+  color: var(--chocolate-primary);
   font-weight: 600;
 }
 
 .episodeSlug {
   font-size: 0.7rem;
-  color: #d2691e;
+  color: var(--chocolate-secondary);
   font-weight: 600;
-  background: rgba(210, 105, 30, 0.1);
+  background: rgba(166, 124, 82, 0.1);
   padding: 0.25rem 0.5rem;
   border-radius: 12px;
-  border: 1px solid rgba(210, 105, 30, 0.2);
+  border: 1px solid rgba(166, 124, 82, 0.2);
 }
 
 /* Responsive */

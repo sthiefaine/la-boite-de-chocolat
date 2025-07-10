@@ -364,6 +364,13 @@ export const PlayerBar = () => {
             </span>
           </div>
         </div>
+        <button
+            className={styles.button}
+            onClick={toggleMinimize}
+            title={isMinimized ? "Agrandir le lecteur" : "Réduire le lecteur"}
+          >
+            {isMinimized ? <Maximize2 /> : <Minimize2 />}
+          </button>
         {/* Desktop only: options inline */}
         <div className={styles.button_container + " " + styles.desktopOnly}>
           <button
@@ -380,13 +387,6 @@ export const PlayerBar = () => {
           </button>
           <button
             className={styles.button}
-            onClick={toggleMinimize}
-            title={isMinimized ? "Agrandir le lecteur" : "Réduire le lecteur"}
-          >
-            {isMinimized ? <Maximize2 /> : <Minimize2 />}
-          </button>
-          <button
-            className={styles.button}
             title="quitter la lecture"
             onClick={handleLeftCurrentPlaying}
           >
@@ -394,8 +394,8 @@ export const PlayerBar = () => {
           </button>
         </div>
       </div>
-      {/* Mobile: contrôles principaux sur une ligne séparée */}
-      <div className={styles.controls_mobile + " " + styles.mobileOnly}>
+      {/* Mobile : tous les boutons sur la même ligne */}
+      <div className={styles.mobileControlsRow + " " + styles.mobileOnly}>
         <button
           className={styles.nav_button}
           onClick={handlePrevious}
@@ -415,9 +415,6 @@ export const PlayerBar = () => {
         >
           <SkipForward />
         </button>
-      </div>
-      {/* Mobile only: options below */}
-      <div className={styles.button_container_mobile + " " + styles.mobileOnly}>
         <button
           className={styles.button}
           onClick={toggleQueue}
@@ -432,29 +429,12 @@ export const PlayerBar = () => {
         </button>
         <button
           className={styles.button}
-          onClick={toggleMinimize}
-          title={isMinimized ? "Agrandir le lecteur" : "Réduire le lecteur"}
-        >
-          {isMinimized ? <Maximize2 /> : <Minimize2 />}
-        </button>
-        <button
-          className={styles.button}
           title="quitter la lecture"
           onClick={handleLeftCurrentPlaying}
         >
           <CircleX />
         </button>
       </div>
-      {/* Bouton agrandir flottant en mode minimisé sur mobile */}
-      {isMinimized && (
-        <button
-          className={styles.floatingMaximize + " " + styles.mobileOnly}
-          onClick={toggleMinimize}
-          title="Agrandir le lecteur"
-        >
-          <Maximize2 />
-        </button>
-      )}
       {/* Queue intégrée */}
       {showQueue && queue.length > 0 && (
         <div className={styles.queueSection}>

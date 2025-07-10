@@ -1,6 +1,6 @@
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--gray-light) 100%);
   padding: 2rem 0;
 }
 
@@ -17,7 +17,7 @@
 .backLink {
   display: inline-flex;
   align-items: center;
-  color: #8b4513;
+  color: var(--chocolate-primary);
   text-decoration: none;
   font-weight: 600;
   font-size: 0.875rem;
@@ -25,18 +25,18 @@
 }
 
 .backLink:hover {
-  color: #d2691e;
+  color: var(--chocolate-secondary);
 }
 
 .filmDetails {
   display: grid;
   grid-template-columns: 300px 1fr;
   gap: 3rem;
-  background: white;
+  background: var(--bg-secondary);
   border-radius: 16px;
   padding: 2rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border: 2px solid #8b4513;
+  box-shadow: var(--shadow-heavy);
+  border: 2px solid var(--chocolate-primary);
 }
 
 .posterSection {
@@ -49,8 +49,8 @@
   position: relative;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  border: 3px solid #8b4513;
+  box-shadow: var(--shadow-heavy);
+  border: 3px solid var(--chocolate-primary);
 }
 
 .poster {
@@ -67,9 +67,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--text-white);
   border-radius: 12px;
-  border: 3px solid #8b4513;
+  border: 3px solid var(--chocolate-primary);
 }
 
 .noPoster span {
@@ -92,7 +92,7 @@
 .title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0;
   line-height: 1.2;
 }
@@ -105,8 +105,8 @@
 
 .year {
   display: inline-block;
-  background: linear-gradient(135deg, #8b4513, #d2691e);
-  color: white;
+  background: linear-gradient(135deg, var(--chocolate-primary), var(--chocolate-secondary));
+  color: var(--text-white);
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-weight: 600;
@@ -115,7 +115,7 @@
 }
 
 .director {
-  color: #6b7280;
+  color: var(--gray-medium);
   font-size: 1rem;
   font-weight: 500;
 }
@@ -127,26 +127,26 @@
 }
 
 .sagaLabel {
-  color: #6b7280;
+  color: var(--gray-medium);
   font-size: 0.875rem;
   font-weight: 600;
 }
 
 .sagaName {
-  color: #8b4513;
+  color: var(--chocolate-primary);
   font-size: 1rem;
   font-weight: 600;
 }
 
 .episodesSection {
-  border-top: 2px solid #f3f4f6;
+  border-top: 2px solid var(--gray-light);
   padding-top: 2rem;
 }
 
 .episodesTitle {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0 0 1.5rem 0;
 }
 
@@ -161,17 +161,17 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  background: #f8fafc;
-  border: 2px solid #e2e8f0;
+  background: var(--bg-primary);
+  border: 2px solid var(--chocolate-light);
   border-radius: 12px;
   transition: all 0.2s ease;
 }
 
 .episodeCard:hover {
-  background: #f1f5f9;
-  border-color: #8b4513;
+  background: var(--bg-secondary);
+  border-color: var(--chocolate-primary);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.1);
+  box-shadow: var(--shadow-medium);
 }
 
 .episodeInfo {
@@ -181,18 +181,18 @@
 .episodeTitle {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0 0 0.5rem 0;
 }
 
 .episodeDate {
-  color: #6b7280;
+  color: var(--gray-medium);
   font-size: 0.875rem;
   margin: 0 0 0.25rem 0;
 }
 
 .episodeDuration {
-  color: #6b7280;
+  color: var(--gray-medium);
   font-size: 0.875rem;
   margin: 0;
 }
