@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ChocolateBox from "../../ChocolateBox/ChocolateBox";
+import NumberFlow from "../../NumberFlow/NumberFlow";
 import styles from "./HeroSection.module.css";
 
 interface Episode {
@@ -30,6 +31,9 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ episodes }: HeroSectionProps) {
+
+  const episodesNumber = episodes.length;
+
   return (
     <section className={styles.hero}>
       <div className={styles.heroContent}>
@@ -50,7 +54,13 @@ export default function HeroSection({ episodes }: HeroSectionProps) {
 
               <Link href="#episodes" className={styles.secondaryButton}>
                 <span className={styles.secondaryIcon}>📋</span>
-                Voir tous les épisodes
+                <p>
+                  Voir les{" "}
+                  <span className={styles.animatedNumber}>
+                    <NumberFlow value={episodesNumber} duration={2500} />
+                  </span>{" "}
+                  épisodes
+                </p>
               </Link>
             </div>
           </div>
