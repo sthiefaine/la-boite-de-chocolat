@@ -354,7 +354,7 @@
 
 @media (max-width: 768px) {
   .coffret {
-    padding: 16px;
+    padding: 10px;
   }
 
   .box3D {
@@ -384,49 +384,6 @@
 
   .chocoLabel {
     font-size: 0.7rem;
-  }
-
-  .randomEpisode .chocoIcon {
-    font-size: 1.8rem;
-  }
-
-  .randomEpisode .chocoLabel {
-    font-size: 0.65rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .coffret {
-    padding: 12px;
-  }
-
-  .box3D {
-    width: 240px;
-    height: 240px;
-    padding: 12px;
-    gap: 10px;
-  }
-
-  .hole {
-    width: 65px;
-    height: 65px;
-    padding: 5px;
-  }
-
-  .holeDouble {
-    width: 140px; /* 2 * 65px + 10px gap */
-  }
-
-  .choco {
-    padding: 6px;
-  }
-
-  .chocoIcon {
-    font-size: 1rem;
-  }
-
-  .chocoLabel {
-    font-size: 0.65rem;
   }
 
   .randomEpisode .chocoIcon {

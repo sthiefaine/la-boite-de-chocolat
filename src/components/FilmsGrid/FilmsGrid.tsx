@@ -39,9 +39,15 @@ interface Episode {
 
 interface FilmsGridProps {
   episodes: Episode[];
+  title?: string;
+  subtitle?: string;
 }
 
-export default function FilmsGrid({ episodes }: FilmsGridProps) {
+export default function FilmsGrid({
+  episodes,
+  title = "Tous nos épisodes",
+  subtitle,
+}: FilmsGridProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [yearFilter, setYearFilter] = useState("");
 
@@ -83,8 +89,10 @@ export default function FilmsGrid({ episodes }: FilmsGridProps) {
           film.title.toLowerCase().includes(query) ||
           (film.year && film.year.toString().includes(query)) ||
           (film.saga && film.saga.name.toLowerCase().includes(query)) ||
-          (film.episodeTitle && film.episodeTitle.toLowerCase().includes(query)) ||
-          (film.parentSaga && film.parentSaga.name.toLowerCase().includes(query))
+          (film.episodeTitle &&
+            film.episodeTitle.toLowerCase().includes(query)) ||
+          (film.parentSaga &&
+            film.parentSaga.name.toLowerCase().includes(query))
       );
     }
 
@@ -110,16 +118,27 @@ export default function FilmsGrid({ episodes }: FilmsGridProps) {
   return (
     <div className={styles.container}>
       <PreserveScroll />
-      <SearchBar
-        value={searchQuery}
-        onChange={handleSearchChange}
-        placeholder="Rechercher un film, une saga, Marvel, une année..."
-        yearFilter={{
-          value: yearFilter,
-          onChange: handleYearChange,
-          years: availableYears,
-        }}
-      />
+
+      {/* Section Header */}
+      <div className={styles.sectionHeader}>
+        <div className={styles.titleSection}>
+          <h2 className={styles.sectionTitle}>{title}</h2>
+          {subtitle && <p className={styles.sectionSubtitle}>{subtitle}</p>}
+        </div>
+
+        <div className={styles.searchSection}>
+          <SearchBar
+            value={searchQuery}
+            onChange={handleSearchChange}
+            placeholder="Rechercher un film, une saga, Marvel, une année..."
+            yearFilter={{
+              value: yearFilter,
+              onChange: handleYearChange,
+              years: availableYears,
+            }}
+          />
+        </div>
+      </div>
 
       <div className={styles.filmsGrid}>
         {filteredFilms.length === 0 ? (

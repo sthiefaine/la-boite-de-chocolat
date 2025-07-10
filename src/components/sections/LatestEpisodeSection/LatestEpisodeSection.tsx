@@ -131,11 +131,6 @@ export default async function LatestEpisodeSection() {
                 slug={episode.slug ?? ""}
                 className={styles.playButton}
               >
-                <span className={styles.playIcon}>▶️</span>
-                <div className={styles.buttonText}>
-                  <span className={styles.buttonMain}>Écouter maintenant</span>
-                  <span className={styles.buttonSub}>Dans le player</span>
-                </div>
               </PodcastPlayerButton>
 
               {episode.slug && (

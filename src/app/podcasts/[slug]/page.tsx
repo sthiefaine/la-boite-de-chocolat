@@ -1,13 +1,14 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import styles from "./PodcastPage.module.css";
-import {
-  formatEpisodeDescription,
-  truncateText,
-} from "@/lib/podcastHelpers";
+import { formatEpisodeDescription, truncateText } from "@/lib/podcastHelpers";
 import FilmCard from "@/components/FilmCard/FilmCard";
 import { generateMetadata } from "./metadata";
-import { getEpisodeBySlug, getEpisodeNavigation } from "@/app/actions/episode";
+import {
+  getEpisodeBySlug,
+  getEpisodeNavigation,
+  getAllEpisodeSlugs,
+} from "@/app/actions/episode";
 import { PodcastPlayerButton } from "@/components/PodcastPlayerButton/PodcastPlayerButton";
 import { AddToQueueButton } from "@/components/Queue/AddToQueueButton";
 
@@ -20,7 +21,6 @@ interface PodcastPageProps {
 }
 
 export async function generateStaticParams() {
-  const { getAllEpisodeSlugs } = await import("@/app/actions/episode");
   const result = await getAllEpisodeSlugs();
 
   if (!result.success || !result.data) {
@@ -45,12 +45,16 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
 
   const navigationResult = await getEpisodeNavigation(slug, episode.pubDate);
 
-  const previousEpisode = navigationResult.success && navigationResult.data?.previousEpisode?.links[0]?.film
-    ? navigationResult.data.previousEpisode
-    : null;
-  const nextEpisode = navigationResult.success && navigationResult.data?.nextEpisode?.links[0]?.film
-    ? navigationResult.data.nextEpisode
-    : null;
+  const previousEpisode =
+    navigationResult.success &&
+    navigationResult.data?.previousEpisode?.links[0]?.film
+      ? navigationResult.data.previousEpisode
+      : null;
+  const nextEpisode =
+    navigationResult.success &&
+    navigationResult.data?.nextEpisode?.links[0]?.film
+      ? navigationResult.data.nextEpisode
+      : null;
 
   const mainFilm = episode.links[0]?.film;
 
@@ -91,7 +95,11 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
               <PodcastPlayerButton
                 title={episode.title}
                 audioUrl={episode.audioUrl}
-                imageUrl={mainFilm?.imgFileName ? `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/${mainFilm.imgFileName}` : undefined}
+                imageUrl={
+                  mainFilm?.imgFileName
+                    ? `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/${mainFilm.imgFileName}`
+                    : undefined
+                }
                 artist="La Boîte de Chocolat"
                 slug={episode.slug ?? ""}
                 className={`${styles.button} ${styles.listenButton}`}
@@ -99,18 +107,20 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
                 <span className={styles.buttonIcon}>🎧</span>
                 Écouter
               </PodcastPlayerButton>
-              <AddToQueueButton 
+
+              <AddToQueueButton
                 podcast={{
                   id: episode.id,
                   title: episode.title,
                   artist: "La Boîte de Chocolat",
                   url: episode.audioUrl,
-                  img: mainFilm?.imgFileName 
+                  img: mainFilm?.imgFileName
                     ? `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/${mainFilm.imgFileName}`
                     : "/images/navet.png",
                   slug: episode.slug ?? "",
-                }} 
+                }}
               />
+
               <a
                 href={episode.audioUrl}
                 download
@@ -119,6 +129,7 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
                 <span className={styles.buttonIcon}>⬇️</span>
                 Télécharger
               </a>
+
               {mainFilm?.tmdbId && (
                 <a
                   href={`https://www.themoviedb.org/movie/${mainFilm.tmdbId}`}
@@ -149,7 +160,7 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
             {episode.description && (
               <div className={styles.description}>
                 <h3 className={styles.descriptionTitle}>Description</h3>
-                <div className={styles.descriptionContent}>
+                <div className={`${styles.descriptionContent} glass`}>
                   {truncateText(
                     formatEpisodeDescription(episode.description),
                     650

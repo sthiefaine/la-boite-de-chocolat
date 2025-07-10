@@ -1,7 +1,9 @@
 .searchContainer {
-  margin-bottom: 1.5rem;
-  padding: 0 1rem;
+  margin-bottom: 0;
+  padding: 0;
   width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .searchRow {
@@ -9,51 +11,92 @@
   gap: 1rem;
   align-items: center;
   flex-wrap: wrap;
+  background: var(--white);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-medium);
+  border: 1px solid rgba(107, 62, 38, 0.1);
+  position: relative;
+}
+
+.searchRow::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--chocolate-primary),
+    var(--chocolate-secondary),
+    var(--accent-gold)
+  );
+  border-radius: 12px 12px 0 0;
 }
 
 .searchInput {
   flex: 1;
   min-width: 200px;
   max-width: 500px;
-  padding: 0.75rem 1rem;
-  border: 2px solid var(--chocolate-primary);
-  border-radius: 8px;
-  font-size: 0.875rem;
-  background: var(--bg-secondary);
+  padding: 0.875rem 1.25rem;
+  border: 2px solid rgba(107, 62, 38, 0.2);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  background: var(--bg-primary);
   color: var(--text-primary);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-  box-shadow: var(--shadow-light);
-  will-change: border-color, box-shadow;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  will-change: border-color, box-shadow, transform;
+  position: relative;
 }
 
 .searchInput:focus {
   outline: none;
   border-color: var(--chocolate-secondary);
-  box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05),
+    0 0 0 3px rgba(166, 124, 82, 0.1);
+  transform: translateY(-1px);
+  background: var(--white);
 }
 
 .searchInput::placeholder {
   color: var(--gray-medium);
+  font-style: italic;
+}
+
+.searchInput:hover {
+  border-color: var(--chocolate-light);
+  transform: translateY(-1px);
 }
 
 .yearFilter {
-  padding: 0.75rem 1rem;
-  border: 2px solid var(--chocolate-primary);
-  border-radius: 8px;
-  font-size: 0.875rem;
-  background: var(--bg-secondary);
+  padding: 0.875rem 1.25rem;
+  border: 2px solid rgba(107, 62, 38, 0.2);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  background: var(--bg-primary);
   color: var(--text-primary);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-  box-shadow: var(--shadow-light);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
   cursor: pointer;
   min-width: 150px;
-  will-change: border-color, box-shadow;
+  will-change: border-color, box-shadow, transform;
+  position: relative;
 }
 
 .yearFilter:focus {
   outline: none;
   border-color: var(--chocolate-secondary);
-  box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05),
+    0 0 0 3px rgba(166, 124, 82, 0.1);
+  transform: translateY(-1px);
+  background: var(--white);
+}
+
+.yearFilter:hover {
+  border-color: var(--chocolate-light);
+  transform: translateY(-1px);
 }
 
 /* Responsive */
@@ -61,19 +104,21 @@
   .searchContainer {
     padding: 0 0.5rem;
   }
-  
+
   .searchRow {
     flex-direction: column;
     gap: 0.75rem;
+    padding: 1rem;
   }
-  
+
   .searchInput {
     max-width: 100%;
     min-width: auto;
+    width: 100%;
   }
-  
+
   .yearFilter {
     min-width: auto;
     width: 100%;
   }
-} 
+}

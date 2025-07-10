@@ -6,9 +6,67 @@
   box-sizing: border-box;
 }
 
+/* Section Header */
+.sectionHeader {
+  margin-bottom: 2rem;
+  padding: 2rem 0;
+  background: linear-gradient(
+    135deg,
+    var(--chocolate-cream) 0%,
+    var(--white) 100%
+  );
+  border-radius: 16px;
+  box-shadow: var(--shadow-light);
+  border: 1px solid rgba(107, 62, 38, 0.1);
+}
+
+.titleSection {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding: 0 1rem;
+}
+
+.sectionTitle {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--chocolate-primary);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(107, 62, 38, 0.1);
+  position: relative;
+}
+
+.sectionTitle::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--chocolate-primary),
+    var(--chocolate-secondary)
+  );
+  border-radius: 2px;
+}
+
+.sectionSubtitle {
+  font-size: 1.125rem;
+  color: var(--chocolate-secondary);
+  margin: 0;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.searchSection {
+  padding: 0 1rem;
+}
+
 .filmsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 0.5rem;
   padding: 0;
   justify-items: start;
@@ -37,9 +95,7 @@
   margin: 2rem auto;
   max-width: 400px;
   text-align: center;
-  box-shadow: 
-    0 4px 12px rgba(139, 69, 19, 0.1),
-    0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .noResultsImage {
@@ -82,9 +138,32 @@
   .container {
     padding: 0 1rem;
   }
-  
+
+  .sectionHeader {
+    margin-bottom: 1.5rem;
+    padding: 1.5rem 0;
+    border-radius: 12px;
+  }
+
+  .titleSection {
+    margin-bottom: 1rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.875rem;
+  }
+
+  .sectionTitle::after {
+    width: 60px;
+    height: 2px;
+  }
+
+  .sectionSubtitle {
+    font-size: 1rem;
+  }
+
   .filmsGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 0.75rem;
     padding: 0;
     justify-items: center;
@@ -110,4 +189,4 @@
   .noResultsText {
     font-size: 0.8rem;
   }
-} 
+}

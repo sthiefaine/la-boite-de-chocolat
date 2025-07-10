@@ -9,6 +9,13 @@ export const metadata = {
   title: "La Boîte de Chocolat - Podcast Cinéma",
   description:
     "Podcast cinéma avec Thomas, Charlie et Thomas. Du cinéma, de la mauvaise foi, un soupçon de beauferie et le tour est joué !",
+  icons: {
+    icon: "/images/icon/favicon.ico",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

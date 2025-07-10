@@ -95,79 +95,112 @@
 .buttons {
   display: flex;
   flex-direction: row;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
   flex-wrap: wrap;
 }
 
 .button {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 2rem;
-  border-radius: 12px;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  border: none;
+  font-size: 0.95rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
   cursor: pointer;
-  max-width: 200px;
+  width: 160px;
+  min-width: 160px;
   text-align: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-transform: none;
+  letter-spacing: 0.25px;
+}
+
+.button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.button:hover::before {
+  left: 100%;
 }
 
 .listenButton {
-  background: #1db954;
+  background: linear-gradient(135deg, #1db954 0%, #1ed760 100%);
   color: var(--text-white);
+  border: 1px solid #1db954;
 }
 
 .listenButton:hover {
-  background: #1ed760;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.4);
+  background: linear-gradient(135deg, #1ed760 0%, #1fdf64 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);
+  border-color: #1ed760;
 }
 
 .downloadButton {
-  background: var(--text-white);
+  background: linear-gradient(135deg, var(--text-white) 0%, var(--bg-primary) 100%);
   color: var(--text-primary);
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .downloadButton:hover {
-  background: var(--bg-primary);
+  background: linear-gradient(135deg, var(--bg-primary) 0%, #f0f0f0 100%);
   border-color: rgba(0, 0, 0, 0.2);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .tmdbButton {
-  background: #0099cc;
+  background: linear-gradient(135deg, #0099cc 0%, #0099ff 100%);
   padding: 0.5rem 1rem;
-  min-width: 120px;
+  width: 140px;
+  min-width: 140px;
   justify-content: center;
+  border: 1px solid #0099cc;
 }
 
 .tmdbButton:hover {
-  background: #0099ff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(1, 180, 228, 0.4);
+  background: linear-gradient(135deg, #0099ff 0%, #00aaff 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(1, 180, 228, 0.3);
+  border-color: #0099ff;
 }
 
 .buttonIcon {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
+  transition: transform 0.3s ease;
+}
+
+.button:hover .buttonIcon {
+  transform: scale(1.05);
 }
 
 .tmdbIcon {
   object-fit: contain;
+  transition: transform 0.3s ease;
 }
 
 .tmdbButton:hover .tmdbIcon {
   filter: none;
+  transform: scale(1.02);
 }
 
 .description {
-  margin: 1rem 0;
+  margin: 1.5rem 0;
   max-width: 90%;
   position: relative;
   z-index: 10;
@@ -183,12 +216,12 @@
 
 .descriptionContent {
   font-size: 1rem;
-  line-height: 1.5;
+  line-height: 1.6;
   color: rgba(255, 255, 255, 0.9);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
   background: rgba(255, 255, 255, 0.1);
-  padding: 0.5rem;
-  border-radius: 8px;
+  padding: 1rem;
+  border-radius: 12px;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -217,45 +250,68 @@
   .headerInfo {
     max-width: 100%;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .titleSection {
-    flex-direction: row;
-    align-items: baseline;
+    flex-direction: column;
+    align-items: center;
     gap: 0.5rem;
     flex-wrap: wrap;
     max-width: 90vw;
+    text-align: center;
   }
 
   .title {
-    font-size: 1.5rem;
-    text-align: left;
+    font-size: 1.75rem;
+    text-align: center;
   }
 
   .year {
-    font-size: 1rem;
-    margin-left: 0.25rem;
+    font-size: 1.1rem;
+    margin-left: 0;
   }
 
   .publicationDate {
     font-size: 1rem;
+    text-align: center;
   }
 
   .director {
     font-size: 1rem;
-    text-align: left;
+    text-align: center;
   }
 
   .buttons {
-    gap: 0.75rem;
+    gap: 0.5rem;
     justify-content: center;
     flex-wrap: wrap;
+    width: 100%;
   }
 
   .button {
-    padding: 0.875rem 1.5rem;
-    font-size: 0.9rem;
-    max-width: 180px;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    width: 140px;
+    min-width: 140px;
+  }
+
+  .description {
+    margin: 1.5rem auto;
+    max-width: 95%;
+    text-align: center;
+  }
+
+  .descriptionTitle {
+    text-align: center;
+  }
+
+  .descriptionContent {
+    text-align: left;
+    padding: 1rem;
+    font-size: 0.95rem;
   }
 }
 

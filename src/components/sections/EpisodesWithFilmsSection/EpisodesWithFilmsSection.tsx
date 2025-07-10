@@ -31,7 +31,6 @@ interface EpisodesWithFilmsSectionProps {
 export default function EpisodesWithFilmsSection({ episodes }: EpisodesWithFilmsSectionProps) {
   return (
     <section className={styles.section} id="episodes">
-      <h2 className={styles.title}>Les Podcasts</h2>
       <FilmsGrid episodes={episodes} />
     </section>
   );

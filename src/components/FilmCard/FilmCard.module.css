@@ -175,15 +175,27 @@
 @media (max-width: 768px) {
   .cardArticle {
     flex: 1 1 100%;
-    max-width: 320px;
-    min-width: 280px;
+    max-width: 220px;
+    min-width: 90px;
+    border-radius: 10px;
   }
 
   .cardTitle {
-    font-size: 1rem;
+    font-size: 0.85rem;
+    line-height: 1.2;
   }
 
   .cardImageContainer {
-    padding-bottom: calc(70% - 12px);
+    padding-bottom: 60%;
+    border-radius: 8px;
+    margin: 4px;
+  }
+
+  .cardInformations {
+    padding: 0.3rem 0.5rem;
+  }
+
+  .episodeDate {
+    font-size: 0.68rem;
   }
 } 
