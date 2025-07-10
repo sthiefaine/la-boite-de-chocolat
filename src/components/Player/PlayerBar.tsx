@@ -20,6 +20,7 @@ import styles from "./PlayerBar.module.css";
 import { useShallow } from "zustand/shallow";
 import { AudioVisualizer } from "./AudioVisualizer";
 import { PlayerQueue } from "./PlayerQueue";
+import { useOptionsStore } from "@/lib/store/options";
 
 export const PlayerBar = () => {
   const [
@@ -75,6 +76,12 @@ export const PlayerBar = () => {
     useState("00:00:00");
   const [backgroundColor, setBackgroundColor] = useState<number[]>([0, 0, 0]);
   const [showQueue, setShowQueue] = useState(false);
+  const [getSkipTimeMs, options] = useOptionsStore(
+    useShallow((state) => [
+      state.getSkipTimeMs,
+      state.options,
+    ])
+  );
 
   const setData = () => {
     if (podcast?.url === audioRef.current?.src && audioRef.current) {
@@ -218,6 +225,19 @@ export const PlayerBar = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlaying]);
+
+  useEffect(() => {
+    const audioElement = audioRef.current;
+    if (!audioElement || !isPlaying) return;
+
+    const skipTimeMs = options.skipIntro ? options.introSkipTime * 1000 : 0;
+    if (skipTimeMs > 0 && audioElement.currentTime < skipTimeMs / 1000) {
+      // si le podcast fait moins de 1h, on ne skip pas l'intro
+      if (audioElement.currentTime > 3600) {
+        audioElement.currentTime = skipTimeMs / 1000;
+      }
+    }
+  }, [isPlaying, options, podcast?.url]);
 
   const padZero = (num: number) => {
     return num.toString().padStart(2, "0");

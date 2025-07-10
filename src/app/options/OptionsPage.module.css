@@ -1,0 +1,290 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--chocolate-cream) 0%, var(--white) 100%);
+  padding: 2rem 1rem;
+
+}
+
+.content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Header */
+.header {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(107, 62, 38, 0.1);
+  border: 1px solid rgba(107, 62, 38, 0.2);
+  border-radius: 12px;
+  color: var(--chocolate-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  margin-bottom: 2rem;
+}
+
+.backButton:hover {
+  background: rgba(107, 62, 38, 0.15);
+  border-color: rgba(107, 62, 38, 0.3);
+  transform: translateY(-1px);
+}
+
+.headerContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--chocolate-primary);
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(107, 62, 38, 0.1);
+}
+
+.titleIcon {
+  color: var(--chocolate-secondary);
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  color: var(--chocolate-secondary);
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Options Section */
+.optionsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.optionCard {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(107, 62, 38, 0.15);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(139, 69, 19, 0.12);
+  backdrop-filter: blur(20px);
+  transition: all 0.3s ease;
+}
+
+.optionCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(139, 69, 19, 0.15);
+}
+
+.optionHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.optionIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--chocolate-primary), var(--chocolate-secondary));
+  border-radius: 12px;
+  color: white;
+  flex-shrink: 0;
+}
+
+.optionInfo {
+  flex: 1;
+}
+
+.optionTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--chocolate-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.optionDescription {
+  font-size: 0.875rem;
+  color: var(--chocolate-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.optionControls {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Switch Toggle */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  align-self: flex-start;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.3s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background: linear-gradient(135deg, var(--chocolate-primary), var(--chocolate-secondary));
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+/* Time Info */
+.timeInfo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, rgba(107, 62, 38, 0.08), rgba(139, 69, 19, 0.05));
+  border-radius: 12px;
+  border: 1px solid rgba(107, 62, 38, 0.15);
+  box-shadow: inset 0 1px 3px rgba(107, 62, 38, 0.1);
+}
+
+.timeLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--chocolate-primary);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.timeLabel::before {
+  content: "⏱️";
+  font-size: 1rem;
+}
+
+/* Info Card */
+.infoCard {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(107, 62, 38, 0.12);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 16px rgba(139, 69, 19, 0.08);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.infoCard:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(139, 69, 19, 0.1);
+}
+
+.infoTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--chocolate-primary);
+  margin: 0 0 0.75rem 0;
+}
+
+.infoText {
+  font-size: 0.875rem;
+  color: var(--chocolate-secondary);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Reset Section */
+.resetSection {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.resetButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.15);
+  border-radius: 14px;
+  color: #dc2626;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+  backdrop-filter: blur(10px);
+}
+
+.resetButton:hover {
+  background: rgba(220, 38, 38, 0.12);
+  border-color: rgba(220, 38, 38, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .optionCard {
+    padding: 1.5rem;
+  }
+
+  .optionHeader {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .optionIcon {
+    align-self: center;
+  }
+} 
