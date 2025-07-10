@@ -129,14 +129,16 @@
 }
 
 .downloadButton {
-  background: #8b4513;
-  color: white;
+  background: white;
+  color: #333;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .downloadButton:hover {
-  background: #a0522d;
+  background: #f8f9fa;
+  border-color: rgba(0, 0, 0, 0.2);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .tmdbButton {

@@ -1,0 +1,99 @@
+.addToQueueButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #333;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.addToQueueButton:hover {
+  background: #f8f9fa;
+  border-color: rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.addToQueueButton:active {
+  transform: translateY(0);
+}
+
+.addToQueueButton.added {
+  background: #22c55e;
+  border-color: #22c55e;
+  color: white;
+}
+
+.addToQueueButton.added:hover {
+  background: #16a34a;
+  border-color: #16a34a;
+  box-shadow: 0 2px 6px rgba(34, 197, 94, 0.3);
+}
+
+.addToQueueButton.inQueue {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #64748b;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.addToQueueButton.inQueue:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  transform: none;
+  box-shadow: none;
+}
+
+.addToQueueButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Animation pour l'ajout */
+@keyframes addedPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.addToQueueButton.added {
+  animation: addedPulse 0.4s ease;
+}
+
+/* Variante compacte */
+.addToQueueButton.compact {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.addToQueueButton.compact svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Variante icon only */
+.addToQueueButton.iconOnly {
+  padding: 8px;
+  min-width: 36px;
+  justify-content: center;
+}
+
+.addToQueueButton.iconOnly span {
+  display: none;
+} 

@@ -9,6 +9,7 @@ import FilmCard from "@/components/FilmCard/FilmCard";
 import { generateMetadata } from "./metadata";
 import { getEpisodeBySlug, getEpisodeNavigation } from "@/app/actions/episode";
 import { PodcastPlayerButton } from "@/components/PodcastPlayerButton/PodcastPlayerButton";
+import { AddToQueueButton } from "@/components/Queue/AddToQueueButton";
 
 export { generateMetadata };
 
@@ -98,6 +99,18 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
                 <span className={styles.buttonIcon}>🎧</span>
                 Écouter
               </PodcastPlayerButton>
+              <AddToQueueButton 
+                podcast={{
+                  id: episode.id,
+                  title: episode.title,
+                  artist: "La Boîte de Chocolat",
+                  url: episode.audioUrl,
+                  img: mainFilm?.imgFileName 
+                    ? `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/${mainFilm.imgFileName}`
+                    : "/images/navet.png",
+                  slug: episode.slug ?? "",
+                }} 
+              />
               <a
                 href={episode.audioUrl}
                 download

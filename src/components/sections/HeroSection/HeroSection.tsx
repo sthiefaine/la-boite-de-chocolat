@@ -40,72 +40,78 @@ export default function HeroSection() {
               </Link>
             </div>
 
-            <div className={styles.platformLinks}>
-              <a
-                href={spotifyUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`${styles.platformLink} ${styles.spotify}`}
-              >
-                <span className={styles.platformIcon}>🎵</span>
-                Spotify
-              </a>
-              <a
-                href={applePodcastsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`${styles.platformLink} ${styles.apple}`}
-              >
-                <span className={styles.platformIcon}>🍎</span>
-                Apple Podcasts
-              </a>
-              <a
-                href={rssUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.platformLink}
-              >
-                <span className={styles.platformIcon}>📡</span>
-                RSS
-              </a>
-              <a
-                href={deezerUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.platformLink}
-              >
-                <span className={styles.platformIcon}>🎧</span>
-                Deezer
-              </a>
-            </div>
-
-            <div className={styles.socialLinks}>
-              <a
-                href={`${instaBaseUrl}${instagram}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`${styles.socialLink} ${styles.instagram}`}
-                title="Instagram @laboite2chocolat"
-              >
-                <span className={styles.socialIcon}>📸</span>@{instagram}
-              </a>
-              <a
-                href={`${instaBaseUrl}${instagram2}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`${styles.socialLink} ${styles.instagram}`}
-                title="Instagram @la_boitedechocolat"
-              >
-                <span className={styles.socialIcon}>📸</span>@{instagram2}
-              </a>
-              <a
-                href={`mailto:${mail}`}
-                className={styles.socialLink}
-                title="Contact par email"
-              >
-                <span className={styles.socialIcon}>✉️</span>
-                Contact
-              </a>
+            {/* Chocolate Box Container - Flat & Minimalist */}
+            <div className={styles.chocolateBoxFlat}>
+              <div className={styles.chocolateGridFlat}>
+                <a
+                  href={spotifyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${styles.chocolateFlat} ${styles.spotify}`}
+                  aria-label="Écouter sur Spotify"
+                >
+                  <span className={styles.chocolateIconFlat}>🎵</span>
+                  <span className={styles.chocolateLabel}>Spotify</span>
+                </a>
+                <a
+                  href={applePodcastsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${styles.chocolateFlat} ${styles.apple}`}
+                  aria-label="Écouter sur Apple Podcasts"
+                >
+                  <span className={styles.chocolateIconFlat}>🍎</span>
+                  <span className={styles.chocolateLabel}>Apple</span>
+                </a>
+                <a
+                  href={rssUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.chocolateFlat}
+                  aria-label="Flux RSS"
+                >
+                  <span className={styles.chocolateIconFlat}>📡</span>
+                  <span className={styles.chocolateLabel}>RSS</span>
+                </a>
+                <a
+                  href={deezerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.chocolateFlat}
+                  aria-label="Écouter sur Deezer"
+                >
+                  <span className={styles.chocolateIconFlat}>🎧</span>
+                  <span className={styles.chocolateLabel}>Deezer</span>
+                </a>
+                <a
+                  href={`${instaBaseUrl}${instagram}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${styles.chocolateFlat} ${styles.instagram}`}
+                  aria-label="Instagram @laboite2chocolat"
+                >
+                  <span className={styles.chocolateIconFlat}>📸</span>
+                  <span className={styles.chocolateLabel}>@laboite2chocolat</span>
+                </a>
+                <a
+                  href={`${instaBaseUrl}${instagram2}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${styles.chocolateFlat} ${styles.instagram}`}
+                  aria-label="Instagram @la_boitedechocolat"
+                >
+                  <span className={styles.chocolateIconFlat}>📸</span>
+                  <span className={styles.chocolateLabel}>@la_boitedechocolat</span>
+                </a>
+                <a
+                  href={`mailto:${mail}`}
+                  className={styles.chocolateFlat}
+                  aria-label="Contact par email"
+                >
+                  <span className={styles.chocolateIconFlat}>✉️</span>
+                  <span className={styles.chocolateLabel}>Contact</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>

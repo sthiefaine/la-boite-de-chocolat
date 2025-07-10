@@ -102,6 +102,7 @@ export const PodcastDetail = ({
         img: episode.poster ?? "/images/boite-de-chocolat-404.png",
         artist: episode.speakers?.join(", ") ?? "La Boîte de Chocolat",
         slug: episode.slug ?? "",
+        id: episode.idTmdb ?? "",
       });
     }
     setIsPlaying(true);

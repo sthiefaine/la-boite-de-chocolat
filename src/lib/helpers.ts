@@ -20,7 +20,8 @@ function adjustColorBrightness(
 
   if (luminance > threshold) {
     // Si la luminance est trop élevée, ajuster la couleur en réduisant la luminosité
-    return rgb.map((color) => Math.max(0, color - adjustment));
+    const reductionFactor = luminance > 0.9 ? 0.6 : 0.7;
+    return rgb.map((color) => Math.max(0, Math.floor(color * reductionFactor)));
   } else {
     return rgb;
   }
@@ -62,7 +63,8 @@ export async function getAverageRGB(src: string): Promise<number[]> {
       const rgb: Uint8ClampedArray = imageData.data.slice(0, 3);
 
       // Appeler la fonction d'ajustement de la luminosité
-      let adjustedRGB = adjustColorBrightness(Array.from(rgb), 0.8, 30);
+      // Seuil plus bas et ajustement plus agressif
+      let adjustedRGB = adjustColorBrightness(Array.from(rgb), 0.6, 30);
 
       adjustedRGB = adjustColorBrown(adjustedRGB, 2, 20);
       resolve(adjustedRGB);

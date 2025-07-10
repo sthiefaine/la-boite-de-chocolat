@@ -42,6 +42,7 @@ export const PodcastPlayerButton = ({
         img: imageUrl || "/images/boite-de-chocolat-404.png",
         url: audioUrl,
         slug: slug || "",
+        id: "",
       });
     }
     setIsPlaying(true);

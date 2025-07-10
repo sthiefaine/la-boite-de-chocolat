@@ -1,7 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { useQueueStore } from "./queue";
 
 type PodcastInfo = {
+  id: string;
   artist: string;
   title: string;
   url: string;
@@ -25,6 +27,8 @@ export type PlayerActions = {
   setCurrentPlayTime: (currentPlayTime: number) => void;
   setTotalDuration: (totalDuration: number) => void;
   setClearPlayerStore: () => void;
+  playNext: () => void;
+  playPrevious: () => void;
 };
 
 export type PlayerStore = PlayerState & PlayerActions;
@@ -42,11 +46,34 @@ export const usePlayerStore = create(
     (set, get) => ({
       ...defaultInitState,
       setIsPlaying: (isPlaying: boolean) => set({ isPlaying }),
-      setPodcast: (podcast: PodcastInfo) => set({ podcast }),
+      setPodcast: (podcast: PodcastInfo) => {
+        set({ podcast });
+        const queueStore = useQueueStore.getState();
+        const queueIndex = queueStore.queue.findIndex(item => item.id === podcast.id);
+        if (queueIndex !== -1) {
+          queueStore.setCurrentIndex(queueIndex);
+        }
+      },
       setLaunchPlay: (launchPlay: boolean) => set({ launchPlay }),
       setCurrentPlayTime: (currentPlayTime: number) => set({ currentPlayTime }),
       setTotalDuration: (totalDuration: number) => set({ totalDuration }),
       setClearPlayerStore: () => set(defaultInitState),
+      playNext: () => {
+        const queueStore = useQueueStore.getState();
+        const nextPodcast = queueStore.getNextPodcast();
+        if (nextPodcast) {
+          set({ podcast: nextPodcast, isPlaying: true });
+          queueStore.setCurrentIndex(queueStore.currentIndex + 1);
+        }
+      },
+      playPrevious: () => {
+        const queueStore = useQueueStore.getState();
+        const previousPodcast = queueStore.getPreviousPodcast();
+        if (previousPodcast) {
+          set({ podcast: previousPodcast, isPlaying: true });
+          queueStore.setCurrentIndex(queueStore.currentIndex - 1);
+        }
+      },
     }),
     {
       name: "la-boite-de-chocolat-player",

@@ -15,8 +15,6 @@
   background: rgba(255, 255, 255, 0.15);
 }
 
-
-
 .bar {
   flex: 1;
   background: rgba(255, 255, 255, 0.8);
@@ -29,4 +27,4 @@
 
 .bar:nth-child(odd) {
   background: rgba(255, 255, 255, 0.6);
-} 
+}
