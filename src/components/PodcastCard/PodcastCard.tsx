@@ -2,9 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { formatDuration } from "@/lib/podcastHelpers";
 import { IMAGE_CONFIG, getVercelBlobUrl } from "@/lib/imageConfig";
-import styles from "./FilmCard.module.css";
+import styles from "./PodcastCard.module.css";
 
-interface FilmCardProps {
+interface PodcastCardProps {
   film?: {
     id: string;
     title: string;
@@ -24,7 +24,7 @@ interface FilmCardProps {
   variant?: 'default' | 'compact';
 }
 
-export default function FilmCard({
+export default function PodcastCard({
   film,
   episodeTitle,
   episodeDate,
@@ -32,7 +32,7 @@ export default function FilmCard({
   episodeSlug,
   isNoResults = false,
   variant = "default",
-}: FilmCardProps) {
+}: PodcastCardProps) {
   if (isNoResults) {
     return (
       <article className={`${styles.cardArticle} ${styles.noResultsCard}`}>

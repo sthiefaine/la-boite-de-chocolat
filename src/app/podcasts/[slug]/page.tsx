@@ -3,7 +3,7 @@ import Image from "next/image";
 import { IMAGE_CONFIG, getVercelBlobUrl } from "@/lib/imageConfig";
 import styles from "./PodcastPage.module.css";
 import { formatEpisodeDescription, truncateText } from "@/lib/podcastHelpers";
-import FilmCard from "@/components/FilmCard/FilmCard";
+import FilmCard from "@/components/PodcastCard/PodcastCard";
 import { generateMetadata } from "./metadata";
 import {
   getEpisodeBySlug,

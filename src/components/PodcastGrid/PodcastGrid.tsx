@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useMemo, useCallback, useDeferredValue } from "react";
-import FilmCard from "../FilmCard/FilmCard";
 import SearchBar from "../SearchBar/SearchBar";
-import styles from "./FilmsGrid.module.css";
+import styles from "./PodcastGrid.module.css";
 import { PreserveScroll } from "@/hooks/preservScroll";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import PodcastCard from "../PodcastCard/PodcastCard";
 
 interface Film {
   id: string;
@@ -38,17 +38,17 @@ interface Episode {
   }>;
 }
 
-interface FilmsGridProps {
+interface PodcastGridProps {
   episodes: Episode[];
   title?: string;
   subtitle?: string;
 }
 
-export default function FilmsGrid({
+export default function PodcastGrid({
   episodes,
   title = "Tous nos épisodes",
   subtitle,
-}: FilmsGridProps) {
+}: PodcastGridProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [yearFilter, setYearFilter] = useState("");
 
@@ -152,13 +152,13 @@ export default function FilmsGrid({
         </div>
       </div>
 
-      <div className={styles.filmsGrid}>
+      <div className={styles.podcastGrid}>
         {displayedFilms.length === 0 ? (
-          <FilmCard isNoResults={true} />
+          <PodcastCard isNoResults={true} />
         ) : (
           <>
             {displayedFilms.map((film) => (
-              <FilmCard
+              <PodcastCard
                 key={film.id}
                 film={film}
                 episodeTitle={film.episodeTitle}

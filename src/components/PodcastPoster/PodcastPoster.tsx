@@ -4,19 +4,19 @@ import { useState } from "react";
 import Image from "next/image";
 import { IMAGE_CONFIG, getVercelBlobUrl } from "@/lib/imageConfig";
 
-interface FilmPosterProps {
+interface PodcastPosterProps {
   imgFileName?: string | null;
   title: string;
   size?: "small" | "medium" | "large";
   className?: string;
 }
 
-export default function FilmPoster({
+export default function PodcastPoster({
   imgFileName,
   title,
   size = "medium",
   className = "",
-}: FilmPosterProps) {
+}: PodcastPosterProps) {
   console.log("imgFileName", imgFileName);
   const [imageError, setImageError] = useState(false);
   const sizeClasses = {
@@ -54,4 +54,4 @@ export default function FilmPoster({
       />
     </div>
   );
-}
+} 

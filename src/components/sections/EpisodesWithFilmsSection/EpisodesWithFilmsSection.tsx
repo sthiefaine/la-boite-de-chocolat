@@ -1,4 +1,4 @@
-import FilmsGrid from "../../FilmsGrid/FilmsGrid";
+import PodcastGrid from "../../PodcastGrid/PodcastGrid";
 import styles from "./EpisodesWithFilmsSection.module.css";
 
 interface Episode {
@@ -31,7 +31,7 @@ interface EpisodesWithFilmsSectionProps {
 export default function EpisodesWithFilmsSection({ episodes }: EpisodesWithFilmsSectionProps) {
   return (
     <section className={styles.section} id="episodes">
-      <FilmsGrid episodes={episodes} />
+      <PodcastGrid episodes={episodes} />
     </section>
   );
 }

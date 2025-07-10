@@ -6,8 +6,8 @@ import {
   unlinkEpisodeFromFilm,
 } from "@/app/actions/episode";
 import FilmSelector from "./FilmSelector";
-import FilmPoster from "@/components/FilmPoster";
-import FormattedDescription from "@/components/PodcastDescription";
+import PodcastPoster from "@/components/PodcastPoster/PodcastPoster";
+import FormattedDescription from "@/components/PodcastDescription/PodcastDescription";
 import TabNavigation from "./TabNavigation";
 
 interface PageProps {
@@ -185,7 +185,7 @@ export default async function EpisodeEditPage({ params }: PageProps) {
                       <div key={link.id} className={styles.linkItem}>
                         <div className={styles.filmInfo}>
                           <div className={styles.filmPoster}>
-                            <FilmPoster 
+                            <PodcastPoster 
                               imgFileName={link.film.imgFileName} 
                               title={link.film.title}
                               size="small"

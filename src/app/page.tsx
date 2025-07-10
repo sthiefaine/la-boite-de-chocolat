@@ -1,9 +1,9 @@
 "use server";
 
 import styles from "./Home.module.css";
-import HeroSection from "../components/sections/HeroSection/HeroSection";
-import LatestEpisodeSection from "../components/sections/LatestEpisodeSection/LatestEpisodeSection";
-import EpisodesWithFilmsSection from "../components/sections/EpisodesWithFilmsSection/EpisodesWithFilmsSection";
+import HeroSection from "../components/Sections/HeroSection/HeroSection";
+import LatestEpisodeSection from "../components/Sections/LatestEpisodeSection/LatestEpisodeSection";
+import EpisodesWithFilmsSection from "../components/Sections/EpisodesWithFilmsSection/EpisodesWithFilmsSection";
 import { getEpisodesWithFilms } from "./actions/episode";
 
 export default async function Home() {
