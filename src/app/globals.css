@@ -37,6 +37,14 @@
   --hover-secondary: var(--chocolate-light);
   --focus-ring: var(--accent-gold);
 
+  /* Couleurs de la boîte de chocolat */
+  --box-red: #d32f2f; /* Rouge de la boîte */
+  --box-shadow-dark: rgba(0, 0, 0, 0.3);
+  --box-shadow-light: rgba(255, 255, 255, 0.1);
+  --hole-dark: #1c120b; /* Couleur des trous */
+  --choco-base: #3e2f1c; /* Couleur de base des chocolats */
+  --choco-dark: #2c1e12; /* Couleur sombre des chocolats */
+
   /* Ombres */
   --shadow-light: 0 2px 4px rgba(107, 62, 38, 0.1);
   --shadow-medium: 0 4px 8px rgba(107, 62, 38, 0.15);

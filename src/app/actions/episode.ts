@@ -44,6 +44,9 @@ export async function getEpisodeNavigation(
           pubDate: {
             lt: currentPubDate,
           },
+          links: {
+            some: {}
+          }
         },
         include: {
           links: {
@@ -68,6 +71,9 @@ export async function getEpisodeNavigation(
           pubDate: {
             gt: currentPubDate,
           },
+          links: {
+            some: {}
+          }
         },
         include: {
           links: {

@@ -45,11 +45,11 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
 
   const navigationResult = await getEpisodeNavigation(slug, episode.pubDate);
 
-  const previousEpisode = navigationResult.success
-    ? navigationResult.data?.previousEpisode
+  const previousEpisode = navigationResult.success && navigationResult.data?.previousEpisode?.links[0]?.film
+    ? navigationResult.data.previousEpisode
     : null;
-  const nextEpisode = navigationResult.success
-    ? navigationResult.data?.nextEpisode
+  const nextEpisode = navigationResult.success && navigationResult.data?.nextEpisode?.links[0]?.film
+    ? navigationResult.data.nextEpisode
     : null;
 
   const mainFilm = episode.links[0]?.film;
