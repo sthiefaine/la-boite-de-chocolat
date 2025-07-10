@@ -156,6 +156,8 @@ export const AudioVisualizer = ({
         background: progressGradient,
         cursor: "pointer",
         transition: "background 0.1s ease-out",
+        willChange: isPlaying ? "background" : "auto",
+        contain: "layout style paint",
       }}
       role="progressbar"
       aria-valuemin={0}
@@ -170,8 +172,10 @@ export const AudioVisualizer = ({
           style={{
             height: `${bar.height}%`,
             opacity: bar.intensity,
-            transform: bar.isActive ? "scaleY(1.05)" : "scaleY(1)",
+            transform: bar.isActive ? "scaleY(1.05) translateZ(0)" : "scaleY(1) translateZ(0)",
             transition: isPlaying ? "transform 0.1s ease-out" : "none",
+            willChange: isPlaying ? "transform, height, opacity" : "auto",
+            contain: "layout style paint",
           }}
         />
       ))}
@@ -181,6 +185,8 @@ export const AudioVisualizer = ({
         style={{
           left: `${progress}%`,
           opacity: isPlaying ? 1 : 0.7,
+          willChange: isPlaying ? "left" : "auto",
+          contain: "layout style paint",
         }}
       />
     </div>

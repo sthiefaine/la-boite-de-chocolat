@@ -9,6 +9,9 @@
   border-radius: 0.75rem;
   overflow: hidden;
   transition: all 0.2s ease;
+  will-change: background;
+  contain: layout style paint;
+  transform: translateZ(0);
 }
 
 .visualizerContainer:hover {
@@ -23,8 +26,29 @@
   z-index: 2;
   position: relative;
   margin: 0 0.25px;
+  will-change: transform, height, opacity;
+  contain: layout style paint;
+  transform: translateZ(0);
 }
 
 .bar:nth-child(odd) {
   background: rgba(255, 255, 255, 0.6);
+}
+
+.activeBar {
+  will-change: transform, height, opacity;
+  contain: layout style paint;
+  transform: translateZ(0);
+}
+
+.playhead {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 3;
+  will-change: left;
+  contain: layout style paint;
+  transform: translateZ(0);
 }
