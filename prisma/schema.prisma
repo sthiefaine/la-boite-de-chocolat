@@ -45,9 +45,12 @@ model Film {
 }
 
 model Saga {
-  id    String @id @default(uuid())
-  name  String
-  films Film[]
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  imgFileName String?  // Poster de la saga
+  filmsOrder  String[] // IDs des films dans l'ordre
+  films       Film[]
 }
 
 model PodcastFilmLink {

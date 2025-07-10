@@ -179,7 +179,7 @@ export async function uploadPosterFromTMDB(
     const sanitizedTitle = filmTitle
       .replace(/[^a-zA-Z0-9]/g, "_")
       .toLowerCase();
-    const filename = `poster_${sanitizedTitle}_${timestamp}.jpg`;
+    const filename = `films/poster_${sanitizedTitle}_${timestamp}.jpg`;
 
     // Upload vers Vercel Blob avec le SDK
     const blob = await put(filename, imageBlob, {

@@ -1,0 +1,43 @@
+import { getEpisodesWithFilms } from "@/app/actions/episode";
+import PodcastGrid from "@/components/PodcastGrid/PodcastGrid";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Podcasts - La Boîte de Chocolat",
+  description: "Découvrez tous nos podcasts et émissions",
+};
+
+const getEpisodes = async () => {
+  const result = await getEpisodesWithFilms();
+  return result.data || [];
+};
+
+export default async function PodcastsPage() {
+  const result = await getEpisodes();
+  if (!result) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">
+            Erreur lors du chargement
+          </h1>
+          <p className="text-gray-600">{"Une erreur est survenue"}</p>
+        </div>
+      </div>
+    );
+  }
+
+  const episodes = result || [];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-[var(--chocolate-cream)] to-white pb-24">
+      <PodcastGrid
+        episodes={episodes}
+        title="Tous nos podcasts"
+        subtitle={`Découvrez nos ${episodes.length} épisode${
+          episodes.length > 1 ? "s" : ""
+        } et les films associés`}
+      />
+    </div>
+  );
+}

@@ -12,7 +12,18 @@ export async function getEpisodeBySlug(slug: string) {
           include: {
             film: {
               include: {
-                saga: true,
+                saga: {
+                  include: {
+                    films: {
+                      select: {
+                        id: true,
+                        title: true,
+                        year: true,
+                        slug: true,
+                      },
+                    },
+                  },
+                },
               },
             },
           },
@@ -380,6 +391,53 @@ export async function getRandomEpisode() {
     return {
       success: false,
       error: "Erreur lors de la récupération de l'épisode aléatoire",
+    };
+  }
+}
+
+export async function getAllPodcasts() {
+  try {
+    const podcasts = await prisma.rssFeed.findMany({
+      select: {
+        id: true,
+        name: true,
+        nameId: true,
+        url: true,
+        episodes: {
+          select: {
+            id: true,
+            title: true,
+            pubDate: true,
+            duration: true,
+            slug: true,
+            _count: {
+              select: {
+                links: true,
+              },
+            },
+          },
+          orderBy: {
+            pubDate: "desc",
+          },
+          take: 1, // Dernier épisode seulement
+        },
+        _count: {
+          select: {
+            episodes: true,
+          },
+        },
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+
+    return { success: true, data: podcasts };
+  } catch (error) {
+    console.error("Erreur lors de la récupération des podcasts:", error);
+    return {
+      success: false,
+      error: "Erreur lors de la récupération des podcasts",
     };
   }
 }

@@ -76,9 +76,8 @@ export const PlayerBar = () => {
     useState("00:00:00");
   const [backgroundColor, setBackgroundColor] = useState<number[]>([0, 0, 0]);
   const [showQueue, setShowQueue] = useState(false);
-  const [getSkipTimeMs, options] = useOptionsStore(
+  const [ options] = useOptionsStore(
     useShallow((state) => [
-      state.getSkipTimeMs,
       state.options,
     ])
   );
@@ -233,11 +232,11 @@ export const PlayerBar = () => {
     const skipTimeMs = options.skipIntro ? options.introSkipTime * 1000 : 0;
     if (skipTimeMs > 0 && audioElement.currentTime < skipTimeMs / 1000) {
       // si le podcast fait moins de 1h, on ne skip pas l'intro
-      if (audioElement.currentTime > 3600) {
+      if (audioElement.duration && !isNaN(audioElement.duration) && audioElement.duration > 3600) {
         audioElement.currentTime = skipTimeMs / 1000;
       }
     }
-  }, [isPlaying, options, podcast?.url]);
+  }, [isPlaying, options, podcast?.url, duration]);
 
   const padZero = (num: number) => {
     return num.toString().padStart(2, "0");

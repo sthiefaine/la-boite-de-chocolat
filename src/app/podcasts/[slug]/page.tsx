@@ -4,12 +4,14 @@ import { IMAGE_CONFIG, getVercelBlobUrl } from "@/lib/imageConfig";
 import styles from "./PodcastPage.module.css";
 import { formatEpisodeDescription, truncateText } from "@/lib/podcastHelpers";
 import PodcastCard from "@/components/PodcastCard/PodcastCard";
+import SagaCard from "@/components/SagaCard/SagaCard";
 import { generateMetadata } from "./metadata";
 import {
   getEpisodeBySlug,
   getEpisodeNavigation,
   getAllEpisodeSlugs,
 } from "@/app/actions/episode";
+import { getSagaByFilmId } from "@/app/actions/saga";
 import { PodcastPlayerButton } from "@/components/PodcastPlayerButton/PodcastPlayerButton";
 import { AddToQueueButton } from "@/components/Queue/AddToQueueButton";
 
@@ -58,6 +60,7 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
       : null;
 
   const mainFilm = episode.links[0]?.film;
+  const saga = mainFilm?.saga || null;
 
   return (
     <div className={styles.container}>
@@ -176,8 +179,8 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
         </div>
       </div>
 
-      {/* Navigation entre épisodes */}
-      {(previousEpisode || nextEpisode) && (
+      {/* Navigation entre épisodes et saga */}
+      {(previousEpisode || nextEpisode || saga) && (
         <div className={styles.navigationSection}>
           <div className={styles.navigationContainer}>
             {nextEpisode && (
@@ -204,6 +207,12 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
                   episodeSlug={previousEpisode.slug}
                   variant="compact"
                 />
+              </div>
+            )}
+            {saga && (
+              <div className={styles.navigationCard}>
+                <span className={styles.navigationLabel}>Saga</span>
+                <SagaCard saga={saga} variant="compact" />
               </div>
             )}
           </div>
