@@ -3,7 +3,7 @@ import Image from "next/image";
 import { IMAGE_CONFIG, getVercelBlobUrl } from "@/lib/imageConfig";
 import styles from "./PodcastPage.module.css";
 import { formatEpisodeDescription, truncateText } from "@/lib/podcastHelpers";
-import FilmCard from "@/components/PodcastCard/PodcastCard";
+import PodcastCard from "@/components/PodcastCard/PodcastCard";
 import { generateMetadata } from "./metadata";
 import {
   getEpisodeBySlug,
@@ -183,7 +183,7 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
             {nextEpisode && (
               <div className={styles.navigationCard}>
                 <span className={styles.navigationLabel}>Suivant</span>
-                <FilmCard
+                <PodcastCard
                   film={nextEpisode.links[0]?.film}
                   episodeTitle={nextEpisode.title}
                   episodeDate={nextEpisode.pubDate}
@@ -196,7 +196,7 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
             {previousEpisode && (
               <div className={styles.navigationCard}>
                 <span className={styles.navigationLabel}>Précédent</span>
-                <FilmCard
+                <PodcastCard
                   film={previousEpisode.links[0]?.film}
                   episodeTitle={previousEpisode.title}
                   episodeDate={previousEpisode.pubDate}
