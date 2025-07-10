@@ -13,7 +13,7 @@
 
 .container.minimized {
   padding: 0.5rem;
-  transform: translateY(calc(100% - 3rem));
+  transform: translateY(calc(100% - 3.2rem));
 }
 
 .container.minimized .player_title {
