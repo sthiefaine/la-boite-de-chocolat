@@ -81,6 +81,23 @@ body {
   scroll-behavior: smooth;
 }
 
+main {
+  min-height: 100dvh;
+  position: relative;
+  background-color: var(--black);
+}
+
+main::after {
+  content: '';
+  position: absolute;
+  bottom: -100px;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background-color: inherit;
+  z-index: -1;
+}
+
 a {
   color: inherit;
   text-decoration: none;

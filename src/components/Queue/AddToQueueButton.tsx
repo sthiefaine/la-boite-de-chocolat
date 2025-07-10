@@ -16,7 +16,10 @@ interface AddToQueueButtonProps {
   className?: string;
 }
 
-export const AddToQueueButton = ({ podcast, className }: AddToQueueButtonProps) => {
+export const AddToQueueButton = ({
+  podcast,
+  className,
+}: AddToQueueButtonProps) => {
   const { addToQueue, queue } = useQueueStore();
   const [isAdded, setIsAdded] = useState(false);
 
@@ -26,7 +29,7 @@ export const AddToQueueButton = ({ podcast, className }: AddToQueueButtonProps) 
     if (!isInQueue) {
       addToQueue(podcast);
       setIsAdded(true);
-      
+
       // Reset l'état après 2 secondes
       setTimeout(() => {
         setIsAdded(false);
@@ -37,7 +40,9 @@ export const AddToQueueButton = ({ podcast, className }: AddToQueueButtonProps) 
   if (isInQueue) {
     return (
       <button
-        className={`${styles.addToQueueButton} ${styles.inQueue} ${className || ""}`}
+        className={`${styles.addToQueueButton} ${styles.inQueue} ${
+          className || ""
+        }`}
         disabled
         title="Déjà en file d'attente"
       >
@@ -48,7 +53,9 @@ export const AddToQueueButton = ({ podcast, className }: AddToQueueButtonProps) 
 
   return (
     <button
-      className={`${styles.addToQueueButton} ${isAdded ? styles.added : ""} ${className || ""}`}
+      className={`${styles.addToQueueButton} ${isAdded ? styles.added : ""} ${
+        className || ""
+      }`}
       onClick={handleAddToQueue}
       title="Ajouter à la file d'attente"
     >
@@ -56,4 +63,4 @@ export const AddToQueueButton = ({ podcast, className }: AddToQueueButtonProps) 
       <span>{isAdded ? "Ajouté !" : "Ajouter à la file d'attente"}</span>
     </button>
   );
-}; 
+};

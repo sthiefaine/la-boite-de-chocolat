@@ -18,6 +18,7 @@ type PlayerState = {
   currentPlayTime: number;
   podcast: PodcastInfo | null;
   totalDuration: number;
+  isMinimized: boolean;
 };
 
 export type PlayerActions = {
@@ -27,6 +28,7 @@ export type PlayerActions = {
   setCurrentPlayTime: (currentPlayTime: number) => void;
   setTotalDuration: (totalDuration: number) => void;
   setClearPlayerStore: () => void;
+  setIsMinimized: (isMinimized: boolean) => void;
   playNext: () => void;
   playPrevious: () => void;
 };
@@ -38,7 +40,8 @@ export const defaultInitState: PlayerState = {
   launchPlay: false,
   currentPlayTime: 0,
   totalDuration: 0,
-  podcast: null
+  podcast: null,
+  isMinimized: false
 };
 
 export const usePlayerStore = create(
@@ -57,6 +60,7 @@ export const usePlayerStore = create(
       setLaunchPlay: (launchPlay: boolean) => set({ launchPlay }),
       setCurrentPlayTime: (currentPlayTime: number) => set({ currentPlayTime }),
       setTotalDuration: (totalDuration: number) => set({ totalDuration }),
+      setIsMinimized: (isMinimized: boolean) => set({ isMinimized }),
       setClearPlayerStore: () => set(defaultInitState),
       playNext: () => {
         const queueStore = useQueueStore.getState();
@@ -81,6 +85,7 @@ export const usePlayerStore = create(
         podcast: state.podcast ? { ...state.podcast } : null,
         currentPlayTime: state.currentPlayTime,
         totalDuration: state.totalDuration,
+        isMinimized: state.isMinimized,
       }),
     }
   )

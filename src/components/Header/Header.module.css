@@ -4,10 +4,10 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  background: linear-gradient(135deg, var(--chocolate-primary) 0%, var(--chocolate-secondary) 100%);
-  border-bottom: 3px solid var(--chocolate-dark);
-  box-shadow: var(--shadow-heavy);
-  backdrop-filter: blur(10px);
+  background: rgba(107, 62, 38, 0.7);
+  backdrop-filter: blur(5px);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   width: 100%;
 }
 
@@ -60,11 +60,17 @@
   border-radius: 8px;
   transition: all 0.2s ease;
   position: relative;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
 }
 
 .navLink:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: var(--text-white);
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .navLink::after {

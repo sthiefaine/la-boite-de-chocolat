@@ -10,19 +10,15 @@ import {
   SkipBack,
   SkipForward,
   List,
-  Trash2,
-  ChevronUp,
-  ChevronDown,
-  Play,
   Minimize2,
   Maximize2,
-  ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import styles from "./PlayerBar.module.css";
 import { useShallow } from "zustand/shallow";
 import { AudioVisualizer } from "./AudioVisualizer";
+import { PlayerQueue } from "./PlayerQueue";
 
 export const PlayerBar = () => {
   const [
@@ -35,6 +31,8 @@ export const PlayerBar = () => {
     setTotalDuration,
     totalDuration,
     setPodcast,
+    isMinimized,
+    setIsMinimized,
   ] = usePlayerStore(
     useShallow((state) => [
       state.podcast,
@@ -46,6 +44,8 @@ export const PlayerBar = () => {
       state.setTotalDuration,
       state.totalDuration,
       state.setPodcast,
+      state.isMinimized,
+      state.setIsMinimized,
     ])
   );
 
@@ -80,7 +80,6 @@ export const PlayerBar = () => {
     useState("00:00:00");
   const [backgroundColor, setBackgroundColor] = useState<number[]>([0, 0, 0]);
   const [showQueue, setShowQueue] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
 
   const setData = () => {
     if (podcast?.url === audioRef.current?.src && audioRef.current) {
@@ -287,29 +286,6 @@ export const PlayerBar = () => {
     setShowQueue(!showQueue);
   };
 
-  const handlePlayQueueItem = (item: any, index: number) => {
-    setPodcast(item);
-    setCurrentIndex(index);
-    setIsPlaying(true);
-    removeFromQueue(index);
-  };
-
-  const handleMoveUp = (index: number) => {
-    if (index > 0) {
-      moveInQueue(index, index - 1);
-    }
-  };
-
-  const handleMoveDown = (index: number) => {
-    if (index < queue.length - 1) {
-      moveInQueue(index, index + 1);
-    }
-  };
-
-  const handleRemoveFromQueue = (index: number) => {
-    removeFromQueue(index);
-  };
-
   const toggleMinimize = () => {
     if (!isMinimized && showQueue) {
       setShowQueue(false);
@@ -395,11 +371,13 @@ export const PlayerBar = () => {
           >
             <List />
           </button>
-          <button className={styles.button} title="afficher la page">
-            <Link href={`/podcasts/${podcast.slug}`}>
-              <Eye />
-            </Link>
-          </button>
+          <Link
+            href={`/podcasts/${podcast.slug}`}
+            className={`${styles.button} ${styles.externalButton}`}
+            title="afficher la page"
+          >
+            <Eye />
+          </Link>
           <button
             className={styles.button}
             title="quitter la lecture"
@@ -439,11 +417,13 @@ export const PlayerBar = () => {
         >
           <List />
         </button>
-        <button className={styles.button} title="afficher la page">
-          <Link href={`/podcasts/${podcast.slug}`}>
-            <Eye />
-          </Link>
-        </button>
+        <Link
+          href={`/podcasts/${podcast.slug}`}
+          className={`${styles.button} ${styles.externalButton}`}
+          title="afficher la page"
+        >
+          <Eye />
+        </Link>
         <button
           className={styles.button}
           title="quitter la lecture"
@@ -453,79 +433,7 @@ export const PlayerBar = () => {
         </button>
       </div>
       {/* Queue intégrée */}
-      {showQueue && queue.length > 0 && (
-        <div className={styles.queueSection}>
-          <div className={styles.queueHeader}>
-            <span>File d'attente ({queue.length})</span>
-            <button
-              className={styles.clearQueueButton}
-              onClick={clearQueue}
-              title="Vider la file d'attente"
-            >
-              <Trash2 size={14} />
-            </button>
-          </div>
-          <div className={styles.queueList}>
-            {queue.map((item, index) => (
-              <div
-                key={`${item.id}-${index}`}
-                className={`${styles.queueItem} ${
-                  index === currentIndex ? styles.currentItem : ""
-                }`}
-              >
-                <img
-                  src={item.img}
-                  alt={item.title}
-                  className={styles.queueItemImage}
-                />
-                <div className={styles.queueItemInfo}>
-                  <span className={styles.queueItemTitle}>{item.title}</span>
-                  <span className={styles.queueItemArtist}>{item.artist}</span>
-                </div>
-                <div className={styles.queueItemActions}>
-                  <button
-                    className={styles.queueActionButton}
-                    onClick={() => handlePlayQueueItem(item, index)}
-                    title="Lire"
-                  >
-                    <Play size={12} />
-                  </button>
-                  <button
-                    className={styles.queueActionButton}
-                    onClick={() => handleMoveUp(index)}
-                    disabled={index === 0}
-                    title="Monter"
-                  >
-                    <ChevronUp size={12} />
-                  </button>
-                  <button
-                    className={styles.queueActionButton}
-                    onClick={() => handleMoveDown(index)}
-                    disabled={index === queue.length - 1}
-                    title="Descendre"
-                  >
-                    <ChevronDown size={12} />
-                  </button>
-                  <Link
-                    href={`/podcasts/${item.slug}`}
-                    className={styles.queueActionButton}
-                    title="Ouvrir la page"
-                  >
-                    <ExternalLink size={12} />
-                  </Link>
-                  <button
-                    className={styles.queueActionButton}
-                    onClick={() => handleRemoveFromQueue(index)}
-                    title="Retirer"
-                  >
-                    <CircleX size={12} />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <PlayerQueue showQueue={showQueue} />
     </div>
   );
 };

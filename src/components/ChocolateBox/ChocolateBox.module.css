@@ -9,16 +9,13 @@
 
 .coffret {
   background: var(--box-red);
-  padding: 10px;
+  padding: 6px;
   border-radius: 3px;
   box-shadow: 0 8px 24px var(--box-shadow-dark),
     inset 0 0 0 2px var(--box-shadow-light);
-  transform: rotateX(8deg) rotateY(2deg);
-  transition: all 0.3s ease;
 }
 
 .coffret:hover {
-  transform: rotateX(5deg) rotateY(1deg) scale(1.02);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4),
     inset 0 0 0 2px rgba(255, 255, 255, 0.15);
 }
@@ -33,7 +30,6 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
-  transition: all 0.3s ease;
 }
 
 .hole {
@@ -354,7 +350,7 @@
 
 @media (max-width: 768px) {
   .coffret {
-    padding: 10px;
+    padding: 6px;
   }
 
   .box3D {
