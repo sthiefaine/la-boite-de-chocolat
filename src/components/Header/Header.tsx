@@ -1,23 +1,20 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import styles from "./Header.module.css";
+import { getUser } from "@/lib/auth/auth-server";
+import { Suspense } from "react";
+import { auth } from "@/lib/auth/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+
+const ButtonSkeleton = ({ className }: { className: string }) => (
+  <div className={`${className}`}>
+    <div>Chargement</div>
+  </div>
+);
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const toggleMenu = () => {
-    console.log("Toggle menu clicked, current state:", isMenuOpen);
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  const closeMenu = () => {
-    setIsMenuOpen(false);
-  };
-
   return (
     <header className={styles.header}>
       <div className={styles.container}>
@@ -34,21 +31,11 @@ export default function Header() {
           <span className={styles.logoText}>La Boîte de Chocolat</span>
         </Link>
 
-        <div className={styles.menuButtonContainer}>
-          <button
-            className={styles.menuButton}
-            onClick={(e) => {
-              console.log("Button clicked!");
-              e.preventDefault();
-              e.stopPropagation();
-              toggleMenu();
-            }}
-            aria-label="Menu"
-            type="button"
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
+        <input
+          type="checkbox"
+          id="mobile-menu-toggle"
+          className={styles.mobileMenuToggle}
+        />
 
         <nav className={styles.nav}>
           <Link href="/" className={styles.navLink}>
@@ -60,42 +47,90 @@ export default function Header() {
           <Link href="/options" className={styles.navLink}>
             Options
           </Link>
-          <Link href="/admin" className={styles.navLink}>
-            Admin
-          </Link>
+          <Suspense fallback={<ButtonSkeleton className={styles.navLink} />}>
+            <AdminLinkConditional className={styles.navLink} />
+          </Suspense>
+          <Suspense fallback={<ButtonSkeleton className={styles.navLink} />}>
+            <AuthButton className={styles.navLink} />
+          </Suspense>
         </nav>
 
-        <nav
-          className={`${styles.mobileNav} ${
-            isMenuOpen ? styles.mobileNavOpen : ""
-          }`}
-        >
-          <Link href="/" className={styles.mobileNavLink} onClick={closeMenu}>
+        {/* Bouton hamburger */}
+        <label htmlFor="mobile-menu-toggle" className={styles.menuButton}>
+          <Menu size={24} className={styles.menuIcon} />
+          <X size={24} className={styles.closeIcon} />
+        </label>
+
+        {/* Menu mobile */}
+        <nav className={styles.mobileNav}>
+          <Link href="/" className={styles.mobileNavLink}>
             Accueil
           </Link>
-          <Link
-            href="/podcasts"
-            className={styles.mobileNavLink}
-            onClick={closeMenu}
-          >
+          <Link href="/podcasts" className={styles.mobileNavLink}>
             Podcasts
           </Link>
-          <Link
-            href="/options"
-            className={styles.mobileNavLink}
-            onClick={closeMenu}
-          >
+          <Link href="/options" className={styles.mobileNavLink}>
             Options
           </Link>
-          <Link
-            href="/admin"
-            className={styles.mobileNavLink}
-            onClick={closeMenu}
-          >
-            Admin
-          </Link>
+          <Suspense fallback={<ButtonSkeleton className={styles.mobileNavLink} />}>
+            <AdminLinkConditional className={styles.mobileNavLink} />
+          </Suspense>
+          <Suspense fallback={<ButtonSkeleton className={styles.mobileNavLink} />}>
+            <AuthButton className={styles.mobileNavLink} />
+          </Suspense>
         </nav>
       </div>
     </header>
   );
 }
+
+export const AdminLinkConditional = async ({
+  className,
+}: {
+  className: string;
+}) => {
+  const user = await getUser();
+
+  if (!user || user.role !== "admin") {
+    return null;
+  }
+
+  return (
+    <Link href="/admin" className={className}>
+      Admin
+    </Link>
+  );
+};
+
+export const AuthButton = async ({
+  className,
+}: {
+  className?: string;
+}) => {
+
+  const user = await getUser();
+
+  if (!user) {
+    return (
+      <Link href="/signin" className={className}>
+        Connexion
+      </Link>
+    );
+  }
+
+  async function signOutAction() {
+    "use server";
+    await auth.api.signOut({
+      headers: await headers(),
+    });
+    redirect("/signin");
+  }
+
+  return (
+    <form action={signOutAction}>
+      <button type="submit" className={className}>
+        Déconnexion
+      </button>
+    </form>
+  );
+};

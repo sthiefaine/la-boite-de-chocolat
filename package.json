@@ -8,6 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "prisma:generate": "prisma generate",
+    "prisma:migrate": "npx prisma migrate dev",
+    "prisma:studio": "npx prisma studio",
+    "better-auth:generate": "npx better-auth generate",
     "vercel-build": "npx prisma generate && next build"
   },
   "dependencies": {
@@ -16,6 +19,7 @@
     "@react-three/fiber": "^9.2.0",
     "@types/three": "^0.178.0",
     "@vercel/blob": "^1.1.1",
+    "better-auth": "^1.2.12",
     "lucide-react": "^0.525.0",
     "next": "15.3.5",
     "react": "^19.0.0",
