@@ -84,13 +84,17 @@ export default function UsersAdminPage() {
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.header}>
-          <Link href="/admin" className={styles.backLink}>
-            ← Retour à l'administration
-          </Link>
-          <h1 className={styles.title}>Gestion des utilisateurs</h1>
-          <p className={styles.subtitle}>
-            Gérez les utilisateurs, leurs rôles et leurs statuts
-          </p>
+          <div className={styles.headerContent}>
+            <h1 className={styles.title}>Gestion des utilisateurs</h1>
+            <p className={styles.subtitle}>
+              Gérez les utilisateurs, leurs rôles et leurs statuts
+            </p>
+          </div>
+          <div className={styles.headerActions}>
+            <Link href="/admin" className={styles.backLink}>
+              ← Retour à l'administration
+            </Link>
+          </div>
         </div>
 
         {error && (

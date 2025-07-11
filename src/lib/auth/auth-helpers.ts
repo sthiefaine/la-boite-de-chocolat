@@ -1,6 +1,6 @@
-import { authClient, User } from './auth-client';
+import { authClient, User } from "./auth-client";
 
-export type UserRole = 'user' | 'admin';
+export type UserRole = "user" | "admin";
 
 export interface Session {
   user: User;
@@ -13,10 +13,10 @@ export interface Session {
 export async function isAdmin(): Promise<boolean> {
   try {
     const { data: session } = await authClient.getSession();
-    console.log('Session:', session);
-    return session?.user?.role === 'admin';
+    console.log("Session:", session);
+    return session?.user?.role === "admin";
   } catch (error) {
-    console.error('Erreur lors de la vérification du rôle admin:', error);
+    console.error("Erreur lors de la vérification du rôle admin:", error);
     return false;
   }
 }
@@ -29,7 +29,7 @@ export async function hasRole(role: UserRole): Promise<boolean> {
     const { data: session } = await authClient.getSession();
     return session?.user?.role === role;
   } catch (error) {
-    console.error('Erreur lors de la vérification du rôle:', error);
+    console.error("Erreur lors de la vérification du rôle:", error);
     return false;
   }
 }
@@ -41,9 +41,9 @@ export async function getUserRole(): Promise<UserRole | null> {
   try {
     const { data: session } = await authClient.getSession();
     const role = session?.user?.role;
-    return (role === 'admin' || role === 'user') ? role : null;
+    return role === "admin" || role === "user" ? role : null;
   } catch (error) {
-    console.error('Erreur lors de la récupération du rôle:', error);
+    console.error("Erreur lors de la récupération du rôle:", error);
     return null;
   }
 }
@@ -56,7 +56,10 @@ export async function isBanned(): Promise<boolean> {
     const { data: session } = await authClient.getSession();
     return session?.user?.banned || false;
   } catch (error) {
-    console.error('Erreur lors de la vérification du statut de bannissement:', error);
+    console.error(
+      "Erreur lors de la vérification du statut de bannissement:",
+      error
+    );
     return false;
   }
 }
@@ -69,7 +72,7 @@ export async function listUsers(options?: {
   offset?: number;
   search?: string;
   sortBy?: string;
-  sortDirection?: 'asc' | 'desc';
+  sortDirection?: "asc" | "desc";
 }) {
   try {
     const { data, error } = await authClient.admin.listUsers({
@@ -77,9 +80,9 @@ export async function listUsers(options?: {
         limit: options?.limit || 10,
         offset: options?.offset || 0,
         searchValue: options?.search,
-        sortBy: options?.sortBy || 'createdAt',
-        sortDirection: options?.sortDirection || 'desc'
-      }
+        sortBy: options?.sortBy || "createdAt",
+        sortDirection: options?.sortDirection || "desc",
+      },
     });
 
     if (error) {
@@ -88,7 +91,7 @@ export async function listUsers(options?: {
 
     return data;
   } catch (error) {
-    console.error('Erreur lors de la récupération des utilisateurs:', error);
+    console.error("Erreur lors de la récupération des utilisateurs:", error);
     throw error;
   }
 }
@@ -100,7 +103,7 @@ export async function setUserRole(userId: string, role: UserRole) {
   try {
     const { data, error } = await authClient.admin.setRole({
       userId,
-      role
+      role,
     });
 
     if (error) {
@@ -109,7 +112,7 @@ export async function setUserRole(userId: string, role: UserRole) {
 
     return data;
   } catch (error) {
-    console.error('Erreur lors du changement de rôle:', error);
+    console.error("Erreur lors du changement de rôle:", error);
     throw error;
   }
 }
@@ -117,12 +120,16 @@ export async function setUserRole(userId: string, role: UserRole) {
 /**
  * Bannit un utilisateur (admin seulement)
  */
-export async function banUser(userId: string, reason?: string, expiresIn?: number) {
+export async function banUser(
+  userId: string,
+  reason?: string,
+  expiresIn?: number
+) {
   try {
     const { data, error } = await authClient.admin.banUser({
       userId,
       banReason: reason,
-      banExpiresIn: expiresIn
+      banExpiresIn: expiresIn,
     });
 
     if (error) {
@@ -131,7 +138,7 @@ export async function banUser(userId: string, reason?: string, expiresIn?: numbe
 
     return data;
   } catch (error) {
-    console.error('Erreur lors du bannissement:', error);
+    console.error("Erreur lors du bannissement:", error);
     throw error;
   }
 }
@@ -142,7 +149,7 @@ export async function banUser(userId: string, reason?: string, expiresIn?: numbe
 export async function unbanUser(userId: string) {
   try {
     const { data, error } = await authClient.admin.unbanUser({
-      userId
+      userId,
     });
 
     if (error) {
@@ -151,7 +158,7 @@ export async function unbanUser(userId: string) {
 
     return data;
   } catch (error) {
-    console.error('Erreur lors du débannissement:', error);
+    console.error("Erreur lors du débannissement:", error);
     throw error;
   }
-} 
+}

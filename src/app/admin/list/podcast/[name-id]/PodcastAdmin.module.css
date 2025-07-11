@@ -1,102 +1,103 @@
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  padding: 2rem 0;
+  background-color: var(--bg-primary);
+  padding: 1.5rem;
 }
 
 .content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
 }
 
 .header {
-  background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
-}
-
-.headerContent {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  margin-bottom: 3rem;
   flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.headerContent {
+  flex: 1;
+}
+
+.headerActions {
+  display: flex;
   gap: 1rem;
 }
 
 .title {
   font-size: 2rem;
   font-weight: 700;
-  color: #1f2937;
-  margin: 0;
-  line-height: 1.2;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
 }
 
 .subtitle {
-  color: #6b7280;
-  margin: 0.5rem 0 0 0;
-  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 1.1rem;
 }
 
 .filterInfo {
-  color: #8b4513;
+  color: var(--chocolate-primary);
   font-weight: 600;
 }
 
 .actions {
   display: flex;
-  gap: 0.75rem;
+  gap: 1rem;
   flex-wrap: wrap;
 }
 
 .importButton {
-  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
-  color: white;
+  background: var(--chocolate-primary);
+  color: var(--text-white);
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   text-decoration: none;
   font-weight: 600;
   font-size: 0.875rem;
-  transition: all 0.3s ease;
+  transition: all var(--transition-normal);
   border: none;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  box-shadow: var(--shadow-light);
 }
 
 .importButton:hover {
-  background: linear-gradient(135deg, #4338ca 0%, #5855eb 100%);
+  background: var(--chocolate-secondary);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+  box-shadow: var(--shadow-medium);
 }
 
 .backButton {
-  background: white;
-  color: #374151;
+  background: var(--bg-secondary);
+  color: var(--chocolate-primary);
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   text-decoration: none;
   font-weight: 600;
   font-size: 0.875rem;
-  transition: all 0.3s ease;
-  border: 2px solid #d1d5db;
+  transition: all var(--transition-normal);
+  border: 2px solid var(--chocolate-primary);
+  box-shadow: var(--shadow-light);
 }
 
 .backButton:hover {
-  background: #f9fafb;
-  border-color: #9ca3af;
-  transform: translateY(-1px);
+  background: var(--chocolate-primary);
+  color: var(--text-white);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
 }
 
 .filters {
-  background: white;
-  border-radius: 12px;
+  background: var(--bg-secondary);
+  border-radius: 0.5rem;
   padding: 1.5rem;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
+  box-shadow: var(--shadow-light);
+  border: 1px solid var(--chocolate-light);
 }
 
 .filterToggle {
@@ -108,7 +109,7 @@
 
 .filterLabel {
   font-weight: 600;
-  color: #374151;
+  color: var(--text-primary);
   font-size: 0.875rem;
 }
 
@@ -119,33 +120,33 @@
 
 .toggleButton {
   padding: 0.5rem 1rem;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   text-decoration: none;
   font-weight: 600;
   font-size: 0.875rem;
-  background: #f3f4f6;
-  color: #6b7280;
-  border: 2px solid transparent;
-  transition: all 0.2s ease;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  border: 1px solid var(--chocolate-light);
+  transition: all var(--transition-normal);
 }
 
 .toggleButton:hover {
-  background: #e5e7eb;
-  color: #374151;
+  background: var(--chocolate-light);
+  color: var(--text-primary);
 }
 
 .toggleButton.active {
-  background: #8b4513;
-  color: white;
-  border-color: #8b4513;
+  background: var(--chocolate-primary);
+  color: var(--text-white);
+  border-color: var(--chocolate-primary);
 }
 
 .tableContainer {
-  background: white;
-  border-radius: 12px;
+  background: var(--bg-secondary);
+  border-radius: 0.5rem;
   overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
+  box-shadow: var(--shadow-light);
+  border: 1px solid var(--chocolate-light);
 }
 
 .table {
@@ -154,28 +155,31 @@
 }
 
 .tableHeader {
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  border-bottom: 2px solid #e5e7eb;
+  background-color: var(--bg-primary);
 }
 
 .tableHeader th {
-  padding: 1rem 1.5rem;
+  padding: 0.75rem 1.5rem;
   text-align: left;
   font-size: 0.75rem;
-  font-weight: 700;
-  color: #374151;
+  font-weight: 600;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--chocolate-light);
+}
+
+.tableBody {
+  background-color: var(--bg-secondary);
 }
 
 .tableRow {
-  border-bottom: 1px solid #f3f4f6;
-  transition: all 0.2s ease;
+  border-bottom: 1px solid var(--chocolate-light);
+  transition: all var(--transition-normal);
 }
 
 .tableRow:hover {
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  transform: scale(1.001);
+  background-color: var(--bg-primary);
 }
 
 .tableCell {
@@ -185,19 +189,19 @@
 
 .episodeTitle {
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   font-size: 0.875rem;
   margin-bottom: 0.25rem;
 }
 
 .episodeDescription {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.75rem;
   line-height: 1.4;
 }
 
 .episodeDate {
-  color: #1f2937;
+  color: var(--text-primary);
   font-weight: 500;
   font-size: 0.875rem;
 }
@@ -209,17 +213,17 @@
 }
 
 .filmTag {
-  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-  color: #1e40af;
+  background: var(--chocolate-light);
+  color: var(--text-primary);
   padding: 0.25rem 0.75rem;
-  border-radius: 20px;
+  border-radius: 0.25rem;
   font-size: 0.75rem;
   font-weight: 600;
-  border: 1px solid #93c5fd;
+  border: 1px solid var(--chocolate-secondary);
 }
 
 .noFilms {
-  color: #9ca3af;
+  color: var(--text-secondary);
   font-size: 0.75rem;
   font-style: italic;
 }
@@ -234,89 +238,86 @@
   font-weight: 600;
   font-size: 0.875rem;
   text-decoration: none;
-  transition: all 0.2s ease;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  transition: all var(--transition-normal);
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid transparent;
 }
 
 .listenLink {
-  color: #4f46e5;
+  color: var(--chocolate-primary);
+  border-color: var(--chocolate-primary);
+  background: var(--bg-primary);
 }
 
 .listenLink:hover {
-  color: #3730a3;
-  background: #eef2ff;
+  color: var(--text-white);
+  background: var(--chocolate-primary);
 }
 
 .editLink {
-  color: #059669;
+  color: var(--accent-gold);
+  border-color: var(--accent-gold);
+  background: var(--bg-primary);
 }
 
 .editLink:hover {
-  color: #047857;
-  background: #ecfdf5;
+  color: var(--text-white);
+  background: var(--accent-gold);
 }
 
 .deleteButton {
-  color: #dc2626;
-  background: none;
-  border: none;
+  color: var(--accent-red);
+  background: var(--bg-primary);
+  border: 1px solid var(--accent-red);
+  cursor: pointer;
   font-weight: 600;
   font-size: 0.875rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  transition: all var(--transition-normal);
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
 }
 
 .deleteButton:hover {
-  color: #b91c1c;
-  background: #fef2f2;
+  color: var(--text-white);
+  background: var(--accent-red);
 }
 
 .emptyState {
   text-align: center;
   padding: 4rem 2rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
+  background: var(--bg-secondary);
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-light);
+  border: 1px solid var(--chocolate-light);
 }
 
 .emptyIcon {
   width: 3rem;
   height: 3rem;
-  color: #9ca3af;
+  color: var(--text-secondary);
   margin: 0 auto 1rem;
 }
 
 .emptyTitle {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
 .emptyDescription {
-  color: #6b7280;
+  color: var(--text-secondary);
   margin-bottom: 2rem;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .container {
-    padding: 1rem 0;
-  }
-  
-  .content {
-    padding: 0 0.5rem;
+    padding: 1rem;
   }
   
   .header {
-    padding: 1.5rem;
-  }
-  
-  .headerContent {
     flex-direction: column;
     align-items: stretch;
   }

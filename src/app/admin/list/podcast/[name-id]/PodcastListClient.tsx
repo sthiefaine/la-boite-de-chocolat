@@ -72,33 +72,31 @@ export default function PodcastListClient({
           {/* Header */}
           <div className={styles.header}>
             <div className={styles.headerContent}>
-              <div>
-                <h1 className={styles.title}>
-                  Administration - {nameId}
-                </h1>
-                <p className={styles.subtitle}>
-                  {episodes.length} épisode{episodes.length > 1 ? "s" : ""} affiché{episodes.length > 1 ? "s" : ""} 
-                  {!showLinked && linkedCount > 0 && (
-                    <span className={styles.filterInfo}>
-                      ({linkedCount} épisode{linkedCount > 1 ? "s" : ""} lié{linkedCount > 1 ? "s" : ""} masqué{linkedCount > 1 ? "s" : ""})
-                    </span>
-                  )}
-                </p>
-              </div>
-              <div className={styles.actions}>
-                <Link
-                  href={`/api/import/${nameId}`}
-                  className={styles.importButton}
-                >
-                  Importer les épisodes
-                </Link>
-                <Link
-                  href="/admin"
-                  className={styles.backButton}
-                >
-                  ← Retour à l&apos;admin
-                </Link>
-              </div>
+              <h1 className={styles.title}>
+                Administration - {nameId}
+              </h1>
+              <p className={styles.subtitle}>
+                {episodes.length} épisode{episodes.length > 1 ? "s" : ""} affiché{episodes.length > 1 ? "s" : ""} 
+                {!showLinked && linkedCount > 0 && (
+                  <span className={styles.filterInfo}>
+                    ({linkedCount} épisode{linkedCount > 1 ? "s" : ""} lié{linkedCount > 1 ? "s" : ""} masqué{linkedCount > 1 ? "s" : ""})
+                  </span>
+                )}
+              </p>
+            </div>
+            <div className={styles.headerActions}>
+              <Link
+                href={`/api/import/${nameId}`}
+                className={styles.importButton}
+              >
+                Importer les épisodes
+              </Link>
+              <Link
+                href="/admin"
+                className={styles.backButton}
+              >
+                ← Retour à l&apos;admin
+              </Link>
             </div>
           </div>
 

@@ -1,0 +1,44 @@
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all var(--transition-normal);
+  border: 2px solid var(--chocolate-primary);
+  background: var(--bg-secondary);
+  color: var(--chocolate-primary);
+  cursor: pointer;
+}
+
+.backButton:hover {
+  background: var(--chocolate-cream);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-light);
+}
+
+.backButton:active {
+  transform: translateY(0);
+}
+
+/* Variantes de taille */
+.backButton.small {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.backButton.large {
+  padding: 1.25rem 2.5rem;
+  font-size: 1.125rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .backButton {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+  }
+} 

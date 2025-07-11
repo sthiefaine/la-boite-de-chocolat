@@ -126,6 +126,7 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
                     : "/images/navet.png",
                   slug: episode.slug ?? "",
                 }}
+                className={`${styles.button} ${styles.queueButton}`}
               />
 
               <a

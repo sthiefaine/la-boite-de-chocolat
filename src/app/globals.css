@@ -55,6 +55,24 @@
   --transition-normal: 0.3s ease;
   --transition-slow: 0.5s ease;
   --bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* Glassmorphism */
+  --glass-bg-light: rgba(255, 255, 255, 0.1);
+  --glass-bg-medium: rgba(255, 255, 255, 0.15);
+  --glass-bg-dark: rgba(0, 0, 0, 0.2);
+  --glass-bg-darker: rgba(0, 0, 0, 0.25);
+  
+  --glass-border-light: 1px solid rgba(255, 255, 255, 0.2);
+  --glass-border-medium: 1px solid rgba(255, 255, 255, 0.25);
+  --glass-border-dark: 1px solid rgba(255, 255, 255, 0.3);
+  
+  --glass-blur-light: blur(5px);
+  --glass-blur-medium: blur(10px);
+  --glass-blur: blur(15px);
+  
+  --glass-shadow-light: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --glass-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --glass-shadow-dark: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 /* Reset de base */
@@ -204,9 +222,30 @@ a:focus-visible {
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--glass-bg-light);
+  backdrop-filter: var(--glass-blur-medium);
+  border: var(--glass-border-light);
+  border-radius: 12px;
+}
+
+.glass-medium {
+  background: var(--glass-bg-medium);
+  backdrop-filter: var(--glass-blur-medium);
+  border: var(--glass-border-medium);
+  border-radius: 12px;
+}
+
+.glass-dark {
+  background: var(--glass-bg-dark);
+  backdrop-filter: var(--glass-blur);
+  border: var(--glass-border-dark);
+  border-radius: 12px;
+}
+
+.glass-darker {
+  background: var(--glass-bg-darker);
+  backdrop-filter: var(--glass-blur);
+  border: var(--glass-border-dark);
   border-radius: 12px;
 }
 

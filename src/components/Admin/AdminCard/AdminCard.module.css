@@ -1,0 +1,146 @@
+.card {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-light);
+  border: 2px solid var(--chocolate-light);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-normal);
+}
+
+.card:hover {
+  cursor: pointer;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+  border-color: currentColor;
+}
+
+.card.chocolate {
+  border-color: var(--chocolate-light);
+  color: var(--chocolate-primary);
+}
+
+.card.blue {
+  border-color: #dbeafe;
+  color: #3b82f6;
+}
+
+.card.green {
+  border-color: #d1fae5;
+  color: #10b981;
+}
+
+.card.purple {
+  border-color: #e9d5ff;
+  color: #8b5cf6;
+}
+
+.card.red {
+  border-color: #fecaca;
+  color: #ef4444;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.cardIcon {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.cardTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.cardDescription {
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.cardStats {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.cardStatValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: currentColor;
+}
+
+.cardStatLabel {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.cardActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cardButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--chocolate-primary);
+  color: white !important;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-light);
+}
+
+.cardButton:hover {
+  color: white !important;
+  text-decoration: none;
+  background: var(--chocolate-secondary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+}
+
+.cardButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.buttonArrow {
+  font-size: 1rem;
+  transition: transform var(--transition-normal);
+}
+
+.cardButton:hover .buttonArrow {
+  transform: translateX(2px);
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 1.25rem;
+  }
+  
+  .cardTitle {
+    font-size: 1rem;
+  }
+  
+  .cardButton {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+} 

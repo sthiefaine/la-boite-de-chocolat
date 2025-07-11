@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import BackButton from "@/components/BackButton/BackButton";
 import styles from "./not-found.module.css";
 
 export default function NotFound() {
@@ -28,6 +29,9 @@ export default function NotFound() {
           </p>
 
           <div className={styles.actions}>
+            <BackButton size="large">
+              ← Retour à la page précédente
+            </BackButton>
             <Link href="/" className={styles.primaryButton}>
               🏠 Retour à l'accueil
             </Link>

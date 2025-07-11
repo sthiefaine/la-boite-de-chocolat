@@ -40,9 +40,7 @@ export const AddToQueueButton = ({
   if (isInQueue) {
     return (
       <button
-        className={`${styles.addToQueueButton} ${styles.inQueue} ${
-          className || ""
-        }`}
+        className={className || `${styles.addToQueueButton} ${styles.inQueue}`}
         disabled
         title="Déjà en file d'attente"
       >
@@ -53,9 +51,7 @@ export const AddToQueueButton = ({
 
   return (
     <button
-      className={`${styles.addToQueueButton} ${isAdded ? styles.added : ""} ${
-        className || ""
-      }`}
+      className={className || `${styles.addToQueueButton} ${isAdded ? styles.added : ""}`}
       onClick={handleAddToQueue}
       title="Ajouter à la file d'attente"
     >

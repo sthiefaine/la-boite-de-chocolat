@@ -117,51 +117,52 @@
   text-decoration: none;
   font-weight: 500;
   font-size: 0.875rem;
-  transition: all 0.2s ease;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: all var(--transition-fast);
+  border: var(--glass-border-dark);
   cursor: pointer;
   width: 160px;
   min-width: 160px;
   text-align: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(5px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--glass-bg-darker);
+  backdrop-filter: var(--glass-blur-medium);
+  box-shadow: var(--glass-shadow-dark);
+  color: var(--text-white);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .listenButton {
-  background: rgba(34, 197, 94, 0.15);
-  border-color: rgba(34, 197, 94, 0.3);
-  color: rgba(255, 255, 255, 0.9);
+  background: rgba(34, 197, 94, 0.3);
+  border-color: rgba(34, 197, 94, 0.4);
+  color: var(--text-white);
 }
 
 .listenButton:hover {
-  background: rgba(34, 197, 94, 0.25);
-  border-color: rgba(34, 197, 94, 0.4);
+  background: rgba(34, 197, 94, 0.4);
+  border-color: rgba(34, 197, 94, 0.5);
   color: var(--text-white);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+  box-shadow: var(--glass-shadow-dark), 0 4px 12px rgba(34, 197, 94, 0.3);
 }
 
 .downloadButton {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.25);
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--glass-bg-darker);
+  border: var(--glass-border-dark);
+  color: var(--text-white);
 }
 
 .downloadButton:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.6);
+  border: var(--glass-border-dark);
   color: var(--text-white);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--glass-shadow-dark);
 }
 
 .tmdbButton {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.25);
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--glass-bg-darker);
+  border: var(--glass-border-dark);
+  color: var(--text-white);
   padding: 0.5rem 1rem;
   width: 140px;
   min-width: 140px;
@@ -169,11 +170,25 @@
 }
 
 .tmdbButton:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.6);
+  border: var(--glass-border-dark);
   color: var(--text-white);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--glass-shadow-dark);
+}
+
+.queueButton {
+  background: var(--glass-bg-darker);
+  border: var(--glass-border-dark);
+  color: var(--text-white);
+}
+
+.queueButton:hover {
+  background: rgba(0, 0, 0, 0.6);
+  border: var(--glass-border-dark);
+  color: var(--text-white);
+  transform: translateY(-1px);
+  box-shadow: var(--glass-shadow-dark);
 }
 
 .buttonIcon {
@@ -213,15 +228,17 @@
 .descriptionContent {
   font-size: 1rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-white);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-  background: rgba(255, 255, 255, 0.1);
-  padding: 1rem;
+  background: var(--glass-bg-dark);
+  padding: 1.5rem;
   border-radius: 12px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  backdrop-filter: var(--glass-blur);
+  border: var(--glass-border-dark);
+  box-shadow: var(--glass-shadow-dark);
   white-space: pre-wrap;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .descriptionContent::-webkit-scrollbar {
@@ -229,17 +246,17 @@
 }
 
 .descriptionContent::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 3px;
 }
 
 .descriptionContent::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.4);
   border-radius: 3px;
 }
 
 .descriptionContent::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.6);
 }
 
 @media (max-width: 768px) {
