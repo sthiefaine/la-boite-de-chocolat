@@ -5,7 +5,6 @@ import { IMAGE_CONFIG } from "@/lib/imageConfig";
 import styles from "./PodcastCard.module.css";
 
 const getStaticImageUrl = (imgFileName: string, age: string | null) => {
-  console.log("imgFileName", imgFileName, age);
   const isAdult = age === "18+" || age === "adult";
   return isAdult
     ? `/api/image/masked/${imgFileName}`

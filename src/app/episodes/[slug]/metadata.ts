@@ -43,9 +43,8 @@ export async function generateMetadata({
 
   // Générer l'URL de l'image Open Graph optimisée
   const ogImageUrl = mainFilmImageUrl
-    ? await getOpenGraphImageUrl(mainFilmImageUrl, mainFilm.age || null)
+    ? await getOpenGraphImageUrl(mainFilm.imgFileName, mainFilm.age || null)
     : "/api/image/og-default";
-
   const isAdult = isAdultContent;
 
   const ogImageUrlWithSlug = ogImageUrl + `?slug=${slug}`;
@@ -66,6 +65,7 @@ export async function generateMetadata({
   ].filter(Boolean);
 
   return {
+    metadataBase: new URL(SITE_URL),
     title: fullTitle,
     description,
     keywords: keywords.join(", "),

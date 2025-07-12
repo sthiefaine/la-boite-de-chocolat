@@ -24,7 +24,7 @@ export async function GET(
 
     const processedImageBuffer = await sharp(Buffer.from(imageBuffer))
       .resize(500, 750, { fit: "cover" })
-      .blur(30)
+      .blur(20)
       .png()
       .toBuffer();
 

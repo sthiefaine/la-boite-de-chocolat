@@ -15,13 +15,23 @@ export async function getEpisodeBySlug(slug: string) {
         links: {
           include: {
             film: {
-              include: {
+              select: {
+                id: true,
+                title: true,
+                imgFileName: true,
+                age: true,
+                director: true,
+                year: true,
+                tmdbId: true,
                 saga: {
-                  include: {
+                  select: {
+                    id: true,
+                    name: true,
+                    description: true,
+                    imgFileName: true,
                     films: {
                       select: {
                         id: true,
-                        age: true,
                         title: true,
                         year: true,
                         slug: true,
@@ -33,11 +43,38 @@ export async function getEpisodeBySlug(slug: string) {
             },
           },
         },
-        rssFeed: true,
       },
     });
 
-    return { success: true, data: episode };
+    if (!episode) {
+      return null;
+    }
+
+    const mainFilm = episode.links[0]?.film;
+    const isAdultContent = mainFilm?.age === "18+" || mainFilm?.age === "adult";
+
+    const mainFilmImageUrl = isAdultContent
+      ? await getMaskedImageUrl(
+          mainFilm?.imgFileName || null,
+          mainFilm?.age || null
+        )
+      : mainFilm?.imgFileName
+      ? getVercelBlobUrl(mainFilm.imgFileName)
+      : "/images/navet.png";
+
+    /*
+      film: "https://XXXXXXXXXXXX.public.blob.vercel-storage.com/films/poster_twilight__chapitre_5___r_v_lation__2_me_partie_1752071582681-wGjg6p2A2dFq3uZoR5byWPYcgpsbZp.jpg"
+      adult: "/api/image/masked/poster_la_cambrioleuse_1752279342328-QhbXwke7cFBWoDjZB9EuhGjDmh8jzX.jpg"
+      navet: "/images/navet.png"
+*/
+
+    return {
+      episode,
+      mainFilm,
+      saga: mainFilm?.saga || null,
+      isAdultContent,
+      mainFilmImageUrl,
+    };
   } catch (error) {
     console.error("Erreur lors de la récupération de l'épisode:", error);
     return {

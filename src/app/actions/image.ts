@@ -39,7 +39,12 @@ export async function getOpenGraphImageUrl(
   }
 
   if (imgFileName.startsWith("/api/image/masked/")) {
-    return `/api/image/og-masked/${encodeURIComponent(imgFileName.replace("/api/image/masked/", ""))}`;
+    const maskedImageUrl = await fetch(
+      `/api/image/masked/${encodeURIComponent(imgFileName)}`
+    );
+    const maskedImageUrlData = await maskedImageUrl.json();
+
+    return `/api/image/og-masked/${encodeURIComponent(maskedImageUrlData)}`;
   }
 
   if (imgFileName === "/images/navet.png") {

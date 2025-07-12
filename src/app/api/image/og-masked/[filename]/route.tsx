@@ -1,5 +1,4 @@
 import { ImageResponse } from "next/og";
-import { getVercelBlobUrl } from "@/lib/imageConfig";
 import {
   OGImageLayout,
   ImageContainer,

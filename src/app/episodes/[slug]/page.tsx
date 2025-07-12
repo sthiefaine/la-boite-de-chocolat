@@ -70,7 +70,7 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
   const saga = mainFilm?.saga || null;
   const isAdultContent = mainFilm?.age === "18+" || mainFilm?.age === "adult";
 
-  const mainFilmImageUrl = episodeResult.mainFilmImageUrl;
+  const mainFilmImageUrl = decodeURIComponent(episodeResult.mainFilmImageUrl);
 
   return (
     <>
