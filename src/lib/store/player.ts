@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useQueueStore } from "./queue";
 
-type PodcastInfo = {
+type EpisodeInfo = {
   id: string;
   artist: string;
   title: string;
@@ -17,7 +17,7 @@ type PlayerState = {
   isPlaying: boolean;
   launchPlay: boolean;
   currentPlayTime: number;
-  podcast: PodcastInfo | null;
+  episode: EpisodeInfo | null;
   totalDuration: number;
   isMinimized: boolean;
 };
@@ -25,7 +25,7 @@ type PlayerState = {
 export type PlayerActions = {
   setIsPlaying: (isPlaying: boolean) => void;
   setLaunchPlay: (launchPlay: boolean) => void;
-  setPodcast: (podcast: PodcastInfo) => void;
+  setEpisode: (episode: EpisodeInfo) => void;
   setCurrentPlayTime: (currentPlayTime: number) => void;
   setTotalDuration: (totalDuration: number) => void;
   setClearPlayerStore: () => void;
@@ -41,7 +41,7 @@ export const defaultInitState: PlayerState = {
   launchPlay: false,
   currentPlayTime: 0,
   totalDuration: 0,
-  podcast: null,
+  episode: null,
   isMinimized: false
 };
 
@@ -50,10 +50,10 @@ export const usePlayerStore = create(
     (set, get) => ({
       ...defaultInitState,
       setIsPlaying: (isPlaying: boolean) => set({ isPlaying }),
-      setPodcast: (podcast: PodcastInfo) => {
-        set({ podcast });
+      setEpisode: (episode: EpisodeInfo) => {
+        set({ episode });
         const queueStore = useQueueStore.getState();
-        const queueIndex = queueStore.queue.findIndex(item => item.id === podcast.id);
+        const queueIndex = queueStore.queue.findIndex(item => item.id === episode.id);
         if (queueIndex !== -1) {
           queueStore.setCurrentIndex(queueIndex);
         }
@@ -65,17 +65,17 @@ export const usePlayerStore = create(
       setClearPlayerStore: () => set(defaultInitState),
       playNext: () => {
         const queueStore = useQueueStore.getState();
-        const nextPodcast = queueStore.getNextPodcast();
-        if (nextPodcast) {
-          set({ podcast: nextPodcast, isPlaying: true });
+        const nextEpisode = queueStore.getNextEpisode();
+        if (nextEpisode) {
+          set({ episode: nextEpisode, isPlaying: true });
           queueStore.setCurrentIndex(queueStore.currentIndex + 1);
         }
       },
       playPrevious: () => {
         const queueStore = useQueueStore.getState();
-        const previousPodcast = queueStore.getPreviousPodcast();
-        if (previousPodcast) {
-          set({ podcast: previousPodcast, isPlaying: true });
+        const previousEpisode = queueStore.getPreviousEpisode();
+        if (previousEpisode) {
+          set({ episode: previousEpisode, isPlaying: true });
           queueStore.setCurrentIndex(queueStore.currentIndex - 1);
         }
       },
@@ -83,7 +83,7 @@ export const usePlayerStore = create(
     {
       name: "la-boite-de-chocolat-player",
       partialize: (state: PlayerStore) => ({
-        podcast: state.podcast ? { ...state.podcast } : null,
+        episode: state.episode ? { ...state.episode } : null,
         currentPlayTime: state.currentPlayTime,
         totalDuration: state.totalDuration,
         isMinimized: state.isMinimized,

@@ -24,7 +24,7 @@ import { useOptionsStore } from "@/lib/store/options";
 
 export const PlayerBar = () => {
   const [
-    podcast,
+    episode,
     isPlaying,
     setIsPlaying,
     setCurrentPlayTime,
@@ -32,12 +32,12 @@ export const PlayerBar = () => {
     currentPlayTime,
     setTotalDuration,
     totalDuration,
-    setPodcast,
+    setEpisode,
     isMinimized,
     setIsMinimized,
   ] = usePlayerStore(
     useShallow((state) => [
-      state.podcast,
+      state.episode,
       state.isPlaying,
       state.setIsPlaying,
       state.setCurrentPlayTime,
@@ -45,7 +45,7 @@ export const PlayerBar = () => {
       state.currentPlayTime,
       state.setTotalDuration,
       state.totalDuration,
-      state.setPodcast,
+      state.setEpisode,
       state.isMinimized,
       state.setIsMinimized,
     ])
@@ -54,15 +54,15 @@ export const PlayerBar = () => {
   const {
     queue,
     currentIndex,
-    getNextPodcast,
-    getPreviousPodcast,
+    getNextEpisode,
+    getPreviousEpisode,
     setCurrentIndex,
   } = useQueueStore(
     useShallow((state) => ({
       queue: state.queue,
       currentIndex: state.currentIndex,
-      getNextPodcast: state.getNextPodcast,
-      getPreviousPodcast: state.getPreviousPodcast,
+      getNextEpisode: state.getNextEpisode,
+      getPreviousEpisode: state.getPreviousEpisode,
       setCurrentIndex: state.setCurrentIndex,
     }))
   );
@@ -76,14 +76,10 @@ export const PlayerBar = () => {
     useState("00:00:00");
   const [backgroundColor, setBackgroundColor] = useState<number[]>([0, 0, 0]);
   const [showQueue, setShowQueue] = useState(false);
-  const [ options] = useOptionsStore(
-    useShallow((state) => [
-      state.options,
-    ])
-  );
+  const [options] = useOptionsStore(useShallow((state) => [state.options]));
 
   const setData = () => {
-    if (podcast?.url === audioRef.current?.src && audioRef.current) {
+    if (episode?.url === audioRef.current?.src && audioRef.current) {
       const audioDuration = audioRef.current.duration;
       if (audioDuration && audioDuration > 0) {
         setDurationTotal(audioDuration);
@@ -96,11 +92,11 @@ export const PlayerBar = () => {
   };
 
   useEffect(() => {
-    if (podcast?.img) {
-      const imageUrl = podcast.img.startsWith("http")
-        ? podcast.img
-        : podcast.img
-        ? getVercelBlobUrl(podcast.img)
+    if (episode?.img) {
+      const imageUrl = episode.img.startsWith("http")
+        ? episode.img
+        : episode.img
+        ? getVercelBlobUrl(episode.img)
         : "/images/navet.png";
 
       getAverageRGB(imageUrl)
@@ -113,20 +109,20 @@ export const PlayerBar = () => {
     } else {
       setBackgroundColor([139, 69, 19]);
     }
-  }, [podcast?.img]);
+  }, [episode?.img]);
 
   useEffect(() => {
-    if ("mediaSession" in navigator && podcast) {
+    if ("mediaSession" in navigator && episode) {
       // Construire l'URL complète si c'est juste un imgFileName
-      const imageUrl = podcast.img.startsWith("http")
-        ? podcast.img
-        : podcast.img
-        ? getVercelBlobUrl(podcast.img)
+      const imageUrl = episode.img.startsWith("http")
+        ? episode.img
+        : episode.img
+        ? getVercelBlobUrl(episode.img)
         : "/images/navet.png";
 
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: podcast.title,
-        artist: podcast.artist,
+        title: episode.title,
+        artist: episode.artist,
         artwork: [
           {
             src: imageUrl,
@@ -136,7 +132,7 @@ export const PlayerBar = () => {
         ],
       });
     }
-  }, [podcast]);
+  }, [episode]);
 
   useEffect(() => {
     const audioElement = audioRef.current;
@@ -157,7 +153,7 @@ export const PlayerBar = () => {
     };
 
     const updateProgress = () => {
-      if (podcast?.url === audioElement.src) {
+      if (episode?.url === audioElement.src) {
         const currentTime = audioElement.currentTime;
         const duration = audioElement.duration;
         if (duration > 0) {
@@ -182,7 +178,7 @@ export const PlayerBar = () => {
       audioElement.removeEventListener("timeupdate", updateProgress);
     };
   }, [
-    podcast?.url,
+    episode?.url,
     setCurrentPlayTime,
     setTotalDuration,
     currentPlayTime,
@@ -216,7 +212,7 @@ export const PlayerBar = () => {
     if (!isPlaying) {
       audioElement.pause();
     } else {
-      if (podcast?.url === audioElement.src) {
+      if (episode?.url === audioElement.src) {
         audioElement.currentTime = currentPlayTime;
       }
 
@@ -232,11 +228,15 @@ export const PlayerBar = () => {
     const skipTimeMs = options.skipIntro ? options.introSkipTime * 1000 : 0;
     if (skipTimeMs > 0 && audioElement.currentTime < skipTimeMs / 1000) {
       // si le podcast fait moins de 1h, on ne skip pas l'intro
-      if (audioElement.duration && !isNaN(audioElement.duration) && audioElement.duration > 3600) {
+      if (
+        audioElement.duration &&
+        !isNaN(audioElement.duration) &&
+        audioElement.duration > 3600
+      ) {
         audioElement.currentTime = skipTimeMs / 1000;
       }
     }
-  }, [isPlaying, options, podcast?.url, duration]);
+  }, [isPlaying, options, episode?.url, duration]);
 
   const padZero = (num: number) => {
     return num.toString().padStart(2, "0");
@@ -276,18 +276,18 @@ export const PlayerBar = () => {
   };
 
   const handleNext = () => {
-    const nextPodcast = getNextPodcast();
-    if (nextPodcast) {
-      setPodcast(nextPodcast);
+    const nextEpisode = getNextEpisode();
+    if (nextEpisode) {
+      setEpisode(nextEpisode);
       setCurrentIndex(currentIndex + 1);
       setIsPlaying(true);
     }
   };
 
   const handlePrevious = () => {
-    const previousPodcast = getPreviousPodcast();
-    if (previousPodcast) {
-      setPodcast(previousPodcast);
+    const previousEpisode = getPreviousEpisode();
+    if (previousEpisode) {
+      setEpisode(previousEpisode);
       setCurrentIndex(currentIndex - 1);
       setIsPlaying(true);
     }
@@ -307,7 +307,7 @@ export const PlayerBar = () => {
     setIsMinimized(!isMinimized);
   };
 
-  if (!podcast?.url) {
+  if (!episode?.url) {
     return null;
   }
 
@@ -320,14 +320,14 @@ export const PlayerBar = () => {
         backgroundColor: `rgba(${backgroundColor[0]}, ${backgroundColor[1]}, ${backgroundColor[2]}, 0.9)`,
       }}
     >
-      <div className={styles.player_title}>{podcast.title}</div>
+      <div className={styles.player_title}>{episode.title}</div>
       <div id="playerBar" className={styles.player_bar_container}>
         <audio
           onPlaying={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
           onLoadedData={() => setData()}
           ref={audioRef}
-          src={podcast?.url}
+          src={episode?.url}
           autoPlay={true}
           preload="metadata"
           id="audio"
@@ -337,7 +337,7 @@ export const PlayerBar = () => {
           <button
             className={styles.nav_button}
             onClick={handlePrevious}
-            disabled={!getPreviousPodcast()}
+            disabled={!getPreviousEpisode()}
             title="Précédent"
           >
             <SkipBack />
@@ -348,7 +348,7 @@ export const PlayerBar = () => {
           <button
             className={styles.nav_button}
             onClick={handleNext}
-            disabled={!getNextPodcast()}
+            disabled={!getNextEpisode()}
             title="Suivant"
           >
             <SkipForward />
@@ -386,7 +386,7 @@ export const PlayerBar = () => {
             <List />
           </button>
           <Link
-            href={`/podcasts/${podcast.slug}`}
+            href={`/episodes/${episode.slug}`}
             className={`${styles.button} ${styles.externalButton}`}
             title="afficher la page"
           >
@@ -406,7 +406,7 @@ export const PlayerBar = () => {
         <button
           className={styles.nav_button}
           onClick={handlePrevious}
-          disabled={!getPreviousPodcast()}
+          disabled={!getPreviousEpisode()}
           title="Précédent"
         >
           <SkipBack />
@@ -417,7 +417,7 @@ export const PlayerBar = () => {
         <button
           className={styles.nav_button}
           onClick={handleNext}
-          disabled={!getNextPodcast()}
+          disabled={!getNextEpisode()}
           title="Suivant"
         >
           <SkipForward />
@@ -432,7 +432,7 @@ export const PlayerBar = () => {
           <List />
         </button>
         <Link
-          href={`/podcasts/${podcast.slug}`}
+          href={`/episodes/${episode.slug}`}
           className={`${styles.button} ${styles.externalButton}`}
           title="afficher la page"
         >

@@ -26,18 +26,21 @@ export function useInfiniteScroll({
   }, [...resetDependencies, itemsPerPage]);
 
   // Callback optimisé pour l'intersection observer
-  const handleIntersection = useCallback((entries: IntersectionObserverEntry[]) => {
-    const [entry] = entries;
-    if (entry.isIntersecting && displayedCount < items.length) {
-      setDisplayedCount((prev) => prev + itemsPerPage);
-    }
-  }, [displayedCount, items.length, itemsPerPage]);
+  const handleIntersection = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const [entry] = entries;
+      if (entry.isIntersecting && displayedCount < items.length) {
+        setDisplayedCount((prev) => prev + itemsPerPage);
+      }
+    },
+    [displayedCount, items.length, itemsPerPage]
+  );
 
   // Intersection Observer avec callback optimisé
   useEffect(() => {
-    const observer = new IntersectionObserver(handleIntersection, { 
-      threshold, 
-      rootMargin 
+    const observer = new IntersectionObserver(handleIntersection, {
+      threshold,
+      rootMargin,
     });
 
     if (observerRef.current) {
@@ -48,13 +51,13 @@ export function useInfiniteScroll({
   }, [handleIntersection, threshold, rootMargin]);
 
   // Mémoisation des résultats pour éviter les re-calculs
-  const displayedItems = useMemo(() => 
-    items.slice(0, displayedCount), 
+  const displayedItems = useMemo(
+    () => items.slice(0, displayedCount),
     [items, displayedCount]
   );
-  
-  const hasMore = useMemo(() => 
-    displayedCount < items.length, 
+
+  const hasMore = useMemo(
+    () => displayedCount < items.length,
     [displayedCount, items.length]
   );
 

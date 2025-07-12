@@ -33,6 +33,7 @@ export const PreserveScroll = () => {
 
   useEffect(() => {
     const handlePageRefresh = (event: Event) => {
+      event.preventDefault();
       if (scrollPosition === 0 && window.scrollY !== 0) {
         localStorage.setItem("scrollPosition", "0");
         setScrollPosition(0);
@@ -44,6 +45,7 @@ export const PreserveScroll = () => {
     return () => {
       window.removeEventListener("beforeunload", handlePageRefresh);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return null;

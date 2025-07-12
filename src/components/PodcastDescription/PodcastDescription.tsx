@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { formatPodcastDescription, truncateText } from '@/lib/podcastHelpers';
-import styles from './PodcastDescription.module.css';
+import { useState } from "react";
+import { formatPodcastDescription, truncateText } from "@/lib/podcastHelpers";
+import styles from "./PodcastDescription.module.css";
 
 interface PodcastDescriptionProps {
   description: string;
@@ -10,25 +10,27 @@ interface PodcastDescriptionProps {
   maxLength?: number;
 }
 
-export default function PodcastDescription({ 
-  description, 
-  showFull = false, 
-  maxLength = 300 
+export default function PodcastDescription({
+  description,
+  showFull = false,
+  maxLength = 300,
 }: PodcastDescriptionProps) {
   const [isExpanded, setIsExpanded] = useState(showFull);
   const info = formatPodcastDescription(description);
-  const displayText = isExpanded ? info.cleanDescription : truncateText(info.cleanDescription, maxLength);
+  const displayText = isExpanded
+    ? info.cleanDescription
+    : truncateText(info.cleanDescription, maxLength);
 
   return (
     <div className={styles.container}>
       <div className={styles.description}>
-        {displayText.split('\n\n').map((paragraph, index) => (
+        {displayText.split("\n\n").map((paragraph, index) => (
           <p key={index} className={styles.paragraph}>
             {paragraph}
           </p>
         ))}
         {!isExpanded && info.cleanDescription.length > maxLength && (
-          <button 
+          <button
             className={styles.readMore}
             onClick={() => setIsExpanded(true)}
           >
@@ -42,9 +44,7 @@ export default function PodcastDescription({
           {info.hosts && info.hosts.length > 0 && (
             <div className={styles.hosts}>
               <span className={styles.label}>Avec :</span>
-              <span className={styles.hostsList}>
-                {info.hosts.join(', ')}
-              </span>
+              <span className={styles.hostsList}>{info.hosts.join(", ")}</span>
             </div>
           )}
 
@@ -61,4 +61,4 @@ export default function PodcastDescription({
       )}
     </div>
   );
-} 
+}

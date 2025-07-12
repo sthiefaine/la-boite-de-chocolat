@@ -12,7 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
-      url: `${baseUrl}/podcasts`,
+      url: `${baseUrl}/episodes`,
       lastModified: new Date(),
       changeFrequency: "daily" as const,
       priority: 0.9,
@@ -33,7 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   });
 
   const episodePages = episodes.map((episode) => ({
-    url: `${baseUrl}/podcasts/${episode.slug}`,
+    url: `${baseUrl}/episodes/${episode.slug}`,
     lastModified: episode.updatedAt,
     changeFrequency: "weekly" as const,
     priority: 0.8,

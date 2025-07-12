@@ -80,7 +80,7 @@ function PodcastCard({
       }`}
     >
       <Link
-        href={`/podcasts/${episodeSlug}`}
+        href={`/episodes/${episodeSlug}`}
         className={styles.cardLink}
         prefetch={false} // Désactiver le préchargement automatique
       >

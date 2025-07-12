@@ -7,7 +7,6 @@ import { PreserveScroll } from "@/hooks/preservScroll";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import PodcastCard from "../PodcastCard/PodcastCard";
 
-// Composant PodcastCard mémorisé pour éviter les re-rendus inutiles
 const MemoizedPodcastCard = memo(PodcastCard);
 
 interface Film {
@@ -82,17 +81,6 @@ export default function PodcastGrid({
       }
     });
     return Array.from(years).sort((a, b) => b - a);
-  }, [filmsWithEpisodeData]);
-
-  // Optimisation : pré-calculer les années pour éviter les recalculs
-  const yearSet = useMemo(() => {
-    const years = new Set<number>();
-    filmsWithEpisodeData.forEach((film) => {
-      if (film.episodeDate) {
-        years.add(new Date(film.episodeDate).getFullYear());
-      }
-    });
-    return years;
   }, [filmsWithEpisodeData]);
 
   const filteredFilms = useMemo(() => {

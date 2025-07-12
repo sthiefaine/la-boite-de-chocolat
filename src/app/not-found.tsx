@@ -13,8 +13,10 @@ export default function NotFound() {
             alt="La Boîte de Chocolat - Page non trouvée"
             width={150}
             height={150}
-            objectFit="contain"
-            objectPosition="center"
+            style={{
+              objectFit: "contain",
+              objectPosition: "center"
+            }}
             priority
             className={styles.image}
           />

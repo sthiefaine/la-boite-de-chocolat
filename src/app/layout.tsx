@@ -2,6 +2,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import Header from "@/components/Header/Header";
 import { PlayerBar } from "@/components/Player/PlayerBar";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -10,7 +11,7 @@ export const metadata = {
   description:
     "Podcast cinéma avec Thomas, Charlie et Thomas. Du cinéma, de la mauvaise foi, un soupçon de beauferie et le tour est joué !",
   icons: {
-    icon: "/images/icon/favicon.ico",
+    icon: "/images/icons/favicon.ico",
   },
   robots: {
     index: true,
@@ -28,7 +29,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <Header />
         <main>{children}</main>
-        <PlayerBar />
+        <Suspense fallback={null}>
+          <PlayerBar />
+        </Suspense>
       </body>
     </html>
   );

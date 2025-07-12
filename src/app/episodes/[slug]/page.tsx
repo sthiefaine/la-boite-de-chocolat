@@ -9,7 +9,6 @@ import PodcastCard from "@/components/PodcastCard/PodcastCard";
 import SagaCard from "@/components/SagaCard/SagaCard";
 import { generateMetadata } from "./metadata";
 import {
-  getEpisodeBySlug,
   getEpisodeNavigation,
   getAllEpisodeSlugs,
   getEpisodeBySlugCached,
@@ -236,7 +235,7 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
             <div className={styles.navigationContainer}>
               {nextEpisode && (
                 <div className={styles.navigationCard}>
-                  <span className={styles.navigationLabel}>Suivant</span>
+                  <span className={styles.navigationLabel}>Épisode suivant</span>
                   <Suspense fallback={null}>
                     {" "}
                     <PodcastCard
@@ -252,7 +251,7 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
               )}
               {previousEpisode && (
                 <div className={styles.navigationCard}>
-                  <span className={styles.navigationLabel}>Précédent</span>
+                  <span className={styles.navigationLabel}>Épisode précédent</span>
                   <Suspense fallback={null}>
                   <PodcastCard
                     film={previousEpisode.links[0]?.film}
@@ -267,7 +266,7 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
               )}
               {saga && (
                 <div className={styles.navigationCard}>
-                  <span className={styles.navigationLabel}>Saga</span>
+                  <span className={styles.navigationLabel}>Saga du film</span>
                   <Suspense fallback={null}>
                     <SagaCard saga={saga} variant="compact" />
                   </Suspense>

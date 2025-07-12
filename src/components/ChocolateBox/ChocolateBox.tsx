@@ -39,11 +39,10 @@ export default function ChocolateBox({
   className,
   episodes = [],
 }: ChocolateBoxProps) {
-  const [setPodcast, setLaunchPlay] = usePlayerStore(
-    useShallow((state) => [state.setPodcast, state.setLaunchPlay])
+  const [setEpisode, setLaunchPlay] = usePlayerStore(
+    useShallow((state) => [state.setEpisode, state.setLaunchPlay])
   );
 
-  const [randomEpisode, setRandomEpisode] = useState<Episode | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [playedEpisodeIds, setPlayedEpisodeIds] = useState<Set<string>>(
     new Set()
@@ -73,12 +72,11 @@ export default function ChocolateBox({
         newPlayedIds = new Set([...playedEpisodeIds, selectedEpisode.id]);
       }
 
-      setRandomEpisode(selectedEpisode);
       setPlayedEpisodeIds(newPlayedIds);
 
       const mainFilm = selectedEpisode.links[0]?.film;
 
-      setPodcast({
+      setEpisode({
         id: selectedEpisode.id,
         title: selectedEpisode.title,
         url: selectedEpisode.audioUrl,

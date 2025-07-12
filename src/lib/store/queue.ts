@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export interface Podcast {
+export interface Episode {
   id: string;
   title: string;
   artist: string;
@@ -13,16 +13,16 @@ export interface Podcast {
 }
 
 interface QueueStore {
-  queue: Podcast[];
+  queue: Episode[];
   currentIndex: number;
-  addToQueue: (podcast: Podcast) => void;
+  addToQueue: (episode: Episode) => void;
   removeFromQueue: (index: number) => void;
   clearQueue: () => void;
   moveInQueue: (fromIndex: number, toIndex: number) => void;
   setCurrentIndex: (index: number) => void;
-  getCurrentPodcast: () => Podcast | null;
-  getNextPodcast: () => Podcast | null;
-  getPreviousPodcast: () => Podcast | null;
+  getCurrentEpisode: () => Episode | null;
+  getNextEpisode: () => Episode | null;
+  getPreviousEpisode: () => Episode | null;
   isQueueEmpty: () => boolean;
 }
 
@@ -32,9 +32,9 @@ export const useQueueStore = create(
       queue: [],
       currentIndex: -1,
 
-      addToQueue: (podcast: Podcast) => {
+      addToQueue: (episode: Episode) => {
         set((state) => ({
-          queue: [...state.queue, podcast],
+          queue: [...state.queue, episode],
         }));
       },
 
@@ -93,20 +93,20 @@ export const useQueueStore = create(
         set({ currentIndex: index });
       },
 
-      getCurrentPodcast: () => {
+      getCurrentEpisode: () => {
         const { queue, currentIndex } = get();
         return currentIndex >= 0 && currentIndex < queue.length
           ? queue[currentIndex]
           : null;
       },
 
-      getNextPodcast: () => {
+      getNextEpisode: () => {
         const { queue, currentIndex } = get();
         const nextIndex = currentIndex + 1;
         return nextIndex < queue.length ? queue[nextIndex] : null;
       },
 
-      getPreviousPodcast: () => {
+      getPreviousEpisode: () => {
         const { queue, currentIndex } = get();
         const prevIndex = currentIndex - 1;
         return prevIndex >= 0 ? queue[prevIndex] : null;

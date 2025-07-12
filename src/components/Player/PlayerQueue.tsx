@@ -20,31 +20,26 @@ interface PlayerQueueProps {
 }
 
 export const PlayerQueue = ({ showQueue }: PlayerQueueProps) => {
-  const {
-    queue,
-    currentIndex,
-    removeFromQueue,
-    clearQueue,
-    moveInQueue,
-  } = useQueueStore(
-    useShallow((state) => ({
-      queue: state.queue,
-      currentIndex: state.currentIndex,
-      removeFromQueue: state.removeFromQueue,
-      clearQueue: state.clearQueue,
-      moveInQueue: state.moveInQueue,
-    }))
-  );
+  const { queue, currentIndex, removeFromQueue, clearQueue, moveInQueue } =
+    useQueueStore(
+      useShallow((state) => ({
+        queue: state.queue,
+        currentIndex: state.currentIndex,
+        removeFromQueue: state.removeFromQueue,
+        clearQueue: state.clearQueue,
+        moveInQueue: state.moveInQueue,
+      }))
+    );
 
-  const { setPodcast, setIsPlaying } = usePlayerStore(
+  const { setEpisode, setIsPlaying } = usePlayerStore(
     useShallow((state) => ({
-      setPodcast: state.setPodcast,
+      setEpisode: state.setEpisode,
       setIsPlaying: state.setIsPlaying,
     }))
   );
 
   const handlePlayQueueItem = (item: any, index: number) => {
-    setPodcast(item);
+    setEpisode(item);
     setIsPlaying(true);
     removeFromQueue(index);
   };
@@ -83,7 +78,8 @@ export const PlayerQueue = ({ showQueue }: PlayerQueueProps) => {
       </div>
       <div className={styles.queueList}>
         {queue.map((item, index) => {
-          const shouldBlur = item.movieAge === "18+" || item.movieAge === "adult";
+          const shouldBlur =
+            item.movieAge === "18+" || item.movieAge === "adult";
           return (
             <div
               key={`${item.id}-${index}`}
@@ -93,15 +89,19 @@ export const PlayerQueue = ({ showQueue }: PlayerQueueProps) => {
             >
               <div className={styles.queueItemImageContainer}>
                 <Image
-                  src={item.img.startsWith("http")
-                    ? item.img
-                    : item.img
-                    ? getVercelBlobUrl(item.img)
-                    : "/images/navet.png"}
+                  src={
+                    item.img.startsWith("http")
+                      ? item.img
+                      : item.img
+                      ? getVercelBlobUrl(item.img)
+                      : "/images/navet.png"
+                  }
                   width={40}
                   height={40}
                   alt={item.title}
-                  className={`${styles.queueItemImage} ${shouldBlur ? styles.blurredImage : ''}`}
+                  className={`${styles.queueItemImage} ${
+                    shouldBlur ? styles.blurredImage : ""
+                  }`}
                   loading="lazy"
                   placeholder="blur"
                   blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
@@ -142,7 +142,7 @@ export const PlayerQueue = ({ showQueue }: PlayerQueueProps) => {
                   <ChevronDown size={12} />
                 </button>
                 <Link
-                  href={`/podcasts/${item.slug}`}
+                  href={`/episodes/${item.slug}`}
                   className={`${styles.queueActionButton} ${styles.externalButton}`}
                   title="Ouvrir la page"
                 >
@@ -162,4 +162,4 @@ export const PlayerQueue = ({ showQueue }: PlayerQueueProps) => {
       </div>
     </div>
   );
-}; 
+};

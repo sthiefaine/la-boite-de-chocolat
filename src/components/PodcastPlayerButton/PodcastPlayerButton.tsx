@@ -24,11 +24,11 @@ export const PodcastPlayerButton = ({
   className = "",
   children,
 }: PodcastPlayerButtonProps) => {
-  const [podcast, setPodcast, isPlaying, setIsPlaying, setClearPlayerStore] =
+  const [episode, setEpisode, isPlaying, setIsPlaying, setClearPlayerStore] =
     usePlayerStore(
       useShallow((state) => [
-        state.podcast,
-        state.setPodcast,
+        state.episode,
+        state.setEpisode,
         state.isPlaying,
         state.setIsPlaying,
         state.setClearPlayerStore,
@@ -36,9 +36,9 @@ export const PodcastPlayerButton = ({
     );
 
   const handleListen = () => {
-    if (podcast?.url !== audioUrl) {
+    if (episode?.url !== audioUrl) {
       setClearPlayerStore();
-      setPodcast({
+      setEpisode({
         title,
         artist,
         img: imageUrl || "/images/boite-de-chocolat-404.png",
@@ -55,8 +55,7 @@ export const PodcastPlayerButton = ({
     setIsPlaying(false);
   };
 
-  // Si c'est le podcast actuel et qu'il est en cours de lecture, afficher le bouton pause
-  if (isPlaying && podcast?.url === audioUrl) {
+  if (isPlaying && episode?.url === audioUrl) {
     return (
       <button
         onClick={handlePause}
@@ -69,7 +68,6 @@ export const PodcastPlayerButton = ({
     );
   }
 
-  // Sinon afficher le bouton play
   return (
     <button
       onClick={handleListen}

@@ -41,8 +41,8 @@ export default function Header() {
           <Link href="/" className={styles.navLink}>
             Accueil
           </Link>
-          <Link href="/podcasts" className={styles.navLink}>
-            Podcasts
+          <Link href="/episodes" className={styles.navLink}>
+            Épisodes
           </Link>
           <Link href="/options" className={styles.navLink}>
             Options
@@ -66,8 +66,8 @@ export default function Header() {
           <Link href="/" className={styles.mobileNavLink}>
             Accueil
           </Link>
-          <Link href="/podcasts" className={styles.mobileNavLink}>
-            Podcasts
+          <Link href="/episodes" className={styles.mobileNavLink}>
+            Épisodes
           </Link>
           <Link href="/options" className={styles.mobileNavLink}>
             Options

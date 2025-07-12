@@ -3,8 +3,8 @@ import PodcastGrid from "@/components/PodcastGrid/PodcastGrid";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Podcasts - La Boîte de Chocolat",
-  description: "Découvrez tous nos podcasts et émissions",
+  title: "Épisodes - La Boîte de Chocolat",
+  description: "Découvrez tous nos épisodes et les films associés",
 };
 
 const getEpisodes = async () => {
@@ -33,7 +33,7 @@ export default async function PodcastsPage() {
     <div className="min-h-screen bg-gradient-to-br from-[var(--chocolate-cream)] to-white pb-24">
       <PodcastGrid
         episodes={episodes}
-        title="Tous nos podcasts"
+        title="Tous nos épisodes"
         subtitle={`Découvrez nos ${episodes.length} épisode${
           episodes.length > 1 ? "s" : ""
         } et les films associés`}

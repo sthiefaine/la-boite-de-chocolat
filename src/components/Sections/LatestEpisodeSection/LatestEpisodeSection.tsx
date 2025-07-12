@@ -139,7 +139,7 @@ export default async function LatestEpisodeSection() {
 
               {episode.slug && (
                 <Link
-                  href={`/podcasts/${episode.slug}`}
+                  href={`/episodes/${episode.slug}`}
                   className={styles.visitButton}
                 >
                   <span className={styles.visitIcon}>👁️</span>

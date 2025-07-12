@@ -1,5 +1,4 @@
-"use server";
-import { Metadata } from "next";
+import { Metadata, Viewport } from "next";
 import { SITE_URL } from "@/lib/config";
 import { getEpisodeBySlugCached } from "@/app/actions/episode";
 
@@ -176,9 +175,6 @@ export async function generateMetadata({
     // Métadonnées pour les applications
     applicationName: "La Boîte de Chocolat",
 
-    // Métadonnées pour les appareils mobiles
-    viewport: "width=device-width, initial-scale=1",
-
     // Métadonnées pour les favicons et manifestes
     icons: {
       icon: [
@@ -186,20 +182,21 @@ export async function generateMetadata({
         { url: "/images/icons/favicon-32x32.png", sizes: "32x32", type: "image/png" },
       ],
       apple: [
-        { url: "/images/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+        { url: "/images/icons/apple-icon.png", sizes: "180x180", type: "image/png" },
       ],
       other: [
         {
-          url: "/images/icons/android-chrome-192x192.png",
+          url: "/images/icons/android-icon-192x192.png",
           sizes: "192x192",
-          type: "image/png",
-        },
-        {
-          url: "/images/icons/android-chrome-512x512.png",
-          sizes: "512x512",
           type: "image/png",
         },
       ],
     },
   };
 }
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#6b3e26",
+};

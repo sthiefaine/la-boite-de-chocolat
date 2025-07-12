@@ -10,9 +10,9 @@ const DEFAULT_RULES = {
   allow: "/",
   disallow: ["/admin/", "/api/", "/private/", "/*?*utm*", "/*?*ref*"],
 };
-
+  
 const AI_RULES = {
-  allow: ["/podcast/", "/films/", "/"],
+  allow: ["/episodes/", "/films/", "/"],
   disallow: ["/admin/", "/api/"],
 };
 
@@ -21,7 +21,7 @@ const SOCIAL_RULES = {
 };
 
 const SEARCH_ENGINE_RULES = {
-  allow: ["/podcast/", "/films/", "/"],
+  allow: ["/episodes/", "/films/", "/"],
   disallow: ["/admin/", "/api/"],
 };
 

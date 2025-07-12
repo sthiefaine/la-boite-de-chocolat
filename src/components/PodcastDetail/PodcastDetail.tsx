@@ -65,11 +65,11 @@ export const PodcastDetail = ({
   previousEpisode,
   nextEpisode,
 }: PodcastDetailProps) => {
-  const [podcast, setPodcast, isPlaying, setIsPlaying, setClearPlayerStore] =
+  const [episodeInfo, setEpisodeInfo, isPlaying, setIsPlaying, setClearPlayerStore] =
     usePlayerStore(
       useShallow((state) => [
-        state.podcast,
-        state.setPodcast,
+        state.episode,
+        state.setEpisode,
         state.isPlaying,
         state.setIsPlaying,
         state.setClearPlayerStore,
@@ -96,9 +96,9 @@ export const PodcastDetail = ({
   }, []);
 
   const handleListen = () => {
-    if (podcast?.url !== episode.audio) {
+    if (episodeInfo?.url !== episode.audio) {
       setClearPlayerStore();
-      setPodcast({
+      setEpisodeInfo({
         title: episode.title ?? episode.movieTitle ?? "Podcast",
         url: episode.audio,
         img: episode.poster ?? "/images/boite-de-chocolat-404.png",
@@ -164,7 +164,7 @@ export const PodcastDetail = ({
             </span>
           </div>
           <div className={styles.actionBar}>
-            {(!isPlaying || episode.audio !== podcast?.url) && (
+            {(!isPlaying || episode.audio !== episodeInfo?.url) && (
               <button
                 className={styles.buttonAction}
                 onClick={() => handleListen()}
@@ -172,7 +172,7 @@ export const PodcastDetail = ({
                 <Play /> Écouter
               </button>
             )}
-            {isPlaying && episode.audio === podcast?.url && (
+            {isPlaying && episode.audio === episodeInfo?.url && (
               <button
                 className={styles.buttonAction}
                 onClick={() => handlePause()}
