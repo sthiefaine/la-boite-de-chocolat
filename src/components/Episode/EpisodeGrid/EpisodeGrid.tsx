@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useMemo, useCallback, useDeferredValue, memo } from "react";
-import SearchBar from "../SearchBar/SearchBar";
-import styles from "./PodcastGrid.module.css";
+import SearchBar from "@/components/SearchBar/SearchBar";
+import styles from "./EpisodeGrid.module.css";
 import { PreserveScroll } from "@/hooks/preservScroll";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
-import PodcastCard from "../PodcastCard/PodcastCard";
+import EpisodeCard from "@/components/Episode/EpisodeCard/EpisodeCard";
 
-const MemoizedPodcastCard = memo(PodcastCard);
+const MemoizedEpisodeCard = memo(EpisodeCard);
 
 interface Film {
   id: string;
@@ -41,7 +41,7 @@ interface Episode {
   }>;
 }
 
-interface PodcastGridProps {
+interface EpisodeGridProps {
   episodes: Episode[];
   title?: string;
   subtitle?: string;
@@ -51,7 +51,7 @@ export default function PodcastGrid({
   episodes,
   title = "Tous nos épisodes",
   subtitle,
-}: PodcastGridProps) {
+}: EpisodeGridProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [yearFilter, setYearFilter] = useState("");
 
@@ -157,11 +157,11 @@ export default function PodcastGrid({
 
       <div className={styles.podcastGrid}>
         {displayedFilms.length === 0 ? (
-          <MemoizedPodcastCard isNoResults={true} />
+          <MemoizedEpisodeCard isNoResults={true} />
         ) : (
           <>
             {displayedFilms.map((film) => (
-              <MemoizedPodcastCard
+              <MemoizedEpisodeCard
                 key={film.id}
                 film={film}
                 episodeTitle={film.episodeTitle}

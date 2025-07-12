@@ -2,10 +2,10 @@
 
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { IMAGE_CONFIG, getVercelBlobUrl } from "@/lib/imageConfig";
+import { IMAGE_CONFIG } from "@/lib/imageConfig";
 import styles from "./PodcastPage.module.css";
 import { formatEpisodeDescription, truncateText } from "@/lib/podcastHelpers";
-import PodcastCard from "@/components/PodcastCard/PodcastCard";
+import PodcastCard from "@/components/Episode/EpisodeCard/EpisodeCard";
 import SagaCard from "@/components/SagaCard/SagaCard";
 import { generateMetadata } from "./metadata";
 import {
@@ -13,7 +13,7 @@ import {
   getAllEpisodeSlugs,
   getEpisodeBySlugCached,
 } from "@/app/actions/episode";
-import { PodcastPlayerButton } from "@/components/PodcastPlayerButton/PodcastPlayerButton";
+import { EpisodePlayerButton } from "@/components/Episode/EpisodePlayerButton/EpisodePlayerButton";
 import { AddToQueueButton } from "@/components/Queue/AddToQueueButton";
 import { ShareButton } from "@/components/ShareButton/ShareButton";
 import { PodcastJsonLd } from "./json-ld";
@@ -143,7 +143,7 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
               )}
 
               <div className={styles.buttons}>
-                <PodcastPlayerButton
+                <EpisodePlayerButton
                   title={episode.title}
                   audioUrl={episode.audioUrl}
                   imageUrl={isAdultContent ? undefined : mainFilmImageUrl}
@@ -153,7 +153,7 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
                 >
                   <span className={styles.buttonIcon}>🎧</span>
                   Écouter
-                </PodcastPlayerButton>
+                </EpisodePlayerButton>
 
                 <AddToQueueButton
                   podcast={{
@@ -234,7 +234,9 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
             <div className={styles.navigationContainer}>
               {nextEpisode && (
                 <div className={styles.navigationCard}>
-                  <span className={styles.navigationLabel}>Épisode suivant</span>
+                  <span className={styles.navigationLabel}>
+                    Épisode suivant
+                  </span>
                   <Suspense fallback={null}>
                     {" "}
                     <PodcastCard
@@ -250,15 +252,17 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
               )}
               {previousEpisode && (
                 <div className={styles.navigationCard}>
-                  <span className={styles.navigationLabel}>Épisode précédent</span>
+                  <span className={styles.navigationLabel}>
+                    Épisode précédent
+                  </span>
                   <Suspense fallback={null}>
-                  <PodcastCard
-                    film={previousEpisode.links[0]?.film}
-                    episodeTitle={previousEpisode.title}
-                    episodeDate={previousEpisode.pubDate}
-                    episodeDuration={previousEpisode.duration}
-                    episodeSlug={previousEpisode.slug}
-                    variant="compact"
+                    <PodcastCard
+                      film={previousEpisode.links[0]?.film}
+                      episodeTitle={previousEpisode.title}
+                      episodeDate={previousEpisode.pubDate}
+                      episodeDuration={previousEpisode.duration}
+                      episodeSlug={previousEpisode.slug}
+                      variant="compact"
                     />
                   </Suspense>
                 </div>

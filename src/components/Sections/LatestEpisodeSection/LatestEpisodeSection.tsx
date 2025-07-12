@@ -7,7 +7,7 @@ import {
   formatDuration,
   truncateToLines,
 } from "@/lib/podcastHelpers";
-import { PodcastPlayerButton } from "@/components/PodcastPlayerButton/PodcastPlayerButton";
+import { PodcastPlayerButton } from "@/components/Episode/EpisodePlayerButton/EpisodePlayerButton";
 import styles from "./LatestEpisodeSection.module.css";
 
 export default async function LatestEpisodeSection() {

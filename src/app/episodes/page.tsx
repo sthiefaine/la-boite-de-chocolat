@@ -1,5 +1,5 @@
 import { getEpisodesWithFilms } from "@/app/actions/episode";
-import PodcastGrid from "@/components/PodcastGrid/PodcastGrid";
+import EpisodeGrid from "@/components/Episode/EpisodeGrid/EpisodeGrid";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -31,7 +31,7 @@ export default async function PodcastsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--chocolate-cream)] to-white pb-24">
-      <PodcastGrid
+      <EpisodeGrid
         episodes={episodes}
         title="Tous nos épisodes"
         subtitle={`Découvrez nos ${episodes.length} épisode${

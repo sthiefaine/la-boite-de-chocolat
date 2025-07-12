@@ -1,20 +1,19 @@
 "use client";
-
 import { useState } from "react";
 import { formatPodcastDescription, truncateText } from "@/lib/podcastHelpers";
-import styles from "./PodcastDescription.module.css";
+import styles from "./EpisodeDescription.module.css";
 
-interface PodcastDescriptionProps {
+interface EpisodeDescriptionProps {
   description: string;
   showFull?: boolean;
   maxLength?: number;
 }
 
-export default function PodcastDescription({
+export default function EpisodeDescription({
   description,
   showFull = false,
   maxLength = 300,
-}: PodcastDescriptionProps) {
+}: EpisodeDescriptionProps) {
   const [isExpanded, setIsExpanded] = useState(showFull);
   const info = formatPodcastDescription(description);
   const displayText = isExpanded

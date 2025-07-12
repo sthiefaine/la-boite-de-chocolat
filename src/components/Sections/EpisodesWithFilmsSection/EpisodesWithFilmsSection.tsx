@@ -1,4 +1,4 @@
-import PodcastGrid from "../../PodcastGrid/PodcastGrid";
+import EpisodeGrid from "@/components/Episode/EpisodeGrid/EpisodeGrid";
 import styles from "./EpisodesWithFilmsSection.module.css";
 
 interface Episode {
@@ -32,7 +32,7 @@ interface EpisodesWithFilmsSectionProps {
 export default function EpisodesWithFilmsSection({ episodes }: EpisodesWithFilmsSectionProps) {
   return (
     <section className={styles.section} id="episodes">
-      <PodcastGrid episodes={episodes} />
+      <EpisodeGrid episodes={episodes} />
     </section>
   );
 }

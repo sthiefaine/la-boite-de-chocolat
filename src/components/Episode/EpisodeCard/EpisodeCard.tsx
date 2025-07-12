@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { formatDuration } from "@/lib/podcastHelpers";
 import { IMAGE_CONFIG } from "@/lib/imageConfig";
-import styles from "./PodcastCard.module.css";
+import styles from "./EpisodeCard.module.css";
 
 const getStaticImageUrl = (imgFileName: string, age: string | null) => {
   const isAdult = age === "18+" || age === "adult";
@@ -10,7 +10,7 @@ const getStaticImageUrl = (imgFileName: string, age: string | null) => {
     ? `/api/image/masked/${imgFileName}`
     : `https://${IMAGE_CONFIG.domains.vercelBlob}/films/${imgFileName}`;
 };
-interface PodcastCardProps {
+interface EpisodeCardProps {
   film?: {
     id: string;
     title: string;
@@ -31,7 +31,7 @@ interface PodcastCardProps {
   variant?: "default" | "compact";
 }
 
-function PodcastCard({
+export default function EpisodeCard({
   film,
   episodeTitle,
   episodeDate,
@@ -39,7 +39,7 @@ function PodcastCard({
   episodeSlug,
   isNoResults = false,
   variant = "default",
-}: PodcastCardProps) {
+}: EpisodeCardProps) {
   if (isNoResults) {
     return (
       <article className={`${styles.cardArticle} ${styles.noResultsCard}`}>
@@ -143,6 +143,3 @@ function PodcastCard({
     </article>
   );
 }
-
-// Export avec memo pour éviter les re-rendus inutiles
-export default PodcastCard;

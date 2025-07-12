@@ -3,7 +3,7 @@ import { usePlayerStore } from "@/lib/store/player";
 import { Play, Pause } from "lucide-react";
 import { useShallow } from "zustand/shallow";
 
-interface PodcastPlayerButtonProps {
+interface EpisodePlayerButtonProps {
   title: string;
   audioUrl: string;
   imageUrl?: string;
@@ -14,7 +14,7 @@ interface PodcastPlayerButtonProps {
   children?: React.ReactNode;
 }
 
-export const PodcastPlayerButton = ({
+export const EpisodePlayerButton = ({
   title,
   audioUrl,
   imageUrl,
@@ -23,7 +23,7 @@ export const PodcastPlayerButton = ({
   age,
   className = "",
   children,
-}: PodcastPlayerButtonProps) => {
+}: EpisodePlayerButtonProps) => {
   const [episode, setEpisode, isPlaying, setIsPlaying, setClearPlayerStore] =
     usePlayerStore(
       useShallow((state) => [
