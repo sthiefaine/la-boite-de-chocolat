@@ -19,29 +19,29 @@ export async function GET(
     const { filename } = await params;
     const url = new URL(request.url);
     const slug = url.searchParams.get("slug");
-    const originalImageUrl = filename.startsWith("http")
-      ? filename
-      : getVercelBlobUrl(filename, "films");
 
-    const apiUrl =
-      process.env.NODE_ENV === "production"
-        ? process.env.NEXT_PUBLIC_API_URL
-        : "http://localhost:3000";
-    const episode = await fetch(`${apiUrl}/api/episode/${slug}`);
-    const episodeData = await episode.json();
+    const decodedFilename = decodeURIComponent(filename);
 
-    const episodeNumber = episodeData?.episode?.episode
+    const originalImageUrl = decodedFilename;
+
+    const requestUrl = new URL(request.url);
+    const apiUrl = `${requestUrl.protocol}//${requestUrl.host}`;
+
+    const episode = slug ? await fetch(`${apiUrl}/api/episode/${slug}`) : null;
+    const episodeData = episode ? await episode.json() : null;
+
+    const episodeNumber = episodeData?.episode
       ? `E${episodeData.episode.episode.toString().padStart(2, "0")}`
       : "";
     const seasonNumber = episodeData?.episode?.season
       ? `S${episodeData.episode.season.toString().padStart(2, "0")}`
       : "";
+
     const podcastEpisode =
       seasonNumber && episodeNumber
         ? `${seasonNumber} • ${episodeNumber}`
         : episodeNumber || seasonNumber || "";
 
-    // Vérifier si l'épisode est nouveau (moins de 7 jours)
     const isNew = episodeData?.episode?.pubDate
       ? new Date(episodeData?.episode?.pubDate) >
         new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)

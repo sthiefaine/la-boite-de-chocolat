@@ -1,5 +1,4 @@
 import { ImageResponse } from "next/og";
-import { getVercelBlobUrl } from "@/lib/imageConfig";
 import {
   OGImageLayout,
   ImageContainer,
@@ -20,37 +19,15 @@ export async function GET(
     const url = new URL(request.url);
     const slug = url.searchParams.get("slug");
 
-    console.log("Slug reçu:", slug);
-
-    // Vérifier que le slug est présent
-    if (!slug) {
-      console.error("Slug manquant dans les paramètres");
-      return new Response("Slug manquant", { status: 400 });
-    }
-
-    // Décoder l'URL si elle est encodée
     const decodedFilename = decodeURIComponent(filename);
-    console.log("Filename décodé:", decodedFilename);
 
     const originalImageUrl = decodedFilename;
 
-    // URL de l'API - utiliser l'URL de base de la requête
     const requestUrl = new URL(request.url);
     const apiUrl = `${requestUrl.protocol}//${requestUrl.host}`;
 
-    const episode = await fetch(`${apiUrl}/api/episode/${slug}`);
-
-    if (!episode.ok) {
-      console.error(
-        "Erreur lors de la récupération de l'épisode:",
-        episode.status
-      );
-      return new Response("Erreur lors de la récupération de l'épisode", {
-        status: episode.status,
-      });
-    }
-
-    const episodeData = await episode.json();
+    const episode = slug ? await fetch(`${apiUrl}/api/episode/${slug}`) : null;
+    const episodeData = episode ? await episode.json() : null;
 
     const episodeNumber = episodeData?.episode
       ? `E${episodeData.episode.episode.toString().padStart(2, "0")}`
@@ -58,12 +35,12 @@ export async function GET(
     const seasonNumber = episodeData?.episode?.season
       ? `S${episodeData.episode.season.toString().padStart(2, "0")}`
       : "";
+
     const podcastEpisode =
       seasonNumber && episodeNumber
         ? `${seasonNumber} • ${episodeNumber}`
         : episodeNumber || seasonNumber || "";
 
-    // Vérifier si l'épisode est nouveau (moins de 7 jours)
     const isNew = episodeData?.episode?.pubDate
       ? new Date(episodeData.episode.pubDate) >
         new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
