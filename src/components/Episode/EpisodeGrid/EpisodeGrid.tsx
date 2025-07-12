@@ -57,59 +57,46 @@ export default function PodcastGrid({
 
   const deferredSearchQuery = useDeferredValue(searchQuery);
 
-  const filmsWithEpisodeData = useMemo(
-    () =>
-      episodes.flatMap((episode) =>
-        episode.links.map((link) => ({
-          ...link.film,
-          episodeTitle: episode.title,
-          episodeDate: episode.pubDate,
-          episodeDuration: episode.duration,
-          episodeSlug: episode.slug,
-          parentSaga: episode.parentSaga,
-        }))
-      ),
-    [episodes]
-  );
-
   const availableYears = useMemo(() => {
     const years = new Set<number>();
-    filmsWithEpisodeData.forEach((film) => {
-      if (film.episodeDate) {
-        const year = new Date(film.episodeDate).getFullYear();
+    episodes.forEach((episode) => {
+      if (episode.pubDate) {
+        const year = new Date(episode.pubDate).getFullYear();
         years.add(year);
       }
     });
     return Array.from(years).sort((a, b) => b - a);
-  }, [filmsWithEpisodeData]);
+  }, [episodes]);
 
-  const filteredFilms = useMemo(() => {
-    let filtered = filmsWithEpisodeData;
+  const filteredEpisodes = useMemo(() => {
+    let filtered = episodes;
 
     if (deferredSearchQuery.trim()) {
       const query = deferredSearchQuery.toLowerCase();
       filtered = filtered.filter(
-        (film) =>
-          film.title.toLowerCase().includes(query) ||
-          (film.year && film.year.toString().includes(query)) ||
-          (film.saga && film.saga.name.toLowerCase().includes(query)) ||
-          (film.episodeTitle &&
-            film.episodeTitle.toLowerCase().includes(query)) ||
-          (film.parentSaga &&
-            film.parentSaga.name.toLowerCase().includes(query))
+        (episode) =>
+          episode.title.toLowerCase().includes(query) ||
+          episode.description.toLowerCase().includes(query) ||
+          (episode.parentSaga &&
+            episode.parentSaga.name.toLowerCase().includes(query)) ||
+          episode.links.some((link) =>
+            link.film.title.toLowerCase().includes(query) ||
+            (link.film.year && link.film.year.toString().includes(query)) ||
+            (link.film.saga && link.film.saga.name.toLowerCase().includes(query))
+          )
       );
     }
 
     if (yearFilter) {
       filtered = filtered.filter(
-        (film) =>
-          film.episodeDate &&
-          new Date(film.episodeDate).getFullYear().toString() === yearFilter
+        (episode) =>
+          episode.pubDate &&
+          new Date(episode.pubDate).getFullYear().toString() === yearFilter
       );
     }
 
     return filtered;
-  }, [filmsWithEpisodeData, deferredSearchQuery, yearFilter]);
+  }, [episodes, deferredSearchQuery, yearFilter]);
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value);
@@ -120,11 +107,11 @@ export default function PodcastGrid({
   }, []);
 
   const {
-    displayedItems: displayedFilms,
+    displayedItems: displayedEpisodes,
     hasMore,
     observerRef,
   } = useInfiniteScroll({
-    items: filteredFilms,
+    items: filteredEpisodes,
     itemsPerPage: 12,
     rootMargin: "300px",
     resetDependencies: [deferredSearchQuery, yearFilter],
@@ -156,25 +143,50 @@ export default function PodcastGrid({
       </div>
 
       <div className={styles.podcastGrid}>
-        {displayedFilms.length === 0 ? (
+        {displayedEpisodes.length === 0 ? (
           <MemoizedEpisodeCard isNoResults={true} />
         ) : (
           <>
-            {displayedFilms.map((film) => (
-              <MemoizedEpisodeCard
-                key={film.id}
-                film={film}
-                episodeTitle={film.episodeTitle}
-                episodeDate={film.episodeDate}
-                episodeDuration={film.episodeDuration}
-                episodeSlug={film.episodeSlug}
-              />
-            ))}
+            {displayedEpisodes.map((episode) => {
+              // Si l'épisode a des films, afficher le premier film
+              if (episode.links.length > 0) {
+                const firstFilm = episode.links[0].film;
+                return (
+                  <MemoizedEpisodeCard
+                    key={episode.id}
+                    film={firstFilm}
+                    episodeTitle={episode.title}
+                    episodeDate={episode.pubDate}
+                    episodeDuration={episode.duration}
+                    episodeSlug={episode.slug}
+                  />
+                );
+              } else {
+                return (
+                  <MemoizedEpisodeCard
+                    key={episode.id}
+                    film={{
+                      id: episode.id,
+                      title: episode.title,
+                      slug: episode.slug || "",
+                      year: null,
+                      imgFileName: null,
+                      age: null,
+                      saga: null,
+                    }}
+                    episodeTitle={episode.title}
+                    episodeDate={episode.pubDate}
+                    episodeDuration={episode.duration}
+                    episodeSlug={episode.slug}
+                  />
+                );
+              }
+            })}
             {/* Observer pour l'infinite scroll */}
             {hasMore && (
               <div ref={observerRef} className={styles.loadingObserver}>
                 <div className={styles.loadingText}>
-                  <span>Plus de films...</span>
+                  <span>Plus d'épisodes...</span>
                 </div>
               </div>
             )}

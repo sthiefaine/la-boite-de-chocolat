@@ -4,7 +4,7 @@ import { getEpisodesWithFilms } from "./actions/episode";
 
 import LatestEpisodeSection from "@/components/Sections/LatestEpisodeSection/LatestEpisodeSection";
 import HeroSection from "@/components/Sections/HeroSection/HeroSection";
-import EpisodesWithFilmsSection from "@/components/Sections/EpisodesWithFilmsSection/EpisodesWithFilmsSection";
+import EpisodesSection from "@/components/Sections/EpisodesSection/EpisodesSection";
 
 export default async function Home() {
   const episodesResult = await getEpisodesWithFilms();
@@ -13,7 +13,7 @@ export default async function Home() {
     <main className={styles.main}>
       <HeroSection episodes={episodes || []} />
       <LatestEpisodeSection />
-      <EpisodesWithFilmsSection episodes={episodes || []} />
+      <EpisodesSection episodes={episodes || []} />
     </main>
   );
 }

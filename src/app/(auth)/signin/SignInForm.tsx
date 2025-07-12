@@ -93,7 +93,6 @@ export default function SignInForm() {
           name="password"
           type="password"
           placeholder="Votre mot de passe"
-          defaultValue="password123"
           required
           className={styles.input}
         />

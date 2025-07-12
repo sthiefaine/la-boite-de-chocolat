@@ -20,7 +20,7 @@ import { PodcastJsonLd } from "./json-ld";
 import { SITE_URL } from "@/lib/config";
 import { Suspense } from "react";
 
-interface PodcastPageProps {
+interface EpisodePageProps {
   params: Promise<{
     slug: string;
   }>;
@@ -40,7 +40,7 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function PodcastPage({ params }: PodcastPageProps) {
+export default async function EpisodePage({ params }: EpisodePageProps) {
   const { slug } = await params;
 
   const [episodeResult, finalNavigationResult] = await Promise.all([
@@ -54,16 +54,12 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
 
   const episode = episodeResult.episode;
 
-  const previousEpisode =
-    finalNavigationResult.success &&
-    finalNavigationResult.data?.previousEpisode?.links[0]?.film
-      ? finalNavigationResult.data.previousEpisode
-      : null;
-  const nextEpisode =
-    finalNavigationResult.success &&
-    finalNavigationResult.data?.nextEpisode?.links[0]?.film
-      ? finalNavigationResult.data.nextEpisode
-      : null;
+  const previousEpisode = finalNavigationResult.success
+    ? finalNavigationResult?.data?.previousEpisode
+    : null;
+  const nextEpisode = finalNavigationResult.success
+    ? finalNavigationResult?.data?.nextEpisode
+    : null;
 
   const mainFilm = episode.links[0]?.film;
   const saga = mainFilm?.saga || null;
@@ -240,7 +236,15 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
                   <Suspense fallback={null}>
                     {" "}
                     <PodcastCard
-                      film={nextEpisode.links[0]?.film}
+                      film={nextEpisode.links[0]?.film ?? {
+                        id: nextEpisode.id,
+                        title: nextEpisode.title,
+                        slug: nextEpisode.slug || "",
+                        year: null,
+                        imgFileName: null,
+                        age: null,
+                        saga: null,
+                      }}
                       episodeTitle={nextEpisode.title}
                       episodeDate={nextEpisode.pubDate}
                       episodeDuration={nextEpisode.duration}
@@ -257,7 +261,15 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
                   </span>
                   <Suspense fallback={null}>
                     <PodcastCard
-                      film={previousEpisode.links[0]?.film}
+                      film={previousEpisode.links[0]?.film ?? {
+                        id: previousEpisode.id,
+                        title: previousEpisode.title,
+                        slug: previousEpisode.slug || "",
+                        year: null,
+                        imgFileName: null,
+                        age: null,
+                        saga: null,
+                      }}
                       episodeTitle={previousEpisode.title}
                       episodeDate={previousEpisode.pubDate}
                       episodeDuration={previousEpisode.duration}

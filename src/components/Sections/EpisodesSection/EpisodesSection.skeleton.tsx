@@ -1,6 +1,6 @@
-import styles from "../EpisodesWithFilmsSection.module.css";
+import styles from "./EpisodesSection.module.css";
 
-export default function EpisodesWithFilmsSectionSkeleton() {
+export default function EpisodesSectionSkeleton() {
   return (
     <section className={styles.section} id="episodes">
       <h2 className={styles.title}>Les Podcasts</h2>

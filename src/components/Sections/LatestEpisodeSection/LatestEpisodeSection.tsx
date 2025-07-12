@@ -7,7 +7,7 @@ import {
   formatDuration,
   truncateToLines,
 } from "@/lib/podcastHelpers";
-import { PodcastPlayerButton } from "@/components/Episode/EpisodePlayerButton/EpisodePlayerButton";
+import { EpisodePlayerButton } from "@/components/Episode/EpisodePlayerButton/EpisodePlayerButton";
 import styles from "./LatestEpisodeSection.module.css";
 
 export default async function LatestEpisodeSection() {
@@ -123,7 +123,7 @@ export default async function LatestEpisodeSection() {
             )}
 
             <div className={styles.playerSection}>
-              <PodcastPlayerButton
+              <EpisodePlayerButton
                 title={episode.title}
                 audioUrl={episode.audioUrl}
                 imageUrl={
@@ -135,7 +135,7 @@ export default async function LatestEpisodeSection() {
                 slug={episode.slug ?? ""}
                 className={styles.playButton}
               >
-              </PodcastPlayerButton>
+              </EpisodePlayerButton>
 
               {episode.slug && (
                 <Link

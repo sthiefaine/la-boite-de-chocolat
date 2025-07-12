@@ -181,9 +181,6 @@ export async function getPreviousEpisode(slug: string) {
         pubDate: {
           lt: currentEpisode.pubDate,
         },
-        links: {
-          some: {},
-        },
       },
       include: {
         links: {
@@ -232,9 +229,6 @@ export async function getNextEpisode(slug: string) {
         },
         pubDate: {
           gt: currentEpisode.pubDate,
-        },
-        links: {
-          some: {},
         },
       },
       include: {
@@ -320,9 +314,6 @@ export async function getEpisodesWithFilms() {
       where: {
         rssFeed: {
           nameId: "la-boite-de-chocolat",
-        },
-        links: {
-          some: {},
         },
       },
       select: {

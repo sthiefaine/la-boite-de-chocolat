@@ -1,5 +1,5 @@
 import EpisodeGrid from "@/components/Episode/EpisodeGrid/EpisodeGrid";
-import styles from "./EpisodesWithFilmsSection.module.css";
+import styles from "./EpisodesSection.module.css";
 
 interface Episode {
   id: string;
@@ -25,11 +25,11 @@ interface Episode {
   }>;
 }
 
-interface EpisodesWithFilmsSectionProps {
+interface EpisodesSectionProps {
   episodes: Episode[];
 }
 
-export default function EpisodesWithFilmsSection({ episodes }: EpisodesWithFilmsSectionProps) {
+export default function EpisodesSection({ episodes }: EpisodesSectionProps) {
   return (
     <section className={styles.section} id="episodes">
       <EpisodeGrid episodes={episodes} />
