@@ -1,0 +1,67 @@
+.shareButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all var(--transition-fast);
+  border: var(--glass-border-dark);
+  cursor: pointer;
+  width: 160px;
+  min-width: 160px;
+  text-align: center;
+  justify-content: center;
+  background: var(--glass-bg-darker);
+  backdrop-filter: var(--glass-blur-medium);
+  box-shadow: var(--glass-shadow-dark);
+  color: var(--text-white);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  font-family: inherit;
+}
+
+.shareButton:hover {
+  background: rgba(0, 0, 0, 0.6);
+  border: var(--glass-border-dark);
+  color: var(--text-white);
+  transform: translateY(-1px);
+  box-shadow: var(--glass-shadow-dark);
+}
+
+.shareButton:active {
+  transform: translateY(0);
+  box-shadow: var(--glass-shadow-medium);
+}
+
+.buttonIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-fast);
+  color: inherit;
+}
+
+.shareButton:hover .buttonIcon {
+  transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .shareButton {
+    width: 140px;
+    min-width: 140px;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.8125rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .shareButton {
+    width: 120px;
+    min-width: 120px;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+  }
+} 

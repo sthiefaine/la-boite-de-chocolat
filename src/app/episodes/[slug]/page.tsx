@@ -15,6 +15,7 @@ import {
 } from "@/app/actions/episode";
 import { PodcastPlayerButton } from "@/components/PodcastPlayerButton/PodcastPlayerButton";
 import { AddToQueueButton } from "@/components/Queue/AddToQueueButton";
+import { ShareButton } from "@/components/ShareButton/ShareButton";
 import { PodcastJsonLd } from "./json-ld";
 import { SITE_URL } from "@/lib/config";
 import { Suspense } from "react";
@@ -184,6 +185,12 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
                   <span className={styles.buttonIcon}>⬇️</span>
                   Télécharger
                 </a>
+
+                <ShareButton
+                  title={mainFilm?.title || episode.title}
+                  url={`${SITE_URL}/episodes/${episode.slug}`}
+                  className={`${styles.button} ${styles.shareButton}`}
+                />
 
                 {mainFilm?.tmdbId && (
                   <a
