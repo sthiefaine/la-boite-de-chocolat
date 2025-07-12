@@ -1,9 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { formatDuration } from "@/lib/podcastHelpers";
-import { IMAGE_CONFIG, getVercelBlobUrl } from "@/lib/imageConfig";
-import { AGE_RATINGS } from "@/lib/helpers";
+import { IMAGE_CONFIG } from "@/lib/imageConfig";
 import styles from "./PodcastCard.module.css";
+
+const getStaticImageUrl = (imgFileName: string) => {
+  return `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/films/${imgFileName}`;
+};
 
 interface PodcastCardProps {
   film?: {
@@ -23,10 +26,10 @@ interface PodcastCardProps {
   episodeDuration?: number | null;
   episodeSlug?: string | null;
   isNoResults?: boolean;
-  variant?: 'default' | 'compact';
+  variant?: "default" | "compact";
 }
 
-export default function PodcastCard({
+function PodcastCard({
   film,
   episodeTitle,
   episodeDate,
@@ -46,6 +49,7 @@ export default function PodcastCard({
             className={styles.cardImage}
             src="/images/navet.png"
             priority={false}
+            quality={IMAGE_CONFIG.defaultQuality}
           />
         </div>
         <div className={styles.cardInformations}>
@@ -63,27 +67,40 @@ export default function PodcastCard({
       </article>
     );
   }
+
   if (!film) return null;
 
   // Vérifier si le film doit être flouté (âge 18+)
   const shouldBlur = film.age === "18+" || film.age === "adult";
 
   return (
-    <article className={`${styles.cardArticle} ${variant === 'compact' ? styles.cardArticleCompact : ''}`}>
-      <Link href={`/podcasts/${episodeSlug}`} className={styles.cardLink}>
+    <article
+      className={`${styles.cardArticle} ${
+        variant === "compact" ? styles.cardArticleCompact : ""
+      }`}
+    >
+      <Link
+        href={`/podcasts/${episodeSlug}`}
+        className={styles.cardLink}
+        prefetch={false} // Désactiver le préchargement automatique
+      >
         <span className={styles.cardImageContainer}>
           {film.imgFileName ? (
             <>
               <Image
                 alt={`Poster de ${film.title}`}
                 fill
-                sizes={variant === 'compact' ? IMAGE_CONFIG.sizes.filmCardCompact : IMAGE_CONFIG.sizes.filmCard}
-                className={`${styles.cardImage} ${shouldBlur ? styles.blurredImage : ''}`}
-                src={getVercelBlobUrl(film.imgFileName)}
+                sizes={
+                  variant === "compact"
+                    ? IMAGE_CONFIG.sizes.filmCardCompact
+                    : IMAGE_CONFIG.sizes.filmCard
+                }
+                className={`${styles.cardImage} ${
+                  shouldBlur ? styles.blurredImage : ""
+                }`}
+                src={getStaticImageUrl(film.imgFileName)}
                 priority={false}
                 loading="lazy"
-                placeholder="blur"
-                blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
                 quality={IMAGE_CONFIG.defaultQuality}
               />
               {shouldBlur && (
@@ -124,3 +141,6 @@ export default function PodcastCard({
     </article>
   );
 }
+
+// Export avec memo pour éviter les re-rendus inutiles
+export default PodcastCard;

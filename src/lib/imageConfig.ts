@@ -49,12 +49,16 @@ export const IMAGE_CONFIG = {
 };
 
 // Fonction utilitaire pour construire l'URL Vercel Blob
-export function getVercelBlobUrl(imgFileName: string, folder: string = "films"): string {
+export function getVercelBlobUrl(
+  imgFileName: string,
+  folder: string = "films"
+): string {
+  console.log("imgFileName", imgFileName);
   if (folder.includes("/")) {
     // Pour les chemins complexes comme "podcasts/la-boite-de-chocolat/episodes"
     return `https://${IMAGE_CONFIG.domains.vercelBlob}/${folder}/${imgFileName}`;
   }
-  
+
   const imgFolder = folder.endsWith("s") ? folder : `${folder}s`;
   return `https://${IMAGE_CONFIG.domains.vercelBlob}/${imgFolder}/${imgFileName}`;
 }

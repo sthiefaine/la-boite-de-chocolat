@@ -168,3 +168,67 @@
   color: var(--chocolate-primary);
   font-weight: 600;
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sagaCard {
+    flex: 1 1 100%;
+    max-width: 220px;
+    min-width: 90px;
+    border-radius: 10px;
+  }
+
+  .sagaCard.compact {
+    max-width: 200px;
+    min-width: 80px;
+    height: 200px !important;
+    width: 100%;
+  }
+
+  .sagaTitle {
+    font-size: 0.85rem;
+    line-height: 1.2;
+  }
+
+  .sagaCard.compact .sagaTitle {
+    font-size: 0.8rem !important;
+    line-height: 1.1 !important;
+  }
+
+  .sagaImage {
+    padding-bottom: 60%;
+    border-radius: 8px;
+    margin: 4px;
+  }
+
+  .sagaCard.compact .sagaImage {
+    height: 100px !important;
+    margin: 4px;
+  }
+
+  .sagaInfo {
+    padding: 0.3rem 0.5rem;
+  }
+
+  .sagaCard.compact .sagaInfo {
+    padding: 0.3rem 0.5rem;
+    padding-top: 0;
+  }
+
+  .filmsCount {
+    font-size: 0.68rem;
+  }
+
+  .sagaCard.compact .filmsCount {
+    font-size: 0.68rem !important;
+  }
+
+  .sagaDescription {
+    font-size: 0.8rem;
+    line-height: 1.3;
+  }
+
+  .filmItem {
+    font-size: 0.75rem;
+  }
+}

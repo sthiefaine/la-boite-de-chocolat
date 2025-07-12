@@ -131,7 +131,7 @@ export async function PodcastJsonLd({
 }
 
 // Utilisation dans votre page :
-// import { PodcastJsonLd } from "@/components/JsonLd";
+// import { PodcastJsonLd } from "./json-ld";
 //
 // export default function PodcastPage() {
 //   return (

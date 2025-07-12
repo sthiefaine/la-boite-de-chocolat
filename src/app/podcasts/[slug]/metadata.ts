@@ -1,7 +1,7 @@
-import { prisma } from "@/lib/prisma";
+"use server";
 import { Metadata } from "next";
-import { getMaskedImageUrl } from "@/app/actions/image";
 import { SITE_URL } from "@/lib/config";
+import { getEpisodeBySlugCached } from "@/app/actions/episode";
 
 interface PodcastPageProps {
   params: Promise<{
@@ -14,27 +14,9 @@ export async function generateMetadata({
 }: PodcastPageProps): Promise<Metadata> {
   const { slug } = await params;
 
-  const episode = await prisma.podcastEpisode.findUnique({
-    where: { slug },
-    include: {
-      links: {
-        include: {
-          film: {
-            select: {
-              id: true,
-              title: true,
-              imgFileName: true,
-              age: true,
-              director: true,
-              year: true,
-            },
-          },
-        },
-      },
-    },
-  });
+  const episodeData = await getEpisodeBySlugCached(slug);
 
-  if (!episode) {
+  if (!episodeData) {
     return {
       title: "Épisode non trouvé - La Boîte de Chocolat",
       description:
@@ -43,11 +25,11 @@ export async function generateMetadata({
     };
   }
 
-  const mainFilm = episode.links[0]?.film;
+  const { episode, mainFilm, isAdultContent, mainFilmImageUrl } = episodeData;
   const title = mainFilm?.title || episode.title;
   const season = episode.season || null;
   const episodeNumber = episode.episode || null;
-  const fullTitle = `#${season}x${episodeNumber} - ${title} - La Boîte de Chocolat`;
+  const fullTitle = `S${season}E${episodeNumber} - ${title} - La Boîte de Chocolat`;
 
   // Description enrichie
   let description = episode.description?.substring(0, 160);
@@ -59,11 +41,8 @@ export async function generateMetadata({
   }
   description = description || `Écoutez l'épisode sur ${title}`;
 
-  const ogImageUrl = await getMaskedImageUrl(
-    mainFilm?.imgFileName || null,
-    mainFilm?.age || null
-  );
-  const isAdult = mainFilm?.age === "18+" || mainFilm?.age === "adult";
+  const ogImageUrl = mainFilmImageUrl;
+  const isAdult = isAdultContent;
 
   // URL canonique
   const canonicalUrl = `${SITE_URL}/podcast/${slug}`;
@@ -203,20 +182,20 @@ export async function generateMetadata({
     // Métadonnées pour les favicons et manifestes
     icons: {
       icon: [
-        { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-        { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+        { url: "/images/icons/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+        { url: "/images/icons/favicon-32x32.png", sizes: "32x32", type: "image/png" },
       ],
       apple: [
-        { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+        { url: "/images/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
       ],
       other: [
         {
-          url: "/android-chrome-192x192.png",
+          url: "/images/icons/android-chrome-192x192.png",
           sizes: "192x192",
           type: "image/png",
         },
         {
-          url: "/android-chrome-512x512.png",
+          url: "/images/icons/android-chrome-512x512.png",
           sizes: "512x512",
           type: "image/png",
         },

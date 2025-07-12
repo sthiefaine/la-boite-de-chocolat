@@ -2,8 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { IMAGE_CONFIG, getVercelBlobUrl } from "@/lib/imageConfig";
+import { IMAGE_CONFIG } from "@/lib/imageConfig";
 import styles from "./SagaCard.module.css";
+
+const getStaticImageUrl = (imgFileName: string) => {
+  return `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/sagas/${imgFileName}`;
+};
 
 interface SagaCardProps {
   saga: {
@@ -32,13 +36,11 @@ export default function SagaCard({ saga, variant = "default" }: SagaCardProps) {
       <div className={styles.sagaImage}>
         {saga.imgFileName ? (
           <Image
-            src={getVercelBlobUrl(saga.imgFileName, "saga")}
+            src={getStaticImageUrl(saga.imgFileName)}
             alt={`Poster de la saga ${saga.name}`}
             fill
             className={styles.image}
             sizes={isCompact ? "200px" : "300px"}
-            placeholder="blur"
-            blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
             quality={IMAGE_CONFIG.defaultQuality}
           />
         ) : (

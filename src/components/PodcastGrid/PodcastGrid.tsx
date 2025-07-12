@@ -1,11 +1,14 @@
 "use client";
 
-import { useState, useMemo, useCallback, useDeferredValue } from "react";
+import { useState, useMemo, useCallback, useDeferredValue, memo } from "react";
 import SearchBar from "../SearchBar/SearchBar";
 import styles from "./PodcastGrid.module.css";
 import { PreserveScroll } from "@/hooks/preservScroll";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import PodcastCard from "../PodcastCard/PodcastCard";
+
+// Composant PodcastCard mémorisé pour éviter les re-rendus inutiles
+const MemoizedPodcastCard = memo(PodcastCard);
 
 interface Film {
   id: string;
@@ -79,6 +82,17 @@ export default function PodcastGrid({
       }
     });
     return Array.from(years).sort((a, b) => b - a);
+  }, [filmsWithEpisodeData]);
+
+  // Optimisation : pré-calculer les années pour éviter les recalculs
+  const yearSet = useMemo(() => {
+    const years = new Set<number>();
+    filmsWithEpisodeData.forEach((film) => {
+      if (film.episodeDate) {
+        years.add(new Date(film.episodeDate).getFullYear());
+      }
+    });
+    return years;
   }, [filmsWithEpisodeData]);
 
   const filteredFilms = useMemo(() => {
@@ -155,11 +169,11 @@ export default function PodcastGrid({
 
       <div className={styles.podcastGrid}>
         {displayedFilms.length === 0 ? (
-          <PodcastCard isNoResults={true} />
+          <MemoizedPodcastCard isNoResults={true} />
         ) : (
           <>
             {displayedFilms.map((film) => (
-              <PodcastCard
+              <MemoizedPodcastCard
                 key={film.id}
                 film={film}
                 episodeTitle={film.episodeTitle}

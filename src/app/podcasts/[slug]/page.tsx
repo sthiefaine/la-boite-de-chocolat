@@ -12,6 +12,7 @@ import {
   getEpisodeBySlug,
   getEpisodeNavigation,
   getAllEpisodeSlugs,
+  getEpisodeBySlugCached,
 } from "@/app/actions/episode";
 import { PodcastPlayerButton } from "@/components/PodcastPlayerButton/PodcastPlayerButton";
 import { AddToQueueButton } from "@/components/Queue/AddToQueueButton";
@@ -20,13 +21,13 @@ import { SITE_URL } from "@/lib/config";
 import { Suspense } from "react";
 import { getMaskedImageUrl } from "@/app/actions/image";
 
-export { generateMetadata };
-
 interface PodcastPageProps {
   params: Promise<{
     slug: string;
   }>;
 }
+
+export { generateMetadata };
 
 export async function generateStaticParams() {
   const result = await getAllEpisodeSlugs();
@@ -43,18 +44,16 @@ export async function generateStaticParams() {
 export default async function PodcastPage({ params }: PodcastPageProps) {
   const { slug } = await params;
 
-  const episodeResult = await getEpisodeBySlug(slug);
+  const [episodeResult, finalNavigationResult] = await Promise.all([
+    getEpisodeBySlugCached(slug),
+    getEpisodeNavigation(slug),
+  ]);
 
-  if (!episodeResult.success || !episodeResult.data) {
+  if (!episodeResult) {
     notFound();
   }
 
-  const episode = episodeResult.data;
-
-  const finalNavigationResult = await getEpisodeNavigation(
-    slug,
-    episode.pubDate
-  );
+  const episode = episodeResult.episode;
 
   const previousEpisode =
     finalNavigationResult.success &&
@@ -114,9 +113,8 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
                 alt="Poster navet - contenu 18+"
                 className={styles.backgroundImage}
                 sizes={IMAGE_CONFIG.sizes.background}
-                priority
-                placeholder="blur"
-                blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
+                quality={IMAGE_CONFIG.defaultQuality}
+                priority={true}
               />
               <div className={styles.backgroundOverlay}></div>
             </div>
@@ -129,10 +127,8 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
                   alt={`Poster de ${mainFilm.title}`}
                   className={styles.backgroundImage}
                   sizes={IMAGE_CONFIG.sizes.background}
-                  priority
-                  placeholder="blur"
-                  blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
-                  quality={IMAGE_CONFIG.defaultQuality}
+                  quality={100}
+                  priority={true}
                 />
                 <div className={styles.backgroundOverlay}></div>
               </div>
@@ -241,19 +237,23 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
               {nextEpisode && (
                 <div className={styles.navigationCard}>
                   <span className={styles.navigationLabel}>Suivant</span>
-                  <PodcastCard
-                    film={nextEpisode.links[0]?.film}
-                    episodeTitle={nextEpisode.title}
-                    episodeDate={nextEpisode.pubDate}
-                    episodeDuration={nextEpisode.duration}
-                    episodeSlug={nextEpisode.slug}
-                    variant="compact"
-                  />
+                  <Suspense fallback={null}>
+                    {" "}
+                    <PodcastCard
+                      film={nextEpisode.links[0]?.film}
+                      episodeTitle={nextEpisode.title}
+                      episodeDate={nextEpisode.pubDate}
+                      episodeDuration={nextEpisode.duration}
+                      episodeSlug={nextEpisode.slug}
+                      variant="compact"
+                    />
+                  </Suspense>
                 </div>
               )}
               {previousEpisode && (
                 <div className={styles.navigationCard}>
                   <span className={styles.navigationLabel}>Précédent</span>
+                  <Suspense fallback={null}>
                   <PodcastCard
                     film={previousEpisode.links[0]?.film}
                     episodeTitle={previousEpisode.title}
@@ -261,13 +261,16 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
                     episodeDuration={previousEpisode.duration}
                     episodeSlug={previousEpisode.slug}
                     variant="compact"
-                  />
+                    />
+                  </Suspense>
                 </div>
               )}
               {saga && (
                 <div className={styles.navigationCard}>
                   <span className={styles.navigationLabel}>Saga</span>
-                  <SagaCard saga={saga} variant="compact" />
+                  <Suspense fallback={null}>
+                    <SagaCard saga={saga} variant="compact" />
+                  </Suspense>
                 </div>
               )}
             </div>

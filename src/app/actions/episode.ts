@@ -1,8 +1,11 @@
 "use server";
 
+import { cache } from 'react';
 import { PODCAST_CATEGORIES } from "@/lib/helpers";
 import { prisma } from "@/lib/prisma";
 import { put } from '@vercel/blob';
+import { getMaskedImageUrl } from "@/app/actions/image";
+import { getVercelBlobUrl } from '@/lib/imageConfig';
 
 export async function getEpisodeBySlug(slug: string) {
   try {
@@ -44,109 +47,194 @@ export async function getEpisodeBySlug(slug: string) {
   }
 }
 
-export async function getEpisodeNavigation(
-  currentSlug: string,
-  currentPubDate: Date
-) {
+// Version cache pour éviter les requêtes en double entre metadata et page
+export const getEpisodeBySlugCached = cache(async (slug: string) => {
+  try {
+    const episode = await prisma.podcastEpisode.findUnique({
+      where: { slug },
+      include: {
+        links: {
+          include: {
+            film: {
+              select: {
+                id: true,
+                title: true,
+                imgFileName: true,
+                age: true,
+                director: true,
+                year: true,
+                tmdbId: true,
+                saga: {
+                  select: {
+                    id: true,
+                    name: true,
+                    description: true,
+                    imgFileName: true,
+                    films: {
+                      select: {
+                        id: true,
+                        title: true,
+                        year: true,
+                        slug: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!episode) {
+      return null;
+    }
+
+    const mainFilm = episode.links[0]?.film;
+    const isAdultContent = mainFilm?.age === "18+" || mainFilm?.age === "adult";
+
+    const mainFilmImageUrl = isAdultContent
+      ? await getMaskedImageUrl(
+          mainFilm?.imgFileName || null,
+          mainFilm?.age || null
+        )
+      : mainFilm?.imgFileName
+      ? getVercelBlobUrl(mainFilm.imgFileName)
+      : "/images/navet.png";
+
+    return {
+      episode,
+      mainFilm,
+      saga: mainFilm?.saga || null,
+      isAdultContent,
+      mainFilmImageUrl,
+    };
+  } catch (error) {
+    console.error("Erreur lors de la récupération de l'épisode (cache):", error);
+    return null;
+  }
+});
+
+export async function getPreviousEpisode(slug: string) {
+  try {
+    // D'abord, récupérer l'épisode actuel pour obtenir sa date
+    const currentEpisode = await prisma.podcastEpisode.findUnique({
+      where: { slug },
+      select: { pubDate: true }
+    });
+
+    if (!currentEpisode) return null;
+
+    // Récupérer l'épisode précédent (plus récent)
+    const previousEpisode = await prisma.podcastEpisode.findFirst({
+      where: {
+        rssFeed: {
+          nameId: "la-boite-de-chocolat",
+        },
+        pubDate: {
+          gt: currentEpisode.pubDate,
+        },
+        links: {
+          some: {},
+        },
+      },
+      include: {
+        links: {
+          include: {
+            film: {
+              include: {
+                saga: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        pubDate: "asc",
+      },
+    });
+
+    return previousEpisode;
+  } catch (error) {
+    console.error("Erreur lors de la récupération de l'épisode précédent:", error);
+    return null;
+  }
+}
+
+export async function getNextEpisode(slug: string) {
+  try {
+    const currentEpisode = await prisma.podcastEpisode.findUnique({
+      where: { slug },
+      select: { pubDate: true }
+    });
+
+    if (!currentEpisode) return null;
+
+    const nextEpisode = await prisma.podcastEpisode.findFirst({
+      where: {
+        rssFeed: {
+          nameId: "la-boite-de-chocolat",
+        },
+        pubDate: {
+          lt: currentEpisode.pubDate,
+        },
+        links: {
+          some: {},
+        },
+      },
+      include: {
+        links: {
+          include: {
+            film: {
+              include: {
+                saga: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        pubDate: "desc",
+      },
+    });
+
+    return nextEpisode;
+  } catch (error) {
+    console.error("Erreur lors de la récupération de l'épisode suivant:", error);
+    return null;
+  }
+}
+
+export async function getEpisodeNavigation(slug: string) {
   try {
     const [previousEpisode, nextEpisode] = await Promise.all([
-      prisma.podcastEpisode.findFirst({
-        where: {
-          rssFeed: {
-            nameId: "la-boite-de-chocolat",
-          },
-          pubDate: {
-            lt: currentPubDate,
-          },
-          links: {
-            some: {},
-          },
-        },
-        select: {
-          id: true,
-          title: true,
-          pubDate: true,
-          duration: true,
-          slug: true,
-          links: {
-            select: {
-              film: {
-                select: {
-                  id: true,
-                  title: true,
-                  slug: true,
-                  year: true,
-                  imgFileName: true,
-                  age: true,
-                  saga: {
-                    select: {
-                      id: true,
-                      name: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-        orderBy: {
-          pubDate: "desc",
-        },
-      }),
-      prisma.podcastEpisode.findFirst({
-        where: {
-          rssFeed: {
-            nameId: "la-boite-de-chocolat",
-          },
-          pubDate: {
-            gt: currentPubDate,
-          },
-          links: {
-            some: {},
-          },
-        },
-        select: {
-          id: true,
-          title: true,
-          pubDate: true,
-          duration: true,
-          slug: true,
-          links: {
-            select: {
-              film: {
-                select: {
-                  id: true,
-                  title: true,
-                  slug: true,
-                  year: true,
-                  imgFileName: true,
-                  age: true,
-                  saga: {
-                    select: {
-                      id: true,
-                      name: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-        orderBy: {
-          pubDate: "asc",
-        },
-      }),
+      getPreviousEpisode(slug),
+      getNextEpisode(slug)
     ]);
 
     return {
       success: true,
-      data: { previousEpisode, nextEpisode },
+      data: {
+        previousEpisode,
+        nextEpisode
+      }
     };
   } catch (error) {
     console.error("Erreur lors de la récupération de la navigation:", error);
     return {
       success: false,
-      error: "Erreur lors de la récupération de la navigation",
+      error: "Erreur lors de la récupération de la navigation"
     };
   }
 }

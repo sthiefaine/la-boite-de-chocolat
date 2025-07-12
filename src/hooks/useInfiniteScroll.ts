@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 
 interface UseInfiniteScrollProps {
   items: any[];
@@ -25,27 +25,38 @@ export function useInfiniteScroll({
     setDisplayedCount(itemsPerPage);
   }, [...resetDependencies, itemsPerPage]);
 
-  // Intersection Observer
+  // Callback optimisé pour l'intersection observer
+  const handleIntersection = useCallback((entries: IntersectionObserverEntry[]) => {
+    const [entry] = entries;
+    if (entry.isIntersecting && displayedCount < items.length) {
+      setDisplayedCount((prev) => prev + itemsPerPage);
+    }
+  }, [displayedCount, items.length, itemsPerPage]);
+
+  // Intersection Observer avec callback optimisé
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries;
-        if (entry.isIntersecting && displayedCount < items.length) {
-          setDisplayedCount((prev) => prev + itemsPerPage);
-        }
-      },
-      { threshold, rootMargin }
-    );
+    const observer = new IntersectionObserver(handleIntersection, { 
+      threshold, 
+      rootMargin 
+    });
 
     if (observerRef.current) {
       observer.observe(observerRef.current);
     }
 
     return () => observer.disconnect();
-  }, [displayedCount, items.length, itemsPerPage, threshold, rootMargin]);
+  }, [handleIntersection, threshold, rootMargin]);
 
-  const displayedItems = items.slice(0, displayedCount);
-  const hasMore = displayedCount < items.length;
+  // Mémoisation des résultats pour éviter les re-calculs
+  const displayedItems = useMemo(() => 
+    items.slice(0, displayedCount), 
+    [items, displayedCount]
+  );
+  
+  const hasMore = useMemo(() => 
+    displayedCount < items.length, 
+    [displayedCount, items.length]
+  );
 
   return {
     displayedItems,
