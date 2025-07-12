@@ -47,10 +47,11 @@ export async function generateMetadata({
   const isAdult = isAdultContent;
 
   const ogImageUrl = slug
-    ? isAdult
-      ? `/api/image/og-masked?slug=${slug}`
-      : `/api/image/og?slug=${slug}`
-    : "/api/image/og-default";
+    ? `/episodes/${slug}/opengraph-image`
+    : "/opengraph-image";
+  const twitterImageUrl = slug
+    ? `/episodes/${slug}/twitter-image`
+    : "/twitter-image";
 
   // URL canonique
   const canonicalUrl = `${SITE_URL}/podcast/${slug}`;
@@ -115,7 +116,7 @@ export async function generateMetadata({
           alt: isAdult
             ? "Poster flouté - contenu 18+"
             : `Poster de ${mainFilm?.title}`,
-          type: "image/jpeg",
+          type: "image/png",
         },
       ],
     },
@@ -135,7 +136,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: fullTitle,
       description,
-      images: ogImageUrl,
+      images: [twitterImageUrl],
     },
 
     // Métadonnées pour les podcasts

@@ -198,7 +198,7 @@ export function ModernImage({
       }}
     >
       <img
-        src={src}
+        src={src as unknown as string}
         width={500}
         height={400}
         style={{
@@ -379,7 +379,7 @@ export function DefaultContent({
           marginBottom: "20px",
           textShadow: "0 4px 20px rgba(0, 0, 0, 0.8)",
           letterSpacing: "-2px",
-          color: "#FFD700",
+          color: "#d4af37",
           textAlign: "center",
         }}
       >
@@ -392,7 +392,7 @@ export function DefaultContent({
           fontSize: "28px",
           marginBottom: "15px",
           fontWeight: "800",
-          color: "#4ECDC4",
+          color: "#d4a574",
           letterSpacing: "2px",
           textShadow: "0 2px 8px rgba(0, 0, 0, 0.6)",
           textAlign: "center",
@@ -421,7 +421,7 @@ export function DefaultContent({
         style={{
           marginTop: "30px",
           background:
-            "linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6B6B 100%)",
+            "linear-gradient(135deg, #d4af37 0%, #a67c52 50%, #8b2635 100%)",
           color: "white",
           padding: "18px 45px",
           borderRadius: "35px",
@@ -429,7 +429,7 @@ export function DefaultContent({
           fontWeight: "900",
           letterSpacing: "2px",
           boxShadow:
-            "0 8px 25px rgba(255, 215, 0, 0.4), 0 0 20px rgba(255, 255, 255, 0.2)",
+            "0 8px 25px rgba(212, 175, 55, 0.4), 0 0 20px rgba(255, 255, 255, 0.2)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -454,5 +454,63 @@ export function DefaultContent({
         🎬 DÉCOUVREZ
       </div>
     </div>
+  );
+}
+
+// Template par défaut réutilisable
+export function DefaultTemplate() {
+  return (
+    <OGImageLayout
+      leftContent={
+        <div
+          style={{
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          {/* Icône principale */}
+          <div
+            style={{
+              width: "150px",
+              height: "150px",
+              borderRadius: "50%",
+              background:
+                "linear-gradient(135deg, #6b3e26 0%, #a67c52 50%, #d4a574 100%)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "4px solid rgba(255, 255, 255, 0.8)",
+              boxShadow:
+                "0 15px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.1)",
+              position: "relative",
+            }}
+          >
+            {/* Icône moderne */}
+            <div
+              style={{
+                fontSize: "60px",
+                fontWeight: "900",
+                color: "white",
+                textShadow: "0 4px 8px rgba(0, 0, 0, 0.8)",
+                transform: "rotate(-5deg)",
+              }}
+            >
+              🎬
+            </div>
+          </div>
+        </div>
+      }
+      rightContent={
+        <DefaultContent
+          title="LA BOÎTE DE CHOCOLAT"
+          subtitle="PODCAST CINÉMA"
+          description="Du cinéma, de la mauvaise foi, un soupçon de beauferie"
+        />
+      }
+    />
   );
 }

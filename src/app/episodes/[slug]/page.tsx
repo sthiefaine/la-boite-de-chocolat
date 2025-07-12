@@ -19,7 +19,6 @@ import { ShareButton } from "@/components/ShareButton/ShareButton";
 import { PodcastJsonLd } from "./json-ld";
 import { SITE_URL } from "@/lib/config";
 import { Suspense } from "react";
-import { getMaskedImageUrl } from "@/app/actions/image";
 
 interface PodcastPageProps {
   params: Promise<{
