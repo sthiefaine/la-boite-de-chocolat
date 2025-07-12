@@ -13,10 +13,43 @@ export async function getMaskedImageUrl(
   const isAdult = age === "18+" || age === "adult";
 
   if (isAdult) {
-    const baseUrl = process.env.NODE_ENV === "production" ? process.env.NEXT_PUBLIC_URL || "https://la-boite-de-chocolat.vercel.app" : "http://localhost:3000";
-    return `${baseUrl}/api/image/masked/${encodeURIComponent(imgFileName)}`;
+    return `/api/image/masked/${encodeURIComponent(imgFileName)}`;
   } else {
-    // Pour les autres films, utiliser l'image normale
     return getVercelBlobUrl(imgFileName, "films");
+  }
+}
+
+export async function getOpenGraphImageUrl(
+  imgFileName: string | null,
+  age: string | null
+): Promise<string> {
+  if (!imgFileName) {
+    return "/api/image/og-default";
+  }
+
+  const isAdult = age === "18+" || age === "adult";
+
+  // URL complète (Vercel Blob)
+  if (imgFileName.startsWith("http")) {
+    if (isAdult) {
+      return `/api/image/og-masked/${encodeURIComponent(imgFileName)}`;
+    } else {
+      return `/api/image/og/${encodeURIComponent(imgFileName)}`;
+    }
+  }
+
+  if (imgFileName.startsWith("/api/image/masked/")) {
+    return `/api/image/og-masked/${encodeURIComponent(imgFileName.replace("/api/image/masked/", ""))}`;
+  }
+
+  if (imgFileName === "/images/navet.png") {
+    return "/api/image/og-default";
+  }
+
+  // fichier local
+  if (isAdult) {
+    return `/api/image/og-masked/${encodeURIComponent(imgFileName)}`;
+  } else {
+    return `/api/image/og/${encodeURIComponent(imgFileName)}`;
   }
 }

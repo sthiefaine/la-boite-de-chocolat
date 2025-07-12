@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { IMAGE_CONFIG, getVercelBlobUrl } from "@/lib/imageConfig";
+import { IMAGE_CONFIG, getOpenGraphImageUrl, getVercelBlobUrl } from "@/lib/imageConfig";
 
 interface PodcastPosterProps {
   imgFileName?: string | null;
@@ -17,7 +17,6 @@ export default function PodcastPoster({
   size = "medium",
   className = "",
 }: PodcastPosterProps) {
-  console.log("imgFileName", imgFileName);
   const [imageError, setImageError] = useState(false);
   const sizeClasses = {
     small: "w-16 h-24",

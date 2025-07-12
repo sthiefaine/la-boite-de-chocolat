@@ -1,6 +1,7 @@
 import { Metadata, Viewport } from "next";
 import { SITE_URL } from "@/lib/config";
 import { getEpisodeBySlugCached } from "@/app/actions/episode";
+import { getOpenGraphImageUrl } from "@/app/actions/image";
 
 interface PodcastPageProps {
   params: Promise<{
@@ -40,8 +41,14 @@ export async function generateMetadata({
   }
   description = description || `Écoutez l'épisode sur ${title}`;
 
-  const ogImageUrl = mainFilmImageUrl;
+  // Générer l'URL de l'image Open Graph optimisée
+  const ogImageUrl = mainFilmImageUrl
+    ? await getOpenGraphImageUrl(mainFilmImageUrl, mainFilm.age || null)
+    : "/api/image/og-default";
+
   const isAdult = isAdultContent;
+
+  const ogImageUrlWithSlug = ogImageUrl + `?slug=${slug}`;
 
   // URL canonique
   const canonicalUrl = `${SITE_URL}/podcast/${slug}`;
@@ -97,27 +104,17 @@ export async function generateMetadata({
       locale: "fr_FR",
       siteName: "La Boîte de Chocolat",
       url: canonicalUrl,
-      images: ogImageUrl
-        ? [
-            {
-              url: ogImageUrl,
-              width: 500,
-              height: 750,
-              alt: isAdult
-                ? "Poster flouté - contenu 18+"
-                : `Poster de ${mainFilm?.title}`,
-              type: "image/jpeg",
-            },
-          ]
-        : [
-            {
-              url: `${SITE_URL}/images/navet.png`,
-              width: 1200,
-              height: 630,
-              alt: "La Boîte de Chocolat - Podcast Cinéma",
-              type: "image/jpeg",
-            },
-          ],
+      images: [
+        {
+          url: ogImageUrlWithSlug,
+          width: 1200,
+          height: 630,
+          alt: isAdult
+            ? "Poster flouté - contenu 18+"
+            : `Poster de ${mainFilm?.title}`,
+          type: "image/jpeg",
+        },
+      ],
     },
 
     /*     // Twitter Card enrichi
@@ -135,7 +132,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: fullTitle,
       description,
-      images: ogImageUrl ? [ogImageUrl] : [`${SITE_URL}/images/navet.png`],
+      images: [ogImageUrl],
     },
 
     // Métadonnées pour les podcasts

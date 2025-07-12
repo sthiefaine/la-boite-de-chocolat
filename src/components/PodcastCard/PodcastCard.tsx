@@ -4,10 +4,13 @@ import { formatDuration } from "@/lib/podcastHelpers";
 import { IMAGE_CONFIG } from "@/lib/imageConfig";
 import styles from "./PodcastCard.module.css";
 
-const getStaticImageUrl = (imgFileName: string) => {
-  return `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/films/${imgFileName}`;
+const getStaticImageUrl = (imgFileName: string, age: string | null) => {
+  console.log("imgFileName", imgFileName, age);
+  const isAdult = age === "18+" || age === "adult";
+  return isAdult
+    ? `/api/image/masked/${imgFileName}`
+    : `https://${IMAGE_CONFIG.domains.vercelBlob}/films/${imgFileName}`;
 };
-
 interface PodcastCardProps {
   film?: {
     id: string;
@@ -98,7 +101,7 @@ function PodcastCard({
                 className={`${styles.cardImage} ${
                   shouldBlur ? styles.blurredImage : ""
                 }`}
-                src={getStaticImageUrl(film.imgFileName)}
+                src={getStaticImageUrl(film.imgFileName, film.age)}
                 priority={false}
                 loading="lazy"
                 quality={IMAGE_CONFIG.defaultQuality}

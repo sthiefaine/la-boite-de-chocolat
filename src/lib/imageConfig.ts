@@ -53,7 +53,6 @@ export function getVercelBlobUrl(
   imgFileName: string,
   folder: string = "films"
 ): string {
-  console.log("imgFileName", imgFileName);
   if (folder.includes("/")) {
     // Pour les chemins complexes comme "podcasts/la-boite-de-chocolat/episodes"
     return `https://${IMAGE_CONFIG.domains.vercelBlob}/${folder}/${imgFileName}`;
@@ -66,6 +65,11 @@ export function getVercelBlobUrl(
 // Fonction utilitaire pour construire l'URL TMDB
 export function getTMDBUrl(posterPath: string, size: string = "w342"): string {
   return `https://${IMAGE_CONFIG.domains.tmdb}/t/p/${size}${posterPath}`;
+}
+
+// Fonction utilitaire pour construire l'URL d'image Open Graph optimisée
+export function getOpenGraphImageUrl(filename: string): string {
+  return `/api/image/og/${filename}`;
 }
 
 // Fonction utilitaire pour déterminer si une image doit être prioritaire

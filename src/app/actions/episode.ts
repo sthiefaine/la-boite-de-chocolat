@@ -1,11 +1,11 @@
 "use server";
 
-import { cache } from 'react';
+import { cache } from "react";
 import { PODCAST_CATEGORIES } from "@/lib/helpers";
 import { prisma } from "@/lib/prisma";
-import { put } from '@vercel/blob';
+import { put } from "@vercel/blob";
 import { getMaskedImageUrl } from "@/app/actions/image";
-import { getVercelBlobUrl } from '@/lib/imageConfig';
+import { getVercelBlobUrl } from "@/lib/imageConfig";
 
 export async function getEpisodeBySlug(slug: string) {
   try {
@@ -103,6 +103,12 @@ export const getEpisodeBySlugCached = cache(async (slug: string) => {
       ? getVercelBlobUrl(mainFilm.imgFileName)
       : "/images/navet.png";
 
+    /*
+      film: "https://XXXXXXXXXXXX.public.blob.vercel-storage.com/films/poster_twilight__chapitre_5___r_v_lation__2_me_partie_1752071582681-wGjg6p2A2dFq3uZoR5byWPYcgpsbZp.jpg"
+      adult: "/api/image/masked/poster_la_cambrioleuse_1752279342328-QhbXwke7cFBWoDjZB9EuhGjDmh8jzX.jpg"
+      navet: "/images/navet.png"
+*/
+
     return {
       episode,
       mainFilm,
@@ -111,7 +117,10 @@ export const getEpisodeBySlugCached = cache(async (slug: string) => {
       mainFilmImageUrl,
     };
   } catch (error) {
-    console.error("Erreur lors de la récupération de l'épisode (cache):", error);
+    console.error(
+      "Erreur lors de la récupération de l'épisode (cache):",
+      error
+    );
     return null;
   }
 });
@@ -121,7 +130,7 @@ export async function getPreviousEpisode(slug: string) {
     // D'abord, récupérer l'épisode actuel pour obtenir sa date
     const currentEpisode = await prisma.podcastEpisode.findUnique({
       where: { slug },
-      select: { pubDate: true }
+      select: { pubDate: true },
     });
 
     if (!currentEpisode) return null;
@@ -162,7 +171,10 @@ export async function getPreviousEpisode(slug: string) {
 
     return previousEpisode;
   } catch (error) {
-    console.error("Erreur lors de la récupération de l'épisode précédent:", error);
+    console.error(
+      "Erreur lors de la récupération de l'épisode précédent:",
+      error
+    );
     return null;
   }
 }
@@ -171,7 +183,7 @@ export async function getNextEpisode(slug: string) {
   try {
     const currentEpisode = await prisma.podcastEpisode.findUnique({
       where: { slug },
-      select: { pubDate: true }
+      select: { pubDate: true },
     });
 
     if (!currentEpisode) return null;
@@ -211,7 +223,10 @@ export async function getNextEpisode(slug: string) {
 
     return nextEpisode;
   } catch (error) {
-    console.error("Erreur lors de la récupération de l'épisode suivant:", error);
+    console.error(
+      "Erreur lors de la récupération de l'épisode suivant:",
+      error
+    );
     return null;
   }
 }
@@ -220,21 +235,21 @@ export async function getEpisodeNavigation(slug: string) {
   try {
     const [previousEpisode, nextEpisode] = await Promise.all([
       getPreviousEpisode(slug),
-      getNextEpisode(slug)
+      getNextEpisode(slug),
     ]);
 
     return {
       success: true,
       data: {
         previousEpisode,
-        nextEpisode
-      }
+        nextEpisode,
+      },
     };
   } catch (error) {
     console.error("Erreur lors de la récupération de la navigation:", error);
     return {
       success: false,
-      error: "Erreur lors de la récupération de la navigation"
+      error: "Erreur lors de la récupération de la navigation",
     };
   }
 }
@@ -616,20 +631,20 @@ export async function deleteEpisodeLink(linkId: string) {
 
 export async function uploadPodcastPoster(formData: FormData) {
   try {
-    const file = formData.get('file') as File;
-    
+    const file = formData.get("file") as File;
+
     if (!file) {
       return {
         success: false,
-        error: "Aucun fichier fourni"
+        error: "Aucun fichier fourni",
       };
     }
 
     // Vérifier le type de fichier
-    if (!file.type.startsWith('image/')) {
+    if (!file.type.startsWith("image/")) {
       return {
         success: false,
-        error: "Le fichier doit être une image"
+        error: "Le fichier doit être une image",
       };
     }
 
@@ -637,33 +652,36 @@ export async function uploadPodcastPoster(formData: FormData) {
     if (file.size > 5 * 1024 * 1024) {
       return {
         success: false,
-        error: "Le fichier est trop volumineux (max 5MB)"
+        error: "Le fichier est trop volumineux (max 5MB)",
       };
     }
 
     // Générer un nom de fichier unique
     const timestamp = Date.now();
-    const extension = file.name.split('.').pop();
+    const extension = file.name.split(".").pop();
     const fileName = `episode-${timestamp}.${extension}`;
 
     // Upload directement vers Vercel Blob
-    const blob = await put(`podcasts/la-boite-de-chocolat/episodes/${fileName}`, file, {
-      access: 'public',
-    });
+    const blob = await put(
+      `podcasts/la-boite-de-chocolat/episodes/${fileName}`,
+      file,
+      {
+        access: "public",
+      }
+    );
 
     return {
       success: true,
       data: {
         fileName: fileName,
-        url: blob.url
-      }
+        url: blob.url,
+      },
     };
-
   } catch (error) {
     console.error("Erreur lors de l'upload du poster:", error);
     return {
       success: false,
-      error: "Erreur lors de l'upload du poster"
+      error: "Erreur lors de l'upload du poster",
     };
   }
 }

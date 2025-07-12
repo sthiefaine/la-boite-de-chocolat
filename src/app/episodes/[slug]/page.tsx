@@ -70,14 +70,7 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
   const saga = mainFilm?.saga || null;
   const isAdultContent = mainFilm?.age === "18+" || mainFilm?.age === "adult";
 
-  const mainFilmImageUrl = isAdultContent
-    ? await getMaskedImageUrl(
-        mainFilm?.imgFileName || null,
-        mainFilm?.age || null
-      )
-    : mainFilm?.imgFileName
-    ? getVercelBlobUrl(mainFilm.imgFileName)
-    : "/images/navet.png";
+  const mainFilmImageUrl = episodeResult.mainFilmImageUrl;
 
   return (
     <>
@@ -109,7 +102,7 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
             <div className={styles.backgroundPoster}>
               <Image
                 fill
-                src="/images/navet.png"
+                src={mainFilmImageUrl}
                 alt="Poster navet - contenu 18+"
                 className={styles.backgroundImage}
                 sizes={IMAGE_CONFIG.sizes.background}
