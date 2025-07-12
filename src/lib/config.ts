@@ -14,3 +14,5 @@ export const SOCIAL_URLS = {
 export const CONTACT_URLS = {
   email: "mailto:laboitedechocolatmail@gmail.com"
 } as const;
+
+export const SITE_URL = "https://la-boite-de-chocolat.vercel.app";

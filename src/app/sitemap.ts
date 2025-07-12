@@ -1,12 +1,45 @@
 import type { MetadataRoute } from "next";
+import { prisma } from "@/lib/prisma";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  return [
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const baseUrl = process.env.VERCEL_URL || process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
+
+  const staticPages = [
     {
-      url: process.env.VERCEL_URL || process.env.NEXT_PUBLIC_URL || "",
+      url: baseUrl,
       lastModified: new Date(),
-      changeFrequency: "weekly",
+      changeFrequency: "daily" as const,
       priority: 1,
     },
+    {
+      url: `${baseUrl}/podcasts`,
+      lastModified: new Date(),
+      changeFrequency: "daily" as const,
+      priority: 0.9,
+    },
   ];
+
+  const episodes = await prisma.podcastEpisode.findMany({
+    where: {
+      slug: { not: null },
+    },
+    select: {
+      slug: true,
+      updatedAt: true,
+    },
+    orderBy: {
+      pubDate: "desc",
+    },
+  });
+
+  const episodePages = episodes.map((episode) => ({
+    url: `${baseUrl}/podcasts/${episode.slug}`,
+    lastModified: episode.updatedAt,
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
+
+
+
+  return [...staticPages, ...episodePages,];
 }

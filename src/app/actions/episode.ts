@@ -62,12 +62,28 @@ export async function getEpisodeNavigation(
             some: {},
           },
         },
-        include: {
+        select: {
+          id: true,
+          title: true,
+          pubDate: true,
+          duration: true,
+          slug: true,
           links: {
-            include: {
+            select: {
               film: {
-                include: {
-                  saga: true,
+                select: {
+                  id: true,
+                  title: true,
+                  slug: true,
+                  year: true,
+                  imgFileName: true,
+                  age: true,
+                  saga: {
+                    select: {
+                      id: true,
+                      name: true,
+                    },
+                  },
                 },
               },
             },
@@ -89,12 +105,28 @@ export async function getEpisodeNavigation(
             some: {},
           },
         },
-        include: {
+        select: {
+          id: true,
+          title: true,
+          pubDate: true,
+          duration: true,
+          slug: true,
           links: {
-            include: {
+            select: {
               film: {
-                include: {
-                  saga: true,
+                select: {
+                  id: true,
+                  title: true,
+                  slug: true,
+                  year: true,
+                  imgFileName: true,
+                  age: true,
+                  saga: {
+                    select: {
+                      id: true,
+                      name: true,
+                    },
+                  },
                 },
               },
             },
