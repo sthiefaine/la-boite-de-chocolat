@@ -145,7 +145,7 @@ export default function PodcastGrid({
           <SearchBar
             value={searchQuery}
             onChange={handleSearchChange}
-            placeholder="Rechercher un film, une saga, Marvel, une année..."
+            placeholder="Rechercher un épisode, un film, une saga..."
             yearFilter={{
               value: yearFilter,
               onChange: handleYearChange,

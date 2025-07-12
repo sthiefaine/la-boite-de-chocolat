@@ -126,57 +126,8 @@ export async function getPreviousEpisode(slug: string) {
 
     if (!currentEpisode) return null;
 
-    // Récupérer l'épisode précédent (plus récent)
+    // Récupérer l'épisode précédent (plus ancien)
     const previousEpisode = await prisma.podcastEpisode.findFirst({
-      where: {
-        rssFeed: {
-          nameId: "la-boite-de-chocolat",
-        },
-        pubDate: {
-          gt: currentEpisode.pubDate,
-        },
-        links: {
-          some: {},
-        },
-      },
-      include: {
-        links: {
-          include: {
-            film: {
-              include: {
-                saga: {
-                  select: {
-                    id: true,
-                    name: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      orderBy: {
-        pubDate: "asc",
-      },
-    });
-
-    return previousEpisode;
-  } catch (error) {
-    console.error("Erreur lors de la récupération de l'épisode précédent:", error);
-    return null;
-  }
-}
-
-export async function getNextEpisode(slug: string) {
-  try {
-    const currentEpisode = await prisma.podcastEpisode.findUnique({
-      where: { slug },
-      select: { pubDate: true }
-    });
-
-    if (!currentEpisode) return null;
-
-    const nextEpisode = await prisma.podcastEpisode.findFirst({
       where: {
         rssFeed: {
           nameId: "la-boite-de-chocolat",
@@ -206,6 +157,55 @@ export async function getNextEpisode(slug: string) {
       },
       orderBy: {
         pubDate: "desc",
+      },
+    });
+
+    return previousEpisode;
+  } catch (error) {
+    console.error("Erreur lors de la récupération de l'épisode précédent:", error);
+    return null;
+  }
+}
+
+export async function getNextEpisode(slug: string) {
+  try {
+    const currentEpisode = await prisma.podcastEpisode.findUnique({
+      where: { slug },
+      select: { pubDate: true }
+    });
+
+    if (!currentEpisode) return null;
+
+    const nextEpisode = await prisma.podcastEpisode.findFirst({
+      where: {
+        rssFeed: {
+          nameId: "la-boite-de-chocolat",
+        },
+        pubDate: {
+          gt: currentEpisode.pubDate,
+        },
+        links: {
+          some: {},
+        },
+      },
+      include: {
+        links: {
+          include: {
+            film: {
+              include: {
+                saga: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        pubDate: "asc",
       },
     });
 
