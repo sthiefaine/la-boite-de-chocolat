@@ -13,7 +13,7 @@ export async function getMaskedImageUrl(
   const isAdult = age === "18+" || age === "adult";
 
   if (isAdult) {
-    const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
+    const baseUrl = process.env.NODE_ENV === "production" ? process.env.NEXT_PUBLIC_URL || "https://la-boite-de-chocolat.vercel.app" : "http://localhost:3000";
     return `${baseUrl}/api/image/masked/${encodeURIComponent(imgFileName)}`;
   } else {
     // Pour les autres films, utiliser l'image normale
