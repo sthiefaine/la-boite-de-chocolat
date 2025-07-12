@@ -27,6 +27,30 @@ const nextConfig: NextConfig = {
         port: '3000',
         pathname: '/api/image/masked/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'la-boite-de-chocolat.vercel.app',
+        port: '',
+        pathname: '/api/image/og/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
+        pathname: '/api/image/og/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'la-boite-de-chocolat.vercel.app',
+        port: '',
+        pathname: '/api/image/og-default',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
+        pathname: '/api/image/og-default',
+      },
     ],
   },
 };
