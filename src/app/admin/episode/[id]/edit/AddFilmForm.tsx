@@ -2,13 +2,17 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   searchMovies,
   createFilmFromTMDB,
   createFilmManually,
   getSagas,
   getMovieCollection,
+  checkFilmExists,
 } from "@/app/actions/film";
+import { getVercelBlobUrl } from "@/lib/imageConfig";
+import { AGE_RATINGS } from "@/lib/helpers";
 import styles from "./AddFilmForm.module.css";
 
 interface AddFilmFormProps {
@@ -16,27 +20,41 @@ interface AddFilmFormProps {
   podcastName?: string;
   onFilmCreated: (filmId: string) => void;
   onCancel: () => void;
+  onFilmLinked?: (filmId: string) => void;
 }
 
-type Step = "search" | "select" | "saga" | "image" | "manual" | "loading";
+type Step =
+  | "search"
+  | "select"
+  | "verify"
+  | "saga"
+  | "age"
+  | "image"
+  | "manual"
+  | "loading";
 
 export default function AddFilmForm({
   episodeId,
   podcastName,
   onFilmCreated,
   onCancel,
+  onFilmLinked,
 }: AddFilmFormProps) {
+  const router = useRouter();
   const [step, setStep] = useState<Step>("search");
   const [searchQuery, setSearchQuery] = useState(podcastName || "");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [selectedMovie, setSelectedMovie] = useState<any>(null);
-  const [manualData, setManualData] = useState({ title: "", year: "" });
+  const [manualData, setManualData] = useState({ title: "", year: "", age: "" });
   const [posterFile, setPosterFile] = useState<File | null>(null);
   const [selectedSaga, setSelectedSaga] = useState<string>("");
+  const [selectedAge, setSelectedAge] = useState<string>("");
   const [sagas, setSagas] = useState<any[]>([]);
   const [detectedSaga, setDetectedSaga] = useState<any>(null);
   const [sagaSearchQuery, setSagaSearchQuery] = useState("");
   const [showSagaSearch, setShowSagaSearch] = useState(false);
+  const [filmExists, setFilmExists] = useState<any>(null);
+  const [verificationLoading, setVerificationLoading] = useState(false);
 
   // Charger les sagas au montage du composant
   useEffect(() => {
@@ -70,10 +88,27 @@ export default function AddFilmForm({
 
   const handleSelectMovie = async (movie: any) => {
     setSelectedMovie(movie);
-    setStep("saga");
+    setStep("verify");
+    setVerificationLoading(true);
+
+    // Vérifier si le film existe déjà en base
+    try {
+      const checkResult = await checkFilmExists(movie.id);
+      if (checkResult.success) {
+        setFilmExists(checkResult);
+      } else {
+        setError(checkResult.error || "Erreur de vérification");
+        setStep("select");
+      }
+    } catch (error) {
+      console.error("Erreur vérification film:", error);
+      setError("Erreur lors de la vérification du film");
+      setStep("select");
+    }
 
     // Détecter automatiquement la saga depuis TMDB
     try {
+      setDetectedSaga("");
       const result = await getMovieCollection(movie.id);
       if (result.success && result.collection) {
         setDetectedSaga(result.collection);
@@ -83,22 +118,24 @@ export default function AddFilmForm({
     } catch (error) {
       console.error("Erreur détection saga:", error);
     }
+
+    setVerificationLoading(false);
   };
 
   const handleSagaSelection = (sagaId: string) => {
     console.log("Saga selected:", sagaId);
     setSelectedSaga(sagaId);
-    setStep("image");
+    setStep("age");
   };
 
   const handleDetectedSagaSelect = () => {
     setSelectedSaga("detected");
-    setStep("image");
+    setStep("age");
   };
 
   const handleNoSagaSelect = () => {
     setSelectedSaga("");
-    setStep("image");
+    setStep("age");
   };
 
   const filteredSagas = sagas.filter((saga) =>
@@ -119,7 +156,7 @@ export default function AddFilmForm({
       finalSagaId = undefined; // La saga sera créée automatiquement
     }
 
-    createFilmFromTMDB(selectedMovie.id, finalSagaId, detectedSagaName).then(
+    createFilmFromTMDB(selectedMovie.id, finalSagaId, detectedSagaName, selectedAge).then(
       (result) => {
         if (result.success && result.film) {
           onFilmCreated(result.film.id);
@@ -141,6 +178,7 @@ export default function AddFilmForm({
     const result = await createFilmManually({
       title: manualData.title,
       year: manualData.year ? parseInt(manualData.year) : undefined,
+      age: manualData.age || undefined,
       posterFile: posterFile || undefined,
     });
 
@@ -266,9 +304,182 @@ export default function AddFilmForm({
           </div>
         )}
 
+        {step === "verify" && (
+          <div className={styles.step}>
+            <h4>Étape 3 : Vérification</h4>
+            <p className={styles.stepDescription}>
+              Vérification de l'existence du film dans la base de données.
+            </p>
+
+            {verificationLoading ? (
+              <div className={styles.loading}>
+                <div className={styles.spinner}></div>
+                <p>Vérification en cours...</p>
+              </div>
+            ) : filmExists ? (
+              <div className={styles.verificationResult}>
+                {filmExists.exists ? (
+                  <div className={styles.existingFilm}>
+                    <div className={styles.existingFilmHeader}>
+                      <h5>⚠️ Film déjà existant</h5>
+                      <p className={styles.existingFilmMessage}>
+                        {filmExists.message}
+                      </p>
+                    </div>
+
+                    <div className={styles.existingFilmDetails}>
+                      <div className={styles.existingFilmCard}>
+                        {filmExists.film.imgFileName && (
+                          <div className={styles.existingFilmPoster}>
+                            <Image
+                              src={getVercelBlobUrl(
+                                filmExists.film.imgFileName
+                              )}
+                              alt={filmExists.film.title}
+                              width={60}
+                              height={90}
+                              className={styles.poster}
+                              sizes="60px"
+                            />
+                          </div>
+                        )}
+                        <div className={styles.existingFilmInfo}>
+                          <div className={styles.existingFilmMeta}>
+                            <span className={styles.existingFilmTitle}>
+                              {filmExists.film.title}
+                            </span>
+                            {filmExists.film.year && (
+                              <span className={styles.existingFilmYear}>
+                                ({filmExists.film.year})
+                              </span>
+                            )}
+                          </div>
+                          <div className={styles.existingFilmDetails}>
+                            {filmExists.film.director && (
+                              <span className={styles.existingFilmDetail}>
+                                Réalisé par {filmExists.film.director}
+                              </span>
+                            )}
+                            {filmExists.film.saga && (
+                              <span className={styles.existingFilmDetail}>
+                                Saga : {filmExists.film.saga.name}
+                              </span>
+                            )}
+                            {filmExists.film.links &&
+                              filmExists.film.links.length > 0 && (
+                                <span className={styles.existingFilmDetail}>
+                                  Lié à {filmExists.film.links.length}{" "}
+                                  épisode(s)
+                                </span>
+                              )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className={styles.existingFilmActions}>
+                      <button
+                        onClick={() => {
+                          if (onFilmLinked) {
+                            onFilmLinked(filmExists.film.id);
+                          } else {
+                            onFilmCreated(filmExists.film.id);
+                          }
+                        }}
+                        className={styles.useExistingButton}
+                      >
+                        Utiliser ce film existant
+                      </button>
+                      <button
+                        onClick={() => setStep("select")}
+                        className={styles.backButton}
+                      >
+                        Choisir un autre film
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className={styles.newFilm}>
+                    <div className={styles.newFilmHeader}>
+                      <h5>✅ Film disponible</h5>
+                      <p className={styles.newFilmMessage}>
+                        {filmExists.message}
+                      </p>
+                    </div>
+
+                    <div className={styles.newFilmDetails}>
+                      <div className={styles.movieCard}>
+                        <div className={styles.moviePoster}>
+                          {selectedMovie.poster_path ? (
+                            <Image
+                              src={`https://image.tmdb.org/t/p/w342${selectedMovie.poster_path}`}
+                              alt={selectedMovie.title}
+                              width={60}
+                              height={90}
+                              className={styles.poster}
+                              sizes="60px"
+                            />
+                          ) : (
+                            <div className={styles.noPoster}>Aucune image</div>
+                          )}
+                        </div>
+                        <div className={styles.movieInfo}>
+                          <h5 className={styles.movieTitle}>
+                            {selectedMovie.title}
+                          </h5>
+                          <p className={styles.movieYear}>
+                            {selectedMovie.release_date
+                              ? new Date(
+                                  selectedMovie.release_date
+                                ).getFullYear()
+                              : "Année inconnue"}
+                          </p>
+                          <p className={styles.movieOverview}>
+                            {selectedMovie.overview
+                              ? selectedMovie.overview.substring(0, 100) + "..."
+                              : "Aucune description"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className={styles.newFilmActions}>
+                      <button
+                        onClick={() => setStep("select")}
+                        className={styles.backButton}
+                      >
+                        ← Choisir un autre film
+                      </button>
+                      <button
+                        onClick={() => setStep("saga")}
+                        className={styles.nextButton}
+                      >
+                        Continuer vers la saga →
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className={styles.verificationResult}>
+                <p>Aucun film trouvé pour cette recherche.</p>
+              </div>
+            )}
+
+            <div className={styles.stepActions}>
+              <button
+                onClick={() => setStep("select")}
+                className={styles.backButton}
+              >
+                ← Retour à la sélection
+              </button>
+            </div>
+          </div>
+        )}
+
         {step === "saga" && (
           <div className={styles.step}>
-            <h4>Étape 3 : Choisir une saga (optionnel)</h4>
+            <h4>Étape 4 : Choisir une saga (optionnel)</h4>
             <p className={styles.stepDescription}>
               Sélectionnez une saga pour ce film ou laissez vide si aucune saga
               n'est nécessaire.
@@ -420,9 +631,48 @@ export default function AddFilmForm({
           </div>
         )}
 
+        {step === "age" && (
+          <div className={styles.step}>
+            <h4>Étape 5 : Âge recommandé</h4>
+            <p className={styles.stepDescription}>
+              Sélectionnez l'âge recommandé pour ce film.
+            </p>
+
+            <div className={styles.ageSelection}>
+              <select
+                value={selectedAge}
+                onChange={(e) => setSelectedAge(e.target.value)}
+                className={styles.input}
+              >
+                <option value="">Sélectionner un âge</option>
+                {Object.entries(AGE_RATINGS).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className={styles.stepActions}>
+              <button
+                onClick={() => setStep("saga")}
+                className={styles.backButton}
+              >
+                ← Retour à la saga
+              </button>
+              <button
+                onClick={() => setStep("image")}
+                className={styles.nextButton}
+              >
+                Continuer →
+              </button>
+            </div>
+          </div>
+        )}
+
         {step === "image" && (
           <div className={styles.step}>
-            <h4>Étape 4 : Poster du film</h4>
+            <h4>Étape 6 : Poster du film</h4>
             <p className={styles.stepDescription}>
               Le poster sera automatiquement récupéré depuis TMDB, mais vous
               pouvez aussi en choisir un autre.
@@ -461,10 +711,10 @@ export default function AddFilmForm({
 
             <div className={styles.stepActions}>
               <button
-                onClick={() => setStep("saga")}
+                onClick={() => setStep("age")}
                 className={styles.backButton}
               >
-                ← Retour à la saga
+                ← Retour à l'âge
               </button>
               <button
                 onClick={() => handleImageSelection(null)}
@@ -515,6 +765,27 @@ export default function AddFilmForm({
                   min="1900"
                   max={new Date().getFullYear() + 1}
                 />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="age" className={styles.label}>
+                  Âge recommandé
+                </label>
+                <select
+                  id="age"
+                  value={manualData.age}
+                  onChange={(e) =>
+                    setManualData({ ...manualData, age: e.target.value })
+                  }
+                  className={styles.input}
+                >
+                  <option value="">Sélectionner un âge</option>
+                  {Object.entries(AGE_RATINGS).map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className={styles.formGroup}>

@@ -93,3 +93,36 @@ export const PODCAST_CATEGORIES = {
 } as const;
 
 export type PodcastCategory = keyof typeof PODCAST_CATEGORIES;
+
+export const PODCAST_GENRES = {
+  ANONCE: 'anonce',
+  MUSIQUE: 'musique',
+  INTERVIEW: 'interview',
+  DEBAT: 'debat',
+  CRITIQUE: 'critique',
+  CHRONIQUE: 'chronique',
+  SPECIAL: 'special',
+  HORS_SUJET: 'hors_sujet'
+} as const;
+
+
+export const AGE_RATINGS = {
+  ALL: 'all',
+  TWELVE_PLUS: '12+',
+  SIXTEEN_PLUS: '16+',
+  EIGHTEEN_PLUS: '18+'
+} as const;
+
+export const AGE_RATING_LABELS = {
+  [AGE_RATINGS.ALL]: 'Tous publics',
+  [AGE_RATINGS.TWELVE_PLUS]: '12 ans et plus',
+  [AGE_RATINGS.SIXTEEN_PLUS]: '16 ans et plus',
+  [AGE_RATINGS.EIGHTEEN_PLUS]: '18 ans et plus'
+} as const;
+
+export const AGE_RATING_COLORS = {
+  [AGE_RATINGS.ALL]: '#4ade80',
+  [AGE_RATINGS.TWELVE_PLUS]: '#fbbf24',
+  [AGE_RATINGS.SIXTEEN_PLUS]: '#f97316',
+  [AGE_RATINGS.EIGHTEEN_PLUS]: '#ef4444'
+} as const;

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { formatDuration } from "@/lib/podcastHelpers";
 import { IMAGE_CONFIG, getVercelBlobUrl } from "@/lib/imageConfig";
+import { AGE_RATINGS } from "@/lib/helpers";
 import styles from "./PodcastCard.module.css";
 
 interface PodcastCardProps {
@@ -11,6 +12,7 @@ interface PodcastCardProps {
     slug: string;
     year: number | null;
     imgFileName: string | null;
+    age: string | null;
     saga: {
       name: string;
       id: string;
@@ -63,23 +65,33 @@ export default function PodcastCard({
   }
   if (!film) return null;
 
+  // Vérifier si le film doit être flouté (âge 18+)
+  const shouldBlur = film.age === "18+" || film.age === "adult";
+
   return (
     <article className={`${styles.cardArticle} ${variant === 'compact' ? styles.cardArticleCompact : ''}`}>
       <Link href={`/podcasts/${episodeSlug}`} className={styles.cardLink}>
         <span className={styles.cardImageContainer}>
           {film.imgFileName ? (
-            <Image
-              alt={`Poster de ${film.title}`}
-              fill
-              sizes={variant === 'compact' ? IMAGE_CONFIG.sizes.filmCardCompact : IMAGE_CONFIG.sizes.filmCard}
-              className={styles.cardImage}
-              src={getVercelBlobUrl(film.imgFileName)}
-              priority={false}
-              loading="lazy"
-              placeholder="blur"
-              blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
-              quality={IMAGE_CONFIG.defaultQuality}
-            />
+            <>
+              <Image
+                alt={`Poster de ${film.title}`}
+                fill
+                sizes={variant === 'compact' ? IMAGE_CONFIG.sizes.filmCardCompact : IMAGE_CONFIG.sizes.filmCard}
+                className={`${styles.cardImage} ${shouldBlur ? styles.blurredImage : ''}`}
+                src={getVercelBlobUrl(film.imgFileName)}
+                priority={false}
+                loading="lazy"
+                placeholder="blur"
+                blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
+                quality={IMAGE_CONFIG.defaultQuality}
+              />
+              {shouldBlur && (
+                <div className={styles.ageOverlay}>
+                  <span className={styles.ageBadge}>18+</span>
+                </div>
+              )}
+            </>
           ) : (
             <div className={styles.noPoster}>
               <span>🎬</span>

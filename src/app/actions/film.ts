@@ -116,6 +116,50 @@ export async function getMovieCollection(tmdbId: number) {
   }
 }
 
+export async function checkFilmExists(tmdbId: number) {
+  try {
+    const existingFilm = await prisma.film.findUnique({
+      where: { tmdbId: tmdbId },
+      include: {
+        saga: true,
+        links: {
+          include: {
+            podcast: {
+              select: {
+                id: true,
+                title: true,
+                pubDate: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (existingFilm) {
+      return { 
+        success: true, 
+        exists: true, 
+        film: existingFilm,
+        message: `Le film "${existingFilm.title}" existe déjà dans la base de données`
+      };
+    }
+
+    return { 
+      success: true, 
+      exists: false, 
+      film: null,
+      message: "Le film n'existe pas encore dans la base de données"
+    };
+  } catch (error) {
+    console.error("Erreur vérification film:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Erreur de vérification",
+    };
+  }
+}
+
 export async function getOrCreateSagaFromTMDB(collectionName: string) {
   try {
     // Vérifier si la saga existe déjà
@@ -200,7 +244,8 @@ export async function uploadPosterFromTMDB(
 export async function createFilmFromTMDB(
   tmdbId: number,
   sagaId?: string,
-  detectedSagaName?: string
+  detectedSagaName?: string,
+  age?: string
 ) {
   try {
     // Vérifier si le film existe déjà par son ID TMDB
@@ -300,6 +345,7 @@ export async function createFilmFromTMDB(
         imgFileName: imgFileName || null,
         tmdbId: tmdbId,
         sagaId: finalSagaId || null,
+        age: age || null,
       },
     });
 
@@ -408,6 +454,7 @@ export async function createFilmManually(data: {
   year?: number;
   director?: string;
   sagaId?: string;
+  age?: string;
   posterFile?: File;
 }) {
   try {
@@ -419,7 +466,7 @@ export async function createFilmManually(data: {
       const sanitizedTitle = data.title
         .replace(/[^a-zA-Z0-9]/g, "_")
         .toLowerCase();
-      const filename = `poster_${sanitizedTitle}_${timestamp}.jpg`;
+      const filename = `films/poster_${sanitizedTitle}_${timestamp}.jpg`;
 
       const uploadResult = await uploadImage(data.posterFile, filename);
       if (uploadResult.success) {
@@ -447,6 +494,7 @@ export async function createFilmManually(data: {
         director: data.director || null,
         imgFileName: imgFileName || null,
         sagaId: data.sagaId || null,
+        age: data.age || null,
       },
     });
 
@@ -460,6 +508,34 @@ export async function createFilmManually(data: {
     return {
       success: false,
       error: error instanceof Error ? error.message : "Erreur de création",
+    };
+  }
+}
+
+export async function getAllFilms() {
+  try {
+    const films = await prisma.film.findMany({
+      orderBy: { title: "asc" },
+      select: {
+        id: true,
+        title: true,
+        year: true,
+        director: true,
+        imgFileName: true,
+        saga: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    return { success: true, films };
+  } catch (error) {
+    console.error("Erreur récupération films:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Erreur de récupération",
     };
   }
 }

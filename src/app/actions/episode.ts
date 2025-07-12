@@ -2,6 +2,7 @@
 
 import { PODCAST_CATEGORIES } from "@/lib/helpers";
 import { prisma } from "@/lib/prisma";
+import { put } from '@vercel/blob';
 
 export async function getEpisodeBySlug(slug: string) {
   try {
@@ -17,6 +18,7 @@ export async function getEpisodeBySlug(slug: string) {
                     films: {
                       select: {
                         id: true,
+                        age: true,
                         title: true,
                         year: true,
                         slug: true,
@@ -168,6 +170,7 @@ export async function getEpisodesWithFilms() {
                 slug: true,
                 year: true,
                 imgFileName: true,
+                age: true,
                 saga: {
                   select: {
                     id: true,
@@ -268,6 +271,7 @@ export async function getLatestEpisode() {
                 title: true,
                 year: true,
                 imgFileName: true,
+                age: true,
               },
             },
           },
@@ -438,6 +442,108 @@ export async function getAllPodcasts() {
     return {
       success: false,
       error: "Erreur lors de la récupération des podcasts",
+    };
+  }
+}
+
+export async function updateEpisode(
+  episodeId: string,
+  data: {
+    title: string;
+    description: string;
+    genre: string | null;
+    imgFileName: string | null;
+    age: string | null;
+  }
+) {
+  try {
+    const updatedEpisode = await prisma.podcastEpisode.update({
+      where: { id: episodeId },
+      data: {
+        title: data.title,
+        description: data.description,
+        genre: data.genre,
+        imgFileName: data.imgFileName,
+        age: data.age,
+      },
+    });
+
+    return { success: true, data: updatedEpisode };
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour de l'épisode:", error);
+    return {
+      success: false,
+      error: "Erreur lors de la mise à jour de l'épisode",
+    };
+  }
+}
+
+export async function deleteEpisodeLink(linkId: string) {
+  try {
+    await prisma.podcastFilmLink.delete({
+      where: { id: linkId },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Erreur lors de la suppression du lien:", error);
+    return {
+      success: false,
+      error: "Erreur lors de la suppression du lien",
+    };
+  }
+}
+
+export async function uploadPodcastPoster(formData: FormData) {
+  try {
+    const file = formData.get('file') as File;
+    
+    if (!file) {
+      return {
+        success: false,
+        error: "Aucun fichier fourni"
+      };
+    }
+
+    // Vérifier le type de fichier
+    if (!file.type.startsWith('image/')) {
+      return {
+        success: false,
+        error: "Le fichier doit être une image"
+      };
+    }
+
+    // Vérifier la taille (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      return {
+        success: false,
+        error: "Le fichier est trop volumineux (max 5MB)"
+      };
+    }
+
+    // Générer un nom de fichier unique
+    const timestamp = Date.now();
+    const extension = file.name.split('.').pop();
+    const fileName = `episode-${timestamp}.${extension}`;
+
+    // Upload directement vers Vercel Blob
+    const blob = await put(`podcasts/la-boite-de-chocolat/episodes/${fileName}`, file, {
+      access: 'public',
+    });
+
+    return {
+      success: true,
+      data: {
+        fileName: fileName,
+        url: blob.url
+      }
+    };
+
+  } catch (error) {
+    console.error("Erreur lors de l'upload du poster:", error);
+    return {
+      success: false,
+      error: "Erreur lors de l'upload du poster"
     };
   }
 }

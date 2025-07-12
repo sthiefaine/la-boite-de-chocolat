@@ -187,17 +187,69 @@
   vertical-align: top;
 }
 
+.tableCell:first-child {
+  width: 220px;
+  max-width: 220px;
+}
+
+.tableCell:nth-child(2) {
+  width: 100px;
+  max-width: 100px;
+}
+
+.tableCell:nth-child(3) {
+  width: 100px;
+  max-width: 100px;
+}
+
+.tableCell:nth-child(4) {
+  width: 120px;
+  max-width: 120px;
+}
+
+.tableCell:nth-child(5) {
+  width: 80px;
+  max-width: 80px;
+}
+
+.tableCell:nth-child(6) {
+  width: 120px;
+  max-width: 120px;
+}
+
+.tableCell:nth-child(7) {
+  width: 100px;
+  max-width: 100px;
+}
+
+.tableCell:nth-child(8) {
+  width: 100px;
+  max-width: 100px;
+}
+
 .episodeTitle {
   font-weight: 600;
   color: var(--text-primary);
   font-size: 0.875rem;
   margin-bottom: 0.25rem;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .episodeDescription {
   color: var(--text-secondary);
   font-size: 0.75rem;
   line-height: 1.4;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
 }
 
 .episodeDate {
@@ -210,16 +262,21 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  max-width: 180px;
 }
 
 .filmTag {
   background: var(--chocolate-light);
   color: var(--text-primary);
-  padding: 0.25rem 0.75rem;
+  padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
   border: 1px solid var(--chocolate-secondary);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .noFilms {
@@ -230,57 +287,127 @@
 
 .actionButtons {
   display: flex;
-  gap: 0.75rem;
+  flex-direction: column;
+  gap: 0.5rem;
   align-items: center;
 }
 
-.actionLink {
+.actionButton {
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   text-decoration: none;
   transition: all var(--transition-normal);
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem;
   border-radius: 0.25rem;
   border: 1px solid transparent;
+  width: auto;
+  min-width: 80px;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: var(--bg-primary);
+  text-align: center;
 }
 
-.listenLink {
+.listenButton {
   color: var(--chocolate-primary);
   border-color: var(--chocolate-primary);
-  background: var(--bg-primary);
 }
 
-.listenLink:hover {
-  color: var(--text-white);
+.listenButton:hover {
   background: var(--chocolate-primary);
+  color: var(--text-white);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-light);
 }
 
-.editLink {
+.editButton {
   color: var(--accent-gold);
   border-color: var(--accent-gold);
-  background: var(--bg-primary);
 }
 
-.editLink:hover {
-  color: var(--text-white);
+.editButton:hover {
   background: var(--accent-gold);
+  color: var(--text-white);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-light);
 }
 
 .deleteButton {
   color: var(--accent-red);
+  border-color: var(--accent-red);
   background: var(--bg-primary);
-  border: 1px solid var(--accent-red);
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.875rem;
-  transition: all var(--transition-normal);
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
 }
 
 .deleteButton:hover {
-  color: var(--text-white);
   background: var(--accent-red);
+  color: var(--text-white);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-light);
+}
+
+.deleteButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.genreCell {
+  display: flex;
+  align-items: center;
+}
+
+.genreTag {
+  background: var(--chocolate-secondary);
+  color: var(--text-white);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.noGenre {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.ageCell {
+  display: flex;
+  align-items: center;
+}
+
+.ageTag {
+  background: var(--accent-gold);
+  color: var(--text-white);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.noAge {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.updatedAtCell {
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.updatedAtTime {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 400;
 }
 
 .emptyState {
@@ -336,8 +463,14 @@
   }
   
   .actionButtons {
-    flex-direction: column;
+    flex-direction: row;
     gap: 0.5rem;
+  }
+
+  .actionButton {
+    min-width: 60px;
+    font-size: 0.7rem;
+    padding: 0.4rem 0.6rem;
   }
   
   .filmTags {

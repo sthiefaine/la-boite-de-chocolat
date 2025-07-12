@@ -12,6 +12,9 @@ interface PodcastEpisode {
   description: string;
   pubDate: Date;
   audioUrl: string;
+  genre: string | null;
+  age: string | null;
+  updatedAt: Date;
   links: {
     id: string;
     film: {
@@ -128,6 +131,9 @@ export default function PodcastListClient({
                 <tr>
                   <th>Épisode</th>
                   <th>Date</th>
+                  <th>Genre</th>
+                  <th>Âge</th>
+                  <th>Modifié le</th>
                   <th>Films liés</th>
                   <th>Actions</th>
                 </tr>
@@ -154,6 +160,40 @@ export default function PodcastListClient({
                       </div>
                     </td>
                     <td className={styles.tableCell}>
+                      <div className={styles.genreCell}>
+                        {episode.genre ? (
+                          <span className={styles.genreTag}>
+                            {episode.genre}
+                          </span>
+                        ) : (
+                          <span className={styles.noGenre}>Non défini</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className={styles.tableCell}>
+                      <div className={styles.ageCell}>
+                        {episode.age ? (
+                          <span className={styles.ageTag}>
+                            {episode.age}
+                          </span>
+                        ) : (
+                          <span className={styles.noAge}>Non défini</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className={styles.tableCell}>
+                      <div className={styles.updatedAtCell}>
+                        {new Date(episode.updatedAt).toLocaleDateString('fr-FR')}
+                        <br />
+                        <span className={styles.updatedAtTime}>
+                          {new Date(episode.updatedAt).toLocaleTimeString('fr-FR', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </span>
+                      </div>
+                    </td>
+                    <td className={styles.tableCell}>
                       <div className={styles.filmTags}>
                         {episode.links.length > 0 ? (
                           episode.links.map((link) => (
@@ -175,20 +215,23 @@ export default function PodcastListClient({
                           href={episode.audioUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`${styles.actionLink} ${styles.listenLink}`}
+                          className={`${styles.actionButton} ${styles.listenButton}`}
+                          title="Écouter l'épisode"
                         >
                           Écouter
                         </a>
                         <Link
                           href={`/admin/episode/${episode.id}/edit`}
-                          className={`${styles.actionLink} ${styles.editLink}`}
+                          className={`${styles.actionButton} ${styles.editButton}`}
+                          title="Éditer l'épisode"
                         >
                           Éditer
                         </Link>
                         <button 
                           onClick={() => handleDeleteClick(episode)}
-                          className={`${styles.actionLink} ${styles.deleteButton}`}
+                          className={`${styles.actionButton} ${styles.deleteButton}`}
                           disabled={isDeleting}
+                          title="Supprimer l'épisode"
                         >
                           {isDeleting ? 'Suppression...' : 'Supprimer'}
                         </button>

@@ -10,6 +10,7 @@ type PodcastInfo = {
   img: string;
   slug: string;
   year?: number | null;
+  age?: string | null;
 };
 
 type PlayerState = {

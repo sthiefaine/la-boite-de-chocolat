@@ -7,6 +7,9 @@ interface PodcastEpisode {
   description: string;
   pubDate: Date;
   audioUrl: string;
+  genre: string | null;
+  age: string | null;
+  updatedAt: Date;
   links: {
     id: string;
     film: {
@@ -35,6 +38,9 @@ async function getPodcastEpisodes(nameId: string): Promise<PodcastEpisode[]> {
       description: true,
       pubDate: true,
       audioUrl: true,
+      genre: true,
+      age: true,
+      updatedAt: true,
       links: {
         select: {
           id: true,

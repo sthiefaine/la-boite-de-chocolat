@@ -24,6 +24,7 @@ interface Episode {
   createdAt: Date;
   guid?: string;
   slug?: string;
+  age?: string | null;
 }
 
 interface ReviewInfo {
@@ -104,6 +105,7 @@ export const PodcastDetail = ({
         artist: episode.speakers?.join(", ") ?? "La Boîte de Chocolat",
         slug: episode.slug ?? "",
         id: episode.idTmdb ?? "",
+        age: episode.age || null,
       });
     }
     setIsPlaying(true);

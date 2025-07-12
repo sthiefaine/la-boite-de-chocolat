@@ -1,0 +1,172 @@
+.episodeInfoCard {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 2rem;
+  background: var(--bg-secondary);
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: var(--shadow-medium);
+  border: 1px solid var(--chocolate-light);
+}
+
+.episodeMainInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.podcastInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.podcastName {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--chocolate-primary);
+  margin: 0;
+}
+
+.episodeDate {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0;
+  font-weight: 500;
+}
+
+.episodeDetails {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.seasonEpisode {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.season,
+.episode {
+  background: var(--chocolate-primary);
+  color: var(--text-white);
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.duration {
+  background: var(--accent-gold);
+  color: var(--text-primary);
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.filmsMiniCard {
+  background: var(--bg-primary);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid var(--chocolate-light);
+  height: fit-content;
+}
+
+.miniCardTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+}
+
+.linkedFilms {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.filmsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.miniFilmItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: var(--bg-secondary);
+  border-radius: 0.5rem;
+  border: 1px solid var(--chocolate-light);
+}
+
+.miniFilmTitle {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.miniFilmYear {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.moreFilms {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.noFilms {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: center;
+}
+
+.noFilmsText {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.linkFilmButton {
+  background: var(--chocolate-primary);
+  color: var(--text-white);
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-light);
+}
+
+.linkFilmButton:hover {
+  background: var(--chocolate-secondary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+}
+
+@media (max-width: 768px) {
+  .episodeInfoCard {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .episodeDetails {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+} 

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { Metadata } from "next";
+import { getMaskedImageUrl } from "@/app/actions/image";
 
 interface PodcastPageProps {
   params: Promise<{
@@ -17,7 +18,14 @@ export async function generateMetadata({
     include: {
       links: {
         include: {
-          film: true,
+          film: {
+            select: {
+              id: true,
+              title: true,
+              imgFileName: true,
+              age: true,
+            },
+          },
         },
       },
     },
@@ -32,6 +40,9 @@ export async function generateMetadata({
   const mainFilm = episode.links[0]?.film;
   const title = mainFilm?.title || episode.title;
 
+  const ogImageUrl = await getMaskedImageUrl(mainFilm?.imgFileName || null, mainFilm?.age || null);
+  const isAdult = mainFilm?.age === "18+" || mainFilm?.age === "adult";
+
   return {
     title: `${title} - La Boîte de Chocolat`,
     description:
@@ -44,13 +55,13 @@ export async function generateMetadata({
         `Écoutez l'épisode sur ${title}`,
       type: "article",
       publishedTime: episode.pubDate.toISOString(),
-      images: mainFilm?.imgFileName
+      images: ogImageUrl
         ? [
             {
-              url: `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/${mainFilm.imgFileName}`,
+              url: ogImageUrl,
               width: 500,
               height: 750,
-              alt: `Poster de ${mainFilm.title}`,
+              alt: isAdult ? "Poster flouté - contenu 18+" : `Poster de ${mainFilm?.title}`,
             },
           ]
         : [],
@@ -61,11 +72,7 @@ export async function generateMetadata({
       description:
         episode.description?.substring(0, 160) ||
         `Écoutez l'épisode sur ${title}`,
-      images: mainFilm?.imgFileName
-        ? [
-            `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/${mainFilm.imgFileName}`,
-          ]
-        : [],
+      images: ogImageUrl ? [ogImageUrl] : [],
     },
   };
 }

@@ -21,6 +21,7 @@ interface Episode {
       slug: string;
       year: number | null;
       imgFileName: string | null;
+      age: string | null;
       saga: {
         name: string;
         id: string;
@@ -84,10 +85,11 @@ export default function ChocolateBox({
         img: mainFilm?.imgFileName ?? "",
         slug: selectedEpisode.slug ?? "",
         artist: "La Boîte de Chocolat",
+        age: mainFilm?.age || null,
       });
       setLaunchPlay(true);
       setIsLoading(false);
-    }, 300);
+    }, 100);
   };
 
   return (

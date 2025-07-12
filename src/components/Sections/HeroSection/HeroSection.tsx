@@ -18,6 +18,7 @@ interface Episode {
       slug: string;
       year: number | null;
       imgFileName: string | null;
+      age: string | null;
       saga: {
         name: string;
         id: string;

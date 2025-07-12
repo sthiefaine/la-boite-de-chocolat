@@ -9,6 +9,7 @@ interface PodcastPlayerButtonProps {
   imageUrl?: string;
   artist?: string;
   slug?: string;
+  age?: string | null;
   className?: string;
   children?: React.ReactNode;
 }
@@ -19,6 +20,7 @@ export const PodcastPlayerButton = ({
   imageUrl,
   artist = "La Boîte de Chocolat",
   slug,
+  age,
   className = "",
   children,
 }: PodcastPlayerButtonProps) => {
@@ -43,6 +45,7 @@ export const PodcastPlayerButton = ({
         url: audioUrl,
         slug: slug || "",
         id: "",
+        age: age || null,
       });
     }
     setIsPlaying(true);

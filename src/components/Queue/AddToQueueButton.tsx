@@ -12,6 +12,8 @@ interface AddToQueueButtonProps {
     url: string;
     img: string;
     slug: string;
+    age: string;
+    movieAge: string;
   };
   className?: string;
 }

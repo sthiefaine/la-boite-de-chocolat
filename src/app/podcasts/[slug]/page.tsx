@@ -11,7 +11,6 @@ import {
   getEpisodeNavigation,
   getAllEpisodeSlugs,
 } from "@/app/actions/episode";
-import { getSagaByFilmId } from "@/app/actions/saga";
 import { PodcastPlayerButton } from "@/components/PodcastPlayerButton/PodcastPlayerButton";
 import { AddToQueueButton } from "@/components/Queue/AddToQueueButton";
 
@@ -66,7 +65,19 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
     <div className={styles.container}>
       {/* Header avec poster en background */}
       <div className={styles.header}>
-        {mainFilm?.imgFileName && (
+        {(mainFilm?.age === "18+" || mainFilm?.age === "adult") ? (
+          <div className={styles.backgroundPoster}>
+            <Image
+              fill
+              src="/images/navet.png"
+              alt="Poster navet - contenu 18+"
+              className={styles.backgroundImage}
+              sizes={IMAGE_CONFIG.sizes.background}
+              priority
+            />
+            <div className={styles.backgroundOverlay}></div>
+          </div>
+        ) : mainFilm?.imgFileName && (
           <div className={styles.backgroundPoster}>
             <Image
               fill
@@ -125,6 +136,8 @@ export default async function PodcastPage({ params }: PodcastPageProps) {
                     ? getVercelBlobUrl(mainFilm.imgFileName)
                     : "/images/navet.png",
                   slug: episode.slug ?? "",
+                  age: episode.age ?? "",
+                  movieAge: mainFilm?.age ?? "",
                 }}
                 className={`${styles.button} ${styles.queueButton}`}
               />

@@ -1,7 +1,7 @@
 import Parser from "rss-parser";
 import { prisma } from "@/lib/prisma";
 import { generateSlug } from "@/lib/podcastHelpers";
-import { shouldRunImport } from "@/lib/timeHelpers";
+import { allowedHours, shouldRunImport } from "@/lib/timeHelpers";
 
 const parser = new Parser();
 
@@ -27,7 +27,9 @@ export async function GET() {
     const shouldRun = await shouldRunImport();
     if (!shouldRun) {
       return Response.json({
-        message: "Import ignoré - pas l'heure appropriée",
+        message: `Import ignoré - pas l'heure de l'import ${allowedHours
+          .map((hour) => `${hour}h`)
+          .join(", ")}`,
         currentTime: new Date().toISOString(),
         shouldRun: false,
       });

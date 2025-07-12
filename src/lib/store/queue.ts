@@ -8,6 +8,8 @@ export interface Podcast {
   url: string;
   img: string;
   slug: string;
+  age?: string | null;
+  movieAge?: string | null;
 }
 
 interface QueueStore {

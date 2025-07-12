@@ -82,73 +82,83 @@ export const PlayerQueue = ({ showQueue }: PlayerQueueProps) => {
         </button>
       </div>
       <div className={styles.queueList}>
-        {queue.map((item, index) => (
-          <div
-            key={`${item.id}-${index}`}
-            className={`${styles.queueItem} ${
-              index === currentIndex ? styles.currentItem : ""
-            }`}
-          >
-            <Image
-              src={item.img.startsWith("http")
-                ? item.img
-                : item.img
-                ? getVercelBlobUrl(item.img)
-                : "/images/navet.png"}
-              width={40}
-              height={40}
-              alt={item.title}
-              className={styles.queueItemImage}
-              loading="lazy"
-              placeholder="blur"
-              blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
-              quality={IMAGE_CONFIG.defaultQuality}
-            />
-            <div className={styles.queueItemInfo}>
-              <span className={styles.queueItemTitle}>{item.title}</span>
-              <span className={styles.queueItemArtist}>{item.artist}</span>
+        {queue.map((item, index) => {
+          const shouldBlur = item.movieAge === "18+" || item.movieAge === "adult";
+          return (
+            <div
+              key={`${item.id}-${index}`}
+              className={`${styles.queueItem} ${
+                index === currentIndex ? styles.currentItem : ""
+              }`}
+            >
+              <div className={styles.queueItemImageContainer}>
+                <Image
+                  src={item.img.startsWith("http")
+                    ? item.img
+                    : item.img
+                    ? getVercelBlobUrl(item.img)
+                    : "/images/navet.png"}
+                  width={40}
+                  height={40}
+                  alt={item.title}
+                  className={`${styles.queueItemImage} ${shouldBlur ? styles.blurredImage : ''}`}
+                  loading="lazy"
+                  placeholder="blur"
+                  blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
+                  quality={IMAGE_CONFIG.defaultQuality}
+                />
+                {shouldBlur && (
+                  <div className={styles.ageOverlay}>
+                    <span className={styles.ageBadge}>18+</span>
+                  </div>
+                )}
+              </div>
+              <div className={styles.queueItemInfo}>
+                <span className={styles.queueItemTitle}>{item.title}</span>
+                <span className={styles.queueItemArtist}>{item.artist}</span>
+              </div>
+              <div className={styles.queueItemActions}>
+                <button
+                  className={`${styles.queueActionButton} ${styles.playButton}`}
+                  onClick={() => handlePlayQueueItem(item, index)}
+                  title="Lire"
+                >
+                  <Play size={12} />
+                </button>
+                <button
+                  className={`${styles.queueActionButton} ${styles.moveButton}`}
+                  onClick={() => handleMoveUp(index)}
+                  disabled={index === 0}
+                  title="Monter"
+                >
+                  <ChevronUp size={12} />
+                </button>
+                <button
+                  className={`${styles.queueActionButton} ${styles.moveButton}`}
+                  onClick={() => handleMoveDown(index)}
+                  disabled={index === queue.length - 1}
+                  title="Descendre"
+                >
+                  <ChevronDown size={12} />
+                </button>
+                <Link
+                  href={`/podcasts/${item.slug}`}
+                  className={`${styles.queueActionButton} ${styles.externalButton}`}
+                  title="Ouvrir la page"
+                >
+                  <ExternalLink size={12} />
+                </Link>
+                <button
+                  className={`${styles.queueActionButton} ${styles.removeButton}`}
+                  onClick={() => handleRemoveFromQueue(index)}
+                  title="Retirer"
+                >
+                  <CircleX size={12} />
+                </button>
+              </div>
             </div>
-            <div className={styles.queueItemActions}>
-              <button
-                className={`${styles.queueActionButton} ${styles.playButton}`}
-                onClick={() => handlePlayQueueItem(item, index)}
-                title="Lire"
-              >
-                <Play size={12} />
-              </button>
-              <button
-                className={`${styles.queueActionButton} ${styles.moveButton}`}
-                onClick={() => handleMoveUp(index)}
-                disabled={index === 0}
-                title="Monter"
-              >
-                <ChevronUp size={12} />
-              </button>
-              <button
-                className={`${styles.queueActionButton} ${styles.moveButton}`}
-                onClick={() => handleMoveDown(index)}
-                disabled={index === queue.length - 1}
-                title="Descendre"
-              >
-                <ChevronDown size={12} />
-              </button>
-              <Link
-                href={`/podcasts/${item.slug}`}
-                className={`${styles.queueActionButton} ${styles.externalButton}`}
-                title="Ouvrir la page"
-              >
-                <ExternalLink size={12} />
-              </Link>
-              <button
-                className={`${styles.queueActionButton} ${styles.removeButton}`}
-                onClick={() => handleRemoveFromQueue(index)}
-                title="Retirer"
-              >
-                <CircleX size={12} />
-              </button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
