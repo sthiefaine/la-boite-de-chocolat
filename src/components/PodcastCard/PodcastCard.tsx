@@ -107,7 +107,7 @@ function PodcastCard({
               />
               {shouldBlur && (
                 <div className={styles.ageOverlay}>
-                  <span className={styles.ageBadge}>18+</span>
+                  <span className={styles.ageBadge}>+18</span>
                 </div>
               )}
             </>

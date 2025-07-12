@@ -4,30 +4,30 @@ import {
   ImageContainer,
   ImageShadow,
   ModernImage,
-  PlayButton,
+  AgeBadge,
   EpisodeContent,
 } from "@/components/OGImageLayout/OGImageLayout";
+import { NextRequest } from "next/server";
 
 export const runtime = "edge";
 
 export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ filename: string }> }
+  req: NextRequest
 ) {
   try {
-    const { filename } = await params;
-    const url = new URL(request.url);
-    const slug = url.searchParams.get("slug");
 
-    const decodedFilename = decodeURIComponent(filename);
+    const slug = req.nextUrl.searchParams.get("slug");
+    const baseUrl = process.env.NODE_ENV === "production" ? process.env.NEXT_PUBLIC_DEV_URL : "http://localhost:3000";
 
-    const originalImageUrl = decodedFilename;
-
-    const requestUrl = new URL(request.url);
-    const apiUrl = `${requestUrl.protocol}//${requestUrl.host}`;
-
-    const episode = slug ? await fetch(`${apiUrl}/api/episode/${slug}`) : null;
+    const episode = slug ? await fetch(`${baseUrl}/api/episode/${slug}`) : null;
     const episodeData = episode ? await episode.json() : null;
+
+    // Construire l'URL absolue pour l'image masquée
+    let originalImageUrl = episodeData?.mainFilmImageUrl;
+    if (episodeData?.mainFilmImageUrl?.startsWith("/api/image/masked/")) {
+      const maskedImageUrl = `${baseUrl}${episodeData.mainFilmImageUrl}`;
+      originalImageUrl = maskedImageUrl;
+    }
 
     const episodeNumber = episodeData?.episode
       ? `E${episodeData.episode.episode.toString().padStart(2, "0")}`
@@ -42,7 +42,7 @@ export async function GET(
         : episodeNumber || seasonNumber || "";
 
     const isNew = episodeData?.episode?.pubDate
-      ? new Date(episodeData.episode.pubDate) >
+      ? new Date(episodeData?.episode?.pubDate) >
         new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
       : false;
 
@@ -55,8 +55,8 @@ export async function GET(
           leftContent={
             <ImageContainer>
               <ImageShadow />
-              <ModernImage src={originalImageUrl} alt="" />
-              <PlayButton />
+              <ModernImage src={originalImageUrl} alt="" isAdult={true} />
+              <AgeBadge />
             </ImageContainer>
           }
           rightContent={
@@ -74,7 +74,7 @@ export async function GET(
       }
     );
   } catch (e: any) {
-    console.error("Erreur lors de la génération de l'image Open Graph:", e);
+    console.error("Erreur lors de la génération de l'image masquée:", e);
     return new Response("Erreur de génération d'image", { status: 500 });
   }
 }

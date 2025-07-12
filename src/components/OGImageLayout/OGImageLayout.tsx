@@ -209,8 +209,8 @@ export function ModernImage({
           border: "4px solid rgba(255, 255, 255, 0.8)",
           boxShadow:
             "0 15px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.1)",
-          filter: isAdult ? "blur(15px)" : "none",
-          opacity: isAdult ? 0.5 : 1,
+          filter: isAdult ? "blur(10px)" : "none",
+          opacity: isAdult ? 0.8 : 1,
         }}
         alt={alt}
       />
@@ -275,7 +275,7 @@ export function AgeBadge() {
           letterSpacing: "-2px",
         }}
       >
-        -18
+        +18
       </span>
     </div>
   );

@@ -50,6 +50,7 @@
   overflow: hidden !important;
   display: -webkit-box !important;
   -webkit-line-clamp: 2 !important;
+  line-clamp: 2 !important;
   -webkit-box-orient: vertical !important;
 }
 
@@ -238,7 +239,7 @@
   .blurredImage {
     filter: blur(6px) brightness(0.7);
   }
-  
+
   .ageBadge {
     padding: 0.4rem 0.8rem;
     font-size: 0.875rem;

@@ -1,7 +1,6 @@
 import { Metadata, Viewport } from "next";
 import { SITE_URL } from "@/lib/config";
 import { getEpisodeBySlugCached } from "@/app/actions/episode";
-import { getOpenGraphImageUrl } from "@/app/actions/image";
 
 interface PodcastPageProps {
   params: Promise<{
@@ -25,14 +24,19 @@ export async function generateMetadata({
     };
   }
 
-  const { episode, mainFilm, isAdultContent, mainFilmImageUrl } = episodeData;
+  const baseUrl =
+    process.env.NODE_ENV === "production"
+      ? SITE_URL
+      : process.env.NEXT_PUBLIC_DEV_URL || "http://localhost:3000";
+
+  const { episode, mainFilm, isAdultContent } = episodeData;
   const title = mainFilm?.title || episode.title;
   const season = episode.season || null;
   const episodeNumber = episode.episode || null;
   const fullTitle = `S${season}E${episodeNumber} - ${title} - La Boîte de Chocolat`;
 
   // Description enrichie
-  let description = episode.description?.substring(0, 160);
+  let description = "";
   if (!description && mainFilm) {
     description = `Découvrez notre analyse du film ${mainFilm.title}`;
     if (mainFilm.director) description += ` de ${mainFilm.director}`;
@@ -40,14 +44,13 @@ export async function generateMetadata({
     description += " dans ce nouvel épisode de La Boîte de Chocolat.";
   }
   description = description || `Écoutez l'épisode sur ${title}`;
-
-  // Générer l'URL de l'image Open Graph optimisée
-  const ogImageUrl = mainFilmImageUrl
-    ? await getOpenGraphImageUrl(mainFilm.imgFileName, mainFilm.age || null)
-    : "/api/image/og-default";
   const isAdult = isAdultContent;
 
-  const ogImageUrlWithSlug = ogImageUrl + `?slug=${slug}`;
+  const ogImageUrl = slug
+    ? isAdult
+      ? `/api/image/og-masked?slug=${slug}`
+      : `/api/image/og?slug=${slug}`
+    : "/api/image/og-default";
 
   // URL canonique
   const canonicalUrl = `${SITE_URL}/podcast/${slug}`;
@@ -65,7 +68,7 @@ export async function generateMetadata({
   ].filter(Boolean);
 
   return {
-    metadataBase: new URL(SITE_URL),
+    metadataBase: new URL(baseUrl),
     title: fullTitle,
     description,
     keywords: keywords.join(", "),
@@ -106,7 +109,7 @@ export async function generateMetadata({
       url: canonicalUrl,
       images: [
         {
-          url: ogImageUrlWithSlug,
+          url: ogImageUrl,
           width: 1200,
           height: 630,
           alt: isAdult
@@ -132,7 +135,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: fullTitle,
       description,
-      images: [ogImageUrl],
+      images: ogImageUrl,
     },
 
     // Métadonnées pour les podcasts
@@ -166,7 +169,6 @@ export async function generateMetadata({
       // Métadonnées de contenu
       "content-language": "fr-FR",
       "content-type": "audio/podcast",
-
     },
 
     // Métadonnées pour les applications
@@ -175,11 +177,23 @@ export async function generateMetadata({
     // Métadonnées pour les favicons et manifestes
     icons: {
       icon: [
-        { url: "/images/icons/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-        { url: "/images/icons/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+        {
+          url: "/images/icons/favicon-16x16.png",
+          sizes: "16x16",
+          type: "image/png",
+        },
+        {
+          url: "/images/icons/favicon-32x32.png",
+          sizes: "32x32",
+          type: "image/png",
+        },
       ],
       apple: [
-        { url: "/images/icons/apple-icon.png", sizes: "180x180", type: "image/png" },
+        {
+          url: "/images/icons/apple-icon.png",
+          sizes: "180x180",
+          type: "image/png",
+        },
       ],
       other: [
         {
