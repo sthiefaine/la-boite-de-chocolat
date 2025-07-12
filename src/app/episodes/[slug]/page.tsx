@@ -236,19 +236,12 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
                   <Suspense fallback={null}>
                     {" "}
                     <PodcastCard
-                      film={nextEpisode.links[0]?.film ?? {
-                        id: nextEpisode.id,
-                        title: nextEpisode.title,
-                        slug: nextEpisode.slug || "",
-                        year: null,
-                        imgFileName: null,
-                        age: null,
-                        saga: null,
-                      }}
+                      film={nextEpisode.links[0]?.film}
                       episodeTitle={nextEpisode.title}
                       episodeDate={nextEpisode.pubDate}
                       episodeDuration={nextEpisode.duration}
                       episodeSlug={nextEpisode.slug}
+                      episodeGenre={nextEpisode.genre}
                       variant="compact"
                     />
                   </Suspense>
@@ -261,19 +254,12 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
                   </span>
                   <Suspense fallback={null}>
                     <PodcastCard
-                      film={previousEpisode.links[0]?.film ?? {
-                        id: previousEpisode.id,
-                        title: previousEpisode.title,
-                        slug: previousEpisode.slug || "",
-                        year: null,
-                        imgFileName: null,
-                        age: null,
-                        saga: null,
-                      }}
+                      film={previousEpisode.links[0]?.film}
                       episodeTitle={previousEpisode.title}
                       episodeDate={previousEpisode.pubDate}
                       episodeDuration={previousEpisode.duration}
                       episodeSlug={previousEpisode.slug}
+                      episodeGenre={previousEpisode.genre}
                       variant="compact"
                     />
                   </Suspense>

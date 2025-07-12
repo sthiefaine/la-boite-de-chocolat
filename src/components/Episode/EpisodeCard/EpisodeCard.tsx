@@ -27,6 +27,7 @@ interface EpisodeCardProps {
   episodeDate?: Date;
   episodeDuration?: number | null;
   episodeSlug?: string | null;
+  episodeGenre?: string | null;
   isNoResults?: boolean;
   variant?: "default" | "compact";
 }
@@ -37,6 +38,7 @@ export default function EpisodeCard({
   episodeDate,
   episodeDuration,
   episodeSlug,
+  episodeGenre,
   isNoResults = false,
   variant = "default",
 }: EpisodeCardProps) {
@@ -70,10 +72,10 @@ export default function EpisodeCard({
     );
   }
 
-  if (!film) return null;
-
-  // Vérifier si le film doit être flouté (âge 18+)
-  const shouldBlur = film.age === "18+" || film.age === "adult";
+  const displayTitle = film ? film.title : episodeTitle || "Épisode sans titre";
+  const displayImage = film?.imgFileName || null;
+  const displayAge = film?.age || null;
+  const shouldBlur = displayAge === "18+" || displayAge === "adult";
 
   return (
     <article
@@ -84,13 +86,12 @@ export default function EpisodeCard({
       <Link
         href={`/episodes/${episodeSlug}`}
         className={styles.cardLink}
-        prefetch={false} // Désactiver le préchargement automatique
       >
         <span className={styles.cardImageContainer}>
-          {film.imgFileName ? (
+          {displayImage ? (
             <>
               <Image
-                alt={`Poster de ${film.title}`}
+                alt={`Poster de ${displayTitle}`}
                 fill
                 sizes={
                   variant === "compact"
@@ -100,7 +101,7 @@ export default function EpisodeCard({
                 className={`${styles.cardImage} ${
                   shouldBlur ? styles.blurredImage : ""
                 }`}
-                src={getStaticImageUrl(film.imgFileName, film.age)}
+                src={getStaticImageUrl(displayImage, displayAge)}
                 priority={false}
                 loading="lazy"
                 quality={IMAGE_CONFIG.defaultQuality}
@@ -116,6 +117,11 @@ export default function EpisodeCard({
               <span>🎬</span>
             </div>
           )}
+          {!film && episodeGenre && (
+            <div className={styles.genreOverlay}>
+              <span className={styles.genreBadge}>{episodeGenre}</span>
+            </div>
+          )}
           {episodeDuration && (
             <span className={styles.cardDuration}>
               {formatDuration(episodeDuration)}
@@ -124,7 +130,7 @@ export default function EpisodeCard({
         </span>
         <div className={styles.cardInformations}>
           <div className={styles.cardTop}>
-            <h2 className={styles.cardTitle}>{film.title}</h2>
+            <h2 className={styles.cardTitle}>{displayTitle}</h2>
             <span className={styles.cardOptions}></span>
           </div>
           <div className={styles.cardBottom}>

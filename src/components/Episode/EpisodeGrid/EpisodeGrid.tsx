@@ -30,6 +30,7 @@ interface Episode {
   audioUrl: string;
   duration?: number | null;
   slug: string | null;
+  genre?: string | null;
   parentSaga?: {
     id: string;
     name: string;
@@ -148,7 +149,6 @@ export default function PodcastGrid({
         ) : (
           <>
             {displayedEpisodes.map((episode) => {
-              // Si l'épisode a des films, afficher le premier film
               if (episode.links.length > 0) {
                 const firstFilm = episode.links[0].film;
                 return (
@@ -159,25 +159,18 @@ export default function PodcastGrid({
                     episodeDate={episode.pubDate}
                     episodeDuration={episode.duration}
                     episodeSlug={episode.slug}
+                    episodeGenre={episode.genre}
                   />
                 );
               } else {
                 return (
                   <MemoizedEpisodeCard
                     key={episode.id}
-                    film={{
-                      id: episode.id,
-                      title: episode.title,
-                      slug: episode.slug || "",
-                      year: null,
-                      imgFileName: null,
-                      age: null,
-                      saga: null,
-                    }}
                     episodeTitle={episode.title}
                     episodeDate={episode.pubDate}
                     episodeDuration={episode.duration}
                     episodeSlug={episode.slug}
+                    episodeGenre={episode.genre}
                   />
                 );
               }

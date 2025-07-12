@@ -324,6 +324,7 @@ export async function getEpisodesWithFilms() {
         audioUrl: true,
         duration: true,
         slug: true,
+        genre: true,
         links: {
           select: {
             film: {

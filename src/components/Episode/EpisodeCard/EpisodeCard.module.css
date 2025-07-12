@@ -245,3 +245,32 @@
     font-size: 0.875rem;
   }
 }
+
+/* Badge de genre pour épisodes sans film */
+.genreOverlay {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 3;
+}
+
+.genreBadge {
+  background: var(--accent-gold);
+  color: var(--chocolate-dark);
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: var(--shadow-light);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+/* Responsive pour le badge de genre */
+@media (max-width: 768px) {
+  .genreBadge {
+    padding: 0.2rem 0.6rem;
+    font-size: 0.7rem;
+  }
+}
