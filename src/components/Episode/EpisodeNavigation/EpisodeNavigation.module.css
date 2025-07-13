@@ -1,0 +1,63 @@
+/* EpisodeNavigation.module.css */
+
+.navigationSection {
+  background: #1a1a1a;
+  padding: 1rem;
+}
+
+.navigationContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.5rem;
+  padding: 0;
+  justify-items: start;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.navigationCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.navigationLabel {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  align-self: flex-start;
+  opacity: 0.8;
+}
+
+.navigationLabel:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .navigationSection {
+    padding: 1.5rem 1rem;
+  }
+
+  .navigationContainer {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 0.75rem;
+    padding: 0;
+    justify-items: center;
+    max-width: 100%;
+  }
+
+  .navigationCard {
+    width: 100%;
+  }
+} 

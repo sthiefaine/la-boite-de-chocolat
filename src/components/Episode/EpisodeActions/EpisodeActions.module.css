@@ -1,0 +1,121 @@
+.buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--text-white);
+  backdrop-filter: var(--glass-blur);
+}
+
+.button:hover {
+  background: rgba(139, 69, 19, 0.4);
+  border-color: rgba(139, 69, 19, 0.7);
+  transform: translateY(-2px);
+  box-shadow: var(--glass-shadow-medium);
+}
+
+.buttonIcon {
+  font-size: 1.2rem;
+}
+
+.listenButton {
+  background: rgba(212, 165, 116, 0.2);
+  border-color: var(--chocolate-light);
+}
+
+.listenButton:hover {
+  background: rgba(212, 165, 116, 0.4);
+  border-color: var(--chocolate-light);
+}
+
+.queueButton {
+  background: rgba(107, 62, 38, 0.2);
+  border-color: var(--chocolate-primary);
+}
+
+.queueButton:hover {
+  background: rgba(107, 62, 38, 0.4);
+  border-color: var(--chocolate-primary);
+}
+
+.downloadButton {
+  background: rgba(139, 38, 53, 0.2);
+  border-color: var(--accent-red);
+}
+
+.downloadButton:hover {
+  background: rgba(139, 38, 53, 0.4);
+  border-color: var(--accent-red);
+}
+
+.shareButton {
+  background: rgba(212, 175, 55, 0.2);
+  border-color: var(--accent-gold);
+}
+
+.shareButton:hover {
+  background: rgba(212, 175, 55, 0.4);
+  border-color: var(--accent-gold);
+}
+
+.tmdbButton {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.tmdbButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.tmdbIcon {
+  filter: brightness(0) invert(1);
+  transition: filter var(--transition-fast);
+}
+
+.tmdbButton:hover .tmdbIcon {
+  filter: brightness(1) invert(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .buttons {
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  .buttonIcon {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .button {
+    justify-content: center;
+    padding: 0.75rem 1rem;
+  }
+} 

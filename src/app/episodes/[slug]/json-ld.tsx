@@ -1,39 +1,58 @@
 import { SITE_URL } from "@/lib/config";
 import { getMaskedImageUrl } from "@/app/actions/image";
 
+
+export interface Episode {
+  id: string;
+  title: string;
+  description: string | null;
+  pubDate: Date;
+  updatedAt?: Date;
+  duration?: number | null;
+  episode?: number | null;
+  season?: number | null;
+  audioUrl: string;
+  slug: string | null;
+  age?: string | null;
+  genre?: string | null;
+  imgFileName?: string | null;
+  links: Array<{
+    film?: {
+      id: string;
+      title: string;
+      year: number | null;
+      imgFileName: string | null;
+      age: string | null;
+      director?: string | null;
+      saga?: {
+        id: string;
+        name: string;
+        description?: string | null;
+        imgFileName?: string | null;
+        filmsOrder?: string[];
+      } | null;
+      tmdbId?: number | null;
+    } | null;
+  }>;
+}
+
 interface JsonLdProps {
-  episode: {
-    title: string;
-    description?: string;
-    pubDate: Date;
-    updatedAt?: Date;
-    duration?: number;
-    episode?: number;
-    season?: number;
-    imgFileName?: string;
-  };
-  mainFilm?: {
-    title: string;
-    director?: string;
-    year?: number;
-    age?: string;
-    imgFileName?: string;
-  };
+  episode: Episode;
   canonicalUrl: string;
 }
 
 export async function PodcastJsonLd({
   episode,
-  mainFilm,
   canonicalUrl,
 }: JsonLdProps) {
+  const mainFilm = episode.links[0]?.film;
   const isAdult = mainFilm?.age === "18+" || mainFilm?.age === "adult";
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "PodcastEpisode",
     name: episode.title,
-    description: episode.description,
+    description: episode.description || "Podcast de critique cinématographique de La Boîte de Chocolat",
     url: canonicalUrl,
     datePublished: episode.pubDate.toISOString(),
     dateModified: episode.updatedAt?.toISOString(),

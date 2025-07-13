@@ -1,0 +1,74 @@
+.sagaSection {
+  background: #1a1a1a;
+  padding: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sagaContainer {
+  flex-direction: column;
+  width: 100%;
+  min-width: 0px;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.sagaCardWrapper {
+  width: 100%;
+  min-width: 0;
+}
+
+.sagaLabel {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  align-self: flex-start;
+  opacity: 0.8;
+}
+
+.sagaLabel:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sagaFilmsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.5rem;
+  padding: 0;
+  justify-items: start;
+  justify-content: start;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.sagaFilmCard {
+  width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .sagaSection {
+    padding: 1.5rem 1rem;
+  }
+
+  .sagaFilmsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.5rem;
+    padding: 0;
+    justify-items: start;
+    justify-content: start;
+    max-width: 100%;
+  }
+
+  .sagaFilmCard {
+    width: 100%;
+  }
+} 

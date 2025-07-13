@@ -58,7 +58,7 @@ export const AddToQueueButton = ({
       title="Ajouter à la file d'attente"
     >
       <Plus size={16} />
-      <span>{isAdded ? "Ajouté !" : "Ajouter à la file d'attente"}</span>
+      <span>{isAdded ? "Ajouté !" : "File d'attente"}</span>
     </button>
   );
 };

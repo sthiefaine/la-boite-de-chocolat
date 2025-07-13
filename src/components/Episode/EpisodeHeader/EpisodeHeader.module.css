@@ -1,0 +1,344 @@
+/* EpisodeHeader.module.css */
+
+.header {
+  position: relative;
+  min-height: 500px;
+  overflow-x: hidden;
+}
+
+.backgroundPoster {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.backgroundImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.backgroundOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(107, 62, 38, 0.2) 0%,
+    rgba(166, 124, 82, 0.2) 50%,
+    rgba(212, 165, 116, 0.4) 100%
+  );
+}
+
+.headerContent {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 2rem;
+  width: 100%;
+}
+
+.headerInfo {
+  color: var(--text-white);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.titleSection {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+  max-width: 80vw;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--text-white);
+  margin: 0;
+  line-height: 1.1;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.9);
+  min-width: 0;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+.year {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin-left: 0.5rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.director {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-style: italic;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.publicationDate {
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all var(--transition-fast);
+  border: var(--glass-border-dark);
+  cursor: pointer;
+  width: 160px;
+  min-width: 160px;
+  text-align: center;
+  justify-content: center;
+  background: var(--glass-bg-darker);
+  backdrop-filter: var(--glass-blur-medium);
+  box-shadow: var(--glass-shadow-dark);
+  color: var(--text-white);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.listenButton {
+  background: rgba(34, 197, 94, 0.3);
+  border-color: rgba(34, 197, 94, 0.4);
+  color: var(--text-white);
+}
+
+.listenButton:hover {
+  background: rgba(34, 197, 94, 0.4);
+  border-color: rgba(34, 197, 94, 0.5);
+  color: var(--text-white);
+  transform: translateY(-1px);
+  box-shadow: var(--glass-shadow-dark), 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+.downloadButton {
+  background: var(--glass-bg-darker);
+  border: var(--glass-border-dark);
+  color: var(--text-white);
+}
+
+.downloadButton:hover {
+  background: rgba(0, 0, 0, 0.6);
+  border: var(--glass-border-dark);
+  color: var(--text-white);
+  transform: translateY(-1px);
+  box-shadow: var(--glass-shadow-dark);
+}
+
+.tmdbButton {
+  background: var(--glass-bg-darker);
+  border: var(--glass-border-dark);
+  color: var(--text-white);
+  padding: 0.5rem 1rem;
+  width: 140px;
+  min-width: 140px;
+  justify-content: center;
+}
+
+.tmdbButton:hover {
+  background: rgba(0, 0, 0, 0.6);
+  border: var(--glass-border-dark);
+  color: var(--text-white);
+  transform: translateY(-1px);
+  box-shadow: var(--glass-shadow-dark);
+}
+
+.queueButton {
+  background: var(--glass-bg-darker);
+  border: var(--glass-border-dark);
+  color: var(--text-white);
+}
+
+.queueButton:hover {
+  background: rgba(0, 0, 0, 0.6);
+  border: var(--glass-border-dark);
+  color: var(--text-white);
+  transform: translateY(-1px);
+  box-shadow: var(--glass-shadow-dark);
+}
+
+.buttonIcon {
+  font-size: 1.1rem;
+  transition: transform 0.3s ease;
+}
+
+.button:hover .buttonIcon {
+  transform: scale(1.05);
+}
+
+.tmdbIcon {
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.tmdbButton:hover .tmdbIcon {
+  filter: none;
+  transform: scale(1.02);
+}
+
+.description {
+  margin: 1.5rem 0;
+  max-width: 90%;
+  position: relative;
+  z-index: 10;
+}
+
+.descriptionTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-white);
+  margin: 0 0 0.75rem 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.descriptionContent {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-white);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  background: var(--glass-bg-dark);
+  padding: 1.5rem;
+  border-radius: 12px;
+  backdrop-filter: var(--glass-blur);
+  border: var(--glass-border-dark);
+  box-shadow: var(--glass-shadow-dark);
+  white-space: pre-wrap;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.descriptionContent::-webkit-scrollbar {
+  width: 6px;
+}
+
+.descriptionContent::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+.descriptionContent::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 3px;
+}
+
+.descriptionContent::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+@media (max-width: 768px) {
+  .headerInfo {
+    padding: 1rem;
+    max-width: 100%;
+  }
+
+  .titleSection {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    max-width: 100%;
+  }
+
+  .title {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  .year {
+    font-size: 1.25rem;
+  }
+
+  .publicationDate {
+    font-size: 1rem;
+  }
+
+  .director {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .button {
+    width: 100%;
+    min-width: unset;
+    justify-content: center;
+  }
+
+  /* Première ligne : Écouter et Ajouter à la file d'attente */
+  .listenButton {
+    grid-column: 1;
+  }
+
+  .queueButton {
+    grid-column: 2;
+  }
+
+  /* Deuxième ligne : Télécharger et Partager */
+  .downloadButton {
+    grid-column: 1;
+  }
+
+  .shareButton {
+    grid-column: 2;
+  }
+
+  /* Troisième ligne : TMDB (centré) */
+  .tmdbButton {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: 140px;
+    min-width: 140px;
+  }
+
+  .description {
+    margin: 1.5rem auto;
+    max-width: 95%;
+    text-align: center;
+  }
+
+  .descriptionTitle {
+    text-align: center;
+  }
+
+  .descriptionContent {
+    text-align: left;
+    padding: 1rem;
+    font-size: 0.95rem;
+  }
+} 
