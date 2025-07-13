@@ -69,13 +69,16 @@ export async function POST(request: NextRequest) {
 
       const tmdbFilms = collectionData.parts || [];
       const filmMappings: Array<{ tmdbFilm: any; localFilm: any }> = [];
+      const usedLocalFilmIds = new Set<string>();
 
       for (const tmdbFilm of tmdbFilms) {
         const matchingFilm = existingSaga.films.find(
           (film) =>
-            film.tmdbId === tmdbFilm.id ||
-            film.title.toLowerCase().includes(tmdbFilm.title.toLowerCase()) ||
-            tmdbFilm.title.toLowerCase().includes(film.title.toLowerCase())
+            !usedLocalFilmIds.has(film.id) && (
+              film.tmdbId === tmdbFilm.id ||
+              film.title.toLowerCase() === tmdbFilm.title.toLowerCase() ||
+              film.tmdbId === tmdbFilm.id
+            )
         );
 
         if (matchingFilm) {
@@ -83,6 +86,7 @@ export async function POST(request: NextRequest) {
             tmdbFilm,
             localFilm: matchingFilm,
           });
+          usedLocalFilmIds.add(matchingFilm.id);
         }
       }
 

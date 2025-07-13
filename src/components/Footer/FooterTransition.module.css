@@ -6,12 +6,16 @@
   z-index: 1;
 }
 
-.transition.minimized {
+.minimized {
   height: 50px;
 }
 
 @media (max-width: 768px) {
   .transition {
-    height: 80px;
+    height: 120px;
+  }
+
+  .minimized {
+    height: 50px;
   }
 }
