@@ -33,7 +33,8 @@ export async function generateMetadata({
   const title = mainFilm?.title || episode.title;
   const season = episode.season || null;
   const episodeNumber = episode.episode || null;
-  const fullTitle = `S${season}E${episodeNumber} - ${title} - La Boîte de Chocolat`;
+  const episodeNumberText = episodeNumber ? `E${episodeNumber}` : "";
+  const fullTitle = `S${season} ${episodeNumberText} - ${title} - La Boîte de Chocolat`;
 
   // Description enrichie
   let description = "";
@@ -143,6 +144,7 @@ export async function generateMetadata({
     other: {
       // Données structurées pour les podcasts
       "podcast:author": "La Boîte de Chocolat",
+      "podcast:season": season?.toString() || "",
       "podcast:episode": episodeNumber?.toString() || "0",
       "podcast:duration": episode.duration?.toString() || "",
       "podcast:explicit": isAdult ? "true" : "false",

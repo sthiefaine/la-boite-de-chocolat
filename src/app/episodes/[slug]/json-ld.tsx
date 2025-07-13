@@ -38,7 +38,8 @@ export async function PodcastJsonLd({
     datePublished: episode.pubDate.toISOString(),
     dateModified: episode.updatedAt?.toISOString(),
     duration: episode.duration ? `PT${episode.duration}S` : undefined,
-    episodeNumber: episode.episode,
+    episodeNumber: episode.episode ? episode.episode.toString() : undefined,
+    seasonNumber: episode.season ? episode.season.toString() : undefined,
     partOfSeries: {
       "@type": "PodcastSeries",
       name: "La Boîte de Chocolat",

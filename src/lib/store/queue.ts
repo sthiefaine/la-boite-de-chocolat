@@ -24,6 +24,8 @@ interface QueueStore {
   getNextEpisode: () => Episode | null;
   getPreviousEpisode: () => Episode | null;
   isQueueEmpty: () => boolean;
+  getFirstEpisode: () => Episode | null;
+  removeFirstEpisode: () => void;
 }
 
 export const useQueueStore = create(
@@ -114,6 +116,28 @@ export const useQueueStore = create(
 
       isQueueEmpty: () => {
         return get().queue.length === 0;
+      },
+
+      getFirstEpisode: () => {
+        const { queue } = get();
+        return queue.length > 0 ? queue[0] : null;
+      },
+
+      removeFirstEpisode: () => {
+        set((state) => {
+          if (state.queue.length === 0) return state;
+          const newQueue = state.queue.slice(1);
+          let newCurrentIndex = state.currentIndex;
+          if (state.currentIndex > 0) {
+            newCurrentIndex--;
+          } else if (state.currentIndex === 0) {
+            newCurrentIndex = -1;
+          }
+          return {
+            queue: newQueue,
+            currentIndex: newCurrentIndex,
+          };
+        });
       },
     }),
     {

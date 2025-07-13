@@ -57,6 +57,8 @@ export const PlayerBar = () => {
     getNextEpisode,
     getPreviousEpisode,
     setCurrentIndex,
+    getFirstEpisode,
+    removeFirstEpisode,
   } = useQueueStore(
     useShallow((state) => ({
       queue: state.queue,
@@ -64,6 +66,8 @@ export const PlayerBar = () => {
       getNextEpisode: state.getNextEpisode,
       getPreviousEpisode: state.getPreviousEpisode,
       setCurrentIndex: state.setCurrentIndex,
+      getFirstEpisode: state.getFirstEpisode,
+      removeFirstEpisode: state.removeFirstEpisode,
     }))
   );
 
@@ -326,6 +330,15 @@ export const PlayerBar = () => {
           onPlaying={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
           onLoadedData={() => setData()}
+          onEnded={() => {
+            const firstEpisode = getFirstEpisode();
+            if (firstEpisode) {
+              setCurrentPlayTime(0);
+              setEpisode(firstEpisode);
+              removeFirstEpisode();
+              setIsPlaying(true);
+            }
+          }}
           ref={audioRef}
           src={episode?.url}
           autoPlay={true}
