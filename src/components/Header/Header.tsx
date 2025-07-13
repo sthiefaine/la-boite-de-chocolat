@@ -1,12 +1,13 @@
+"use server";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X } from "lucide-react";
-import styles from "./Header.module.css";
-import { getUser } from "@/lib/auth/auth-server";
 import { Suspense } from "react";
+import { getUser } from "@/lib/auth/auth-server";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { MobileMenu } from "./MobileMenu";
+import styles from "./Header.module.css";
 
 const ButtonSkeleton = ({ className }: { className: string }) => (
   <div className={`${className}`}>
@@ -14,7 +15,17 @@ const ButtonSkeleton = ({ className }: { className: string }) => (
   </div>
 );
 
-export default function Header() {
+export default async function Header() {
+  const user = await getUser();
+
+  async function signOutAction() {
+    "use server";
+    await auth.api.signOut({
+      headers: await headers(),
+    });
+    redirect("/signin");
+  }
+
   return (
     <header className={styles.header}>
       <div className={styles.container}>
@@ -30,12 +41,6 @@ export default function Header() {
           </span>
           <span className={styles.logoText}>La Boîte de Chocolat</span>
         </Link>
-
-        <input
-          type="checkbox"
-          id="mobile-menu-toggle"
-          className={styles.mobileMenuToggle}
-        />
 
         <nav className={styles.nav}>
           <Link href="/" className={styles.navLink}>
@@ -55,30 +60,7 @@ export default function Header() {
           </Suspense>
         </nav>
 
-        {/* Bouton hamburger */}
-        <label htmlFor="mobile-menu-toggle" className={styles.menuButton}>
-          <Menu size={24} className={styles.menuIcon} />
-          <X size={24} className={styles.closeIcon} />
-        </label>
-
-        {/* Menu mobile */}
-        <nav className={styles.mobileNav}>
-          <Link href="/" className={styles.mobileNavLink}>
-            Accueil
-          </Link>
-          <Link href="/episodes" className={styles.mobileNavLink}>
-            Épisodes
-          </Link>
-          <Link href="/options" className={styles.mobileNavLink}>
-            Options
-          </Link>
-          <Suspense fallback={<ButtonSkeleton className={styles.mobileNavLink} />}>
-            <AdminLinkConditional className={styles.mobileNavLink} />
-          </Suspense>
-          <Suspense fallback={<ButtonSkeleton className={styles.mobileNavLink} />}>
-            <AuthButton className={styles.mobileNavLink} />
-          </Suspense>
-        </nav>
+        <MobileMenu user={user} onSignOut={signOutAction} />
       </div>
     </header>
   );
@@ -107,7 +89,6 @@ export const AuthButton = async ({
 }: {
   className?: string;
 }) => {
-
   const user = await getUser();
 
   if (!user) {
