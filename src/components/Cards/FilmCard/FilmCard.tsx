@@ -88,8 +88,8 @@ export default function FilmCard({
                     href={`/episodes/${episode.slug}`}
                     className={styles.listenButtonOverlay}
                   >
-                    <span className={styles.buttonIcon}>🎧</span>
-                    Écouter
+                    <span className={styles.buttonIcon}>🎬</span>
+                    Afficher
                   </Link>
                 </div>
               )}

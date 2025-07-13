@@ -1,6 +1,8 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import Header from "@/components/Header/Header";
+import Footer from "@/components/Footer/Footer";
+import FooterTransition from "@/components/Footer/FooterTransition";
 import { PlayerBar } from "@/components/Player/PlayerBar";
 import { Suspense } from "react";
 
@@ -51,6 +53,8 @@ export default function RootLayout({
       <body className={inter.className}>
         <Header />
         <main>{children}</main>
+        <FooterTransition />
+        <Footer />
         <Suspense fallback={null}>
           <PlayerBar />
         </Suspense>

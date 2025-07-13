@@ -115,23 +115,14 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
+  display: flex;
+  flex-direction: column;
 }
 
 main {
-  min-height: 100dvh;
+  flex: 1;
   position: relative;
   background-color: var(--black);
-}
-
-main::after {
-  content: "";
-  position: absolute;
-  bottom: -100px;
-  left: 0;
-  right: 0;
-  height: 100px;
-  background-color: inherit;
-  z-index: -1;
 }
 
 a {

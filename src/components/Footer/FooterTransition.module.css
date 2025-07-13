@@ -1,0 +1,13 @@
+.transition {
+  height: 100px;
+  width: 100%;
+  background: var(--bg-dark);
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .transition {
+    height: 80px;
+  }
+}
