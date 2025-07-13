@@ -35,6 +35,12 @@ export default function LinkFilmForm({
   const [selectedFilm, setSelectedFilm] = useState<Film | null>(null);
   const [addingFilm, setAddingFilm] = useState(false);
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Escape") {
+      setSearchTerm("");
+    }
+  };
+
   useEffect(() => {
     fetchFilms();
   }, []);
@@ -104,13 +110,26 @@ export default function LinkFilmForm({
         </div>
 
         <div className={styles.searchSection}>
-          <input
-            type="text"
-            placeholder="Rechercher un film par titre, réalisateur, année ou saga..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className={styles.searchInput}
-          />
+          <div className={styles.searchContainer}>
+            <input
+              type="search"
+              placeholder="Rechercher un film par titre, réalisateur, année ou saga..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={handleKeyDown}
+              className={styles.searchInput}
+            />
+            {searchTerm && (
+              <button
+                type="button"
+                onClick={() => setSearchTerm("")}
+                className={styles.clearButton}
+                aria-label="Effacer la recherche"
+              >
+                ×
+              </button>
+            )}
+          </div>
         </div>
 
         <div className={styles.filmsList}>

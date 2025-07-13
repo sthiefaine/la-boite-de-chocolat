@@ -55,6 +55,7 @@ export default function PodcastGrid({
 }: EpisodeGridProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [yearFilter, setYearFilter] = useState("");
+  const [marvelFilter, setMarvelFilter] = useState(false);
 
   const deferredSearchQuery = useDeferredValue(searchQuery);
 
@@ -80,10 +81,12 @@ export default function PodcastGrid({
           episode.description.toLowerCase().includes(query) ||
           (episode.parentSaga &&
             episode.parentSaga.name.toLowerCase().includes(query)) ||
-          episode.links.some((link) =>
-            link.film.title.toLowerCase().includes(query) ||
-            (link.film.year && link.film.year.toString().includes(query)) ||
-            (link.film.saga && link.film.saga.name.toLowerCase().includes(query))
+          episode.links.some(
+            (link) =>
+              link.film.title.toLowerCase().includes(query) ||
+              (link.film.year && link.film.year.toString().includes(query)) ||
+              (link.film.saga &&
+                link.film.saga.name.toLowerCase().includes(query))
           )
       );
     }
@@ -96,8 +99,18 @@ export default function PodcastGrid({
       );
     }
 
+    if (marvelFilter) {
+      filtered = filtered.filter((episode) =>
+        episode.links.some(
+          (link) =>
+            link.film.saga?.name.toLowerCase().includes("marvel") ||
+            episode.parentSaga?.name.toLowerCase().includes("marvel")
+        )
+      );
+    }
+
     return filtered;
-  }, [episodes, deferredSearchQuery, yearFilter]);
+  }, [episodes, deferredSearchQuery, yearFilter, marvelFilter]);
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value);
@@ -107,6 +120,10 @@ export default function PodcastGrid({
     setYearFilter(value);
   }, []);
 
+  const handleMarvelClick = useCallback(() => {
+    setMarvelFilter(!marvelFilter);
+  }, [marvelFilter]);
+
   const {
     displayedItems: displayedEpisodes,
     hasMore,
@@ -115,7 +132,7 @@ export default function PodcastGrid({
     items: filteredEpisodes,
     itemsPerPage: 12,
     rootMargin: "300px",
-    resetDependencies: [deferredSearchQuery, yearFilter],
+    resetDependencies: [deferredSearchQuery, yearFilter, marvelFilter],
   });
 
   return (
@@ -138,6 +155,10 @@ export default function PodcastGrid({
               value: yearFilter,
               onChange: handleYearChange,
               years: availableYears,
+            }}
+            marvelButton={{
+              onClick: handleMarvelClick,
+              label: marvelFilter ? "Tous" : "Marvel",
             }}
           />
         </div>

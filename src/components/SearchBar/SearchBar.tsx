@@ -12,6 +12,10 @@ interface SearchBarProps {
     onChange: (value: string) => void;
     years: number[];
   };
+  marvelButton?: {
+    onClick: () => void;
+    label?: string;
+  };
 }
 
 export default function SearchBar({
@@ -20,19 +24,25 @@ export default function SearchBar({
   placeholder = "Rechercher...",
   className = "",
   yearFilter,
+  marvelButton,
 }: SearchBarProps) {
   return (
     <div className={`${styles.searchContainer} ${className}`}>
       <div className={styles.searchRow}>
         <input
-          type="text"
+          type="search"
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className={styles.searchInput}
           autoComplete="off"
+          onKeyDown={(e) => {
+            if (e.key === "Escape") {
+              onChange("");
+            }
+          }}
         />
-        
+
         {yearFilter && (
           <select
             value={yearFilter.value}
@@ -46,6 +56,16 @@ export default function SearchBar({
               </option>
             ))}
           </select>
+        )}
+        
+        {marvelButton && (
+          <button
+            type="button"
+            onClick={marvelButton.onClick}
+            className={styles.marvelButton}
+          >
+            {marvelButton.label || "Marvel"}
+          </button>
         )}
       </div>
     </div>
