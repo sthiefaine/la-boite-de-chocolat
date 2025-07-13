@@ -30,7 +30,7 @@ export default function SagaCard({ saga, variant = "default" }: SagaCardProps) {
 
   return (
     <article className={`${styles.cardSaga} ${isCompact ? styles.cardSagaCompact : ""}`}>
-      <Link href={`/sagas/${saga.id}`} className={styles.cardLink}>
+      <>
         <span className={styles.cardImageContainer}>
           {saga.imgFileName ? (
             <Image
@@ -58,7 +58,7 @@ export default function SagaCard({ saga, variant = "default" }: SagaCardProps) {
             </span>
           </div>
         </div>
-      </Link>
+      </>
     </article>
   );
 }
