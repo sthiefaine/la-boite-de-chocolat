@@ -11,6 +11,12 @@ interface EpisodeData {
   pubDate: Date;
 }
 
+interface ImageConfig {
+  quality: number;
+  lazy: boolean;
+  priority: boolean;
+}
+
 interface FilmCardProps {
   film: {
     id: string;
@@ -27,6 +33,7 @@ interface FilmCardProps {
   };
   variant?: "default" | "compact";
   episode?: EpisodeData;
+  imageConfig?: ImageConfig;
 }
 
 const getStaticImageUrl = (imgFileName: string, age: string | null): string => {
@@ -44,6 +51,11 @@ export default function FilmCard({
   film,
   variant = "default",
   episode,
+  imageConfig = {
+    quality: IMAGE_CONFIG.defaultQuality,
+    lazy: true,
+    priority: false,
+  },
 }: FilmCardProps) {
   const { title, imgFileName, age, year, director } = film;
   const shouldBlur = isAdultContent(age);
@@ -71,9 +83,9 @@ export default function FilmCard({
                   shouldBlur ? styles.blurredImage : ""
                 } ${isDisabled ? styles.disabledImage : ""}`}
                 src={getStaticImageUrl(imgFileName, age)}
-                priority={false}
-                loading="lazy"
-                quality={IMAGE_CONFIG.defaultQuality}
+                priority={imageConfig.priority}
+                loading={imageConfig.lazy ? "lazy" : "eager"}
+                quality={imageConfig.quality}
               />
 
               {shouldBlur && (

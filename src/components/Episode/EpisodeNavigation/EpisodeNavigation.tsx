@@ -58,6 +58,11 @@ export default function EpisodeNavigation({
                 episodeSlug={nextEpisode.slug}
                 episodeGenre={nextEpisode.genre}
                 variant="compact"
+                imageConfig={{
+                  quality: 80,
+                  lazy: true,
+                  priority: false,
+                }}
               />
             </Suspense>
           </div>
@@ -76,6 +81,11 @@ export default function EpisodeNavigation({
                 episodeSlug={previousEpisode.slug}
                 episodeGenre={previousEpisode.genre}
                 variant="compact"
+                imageConfig={{
+                  quality: 80,
+                  lazy: true,
+                  priority: false,
+                }}
               />
             </Suspense>
           </div>

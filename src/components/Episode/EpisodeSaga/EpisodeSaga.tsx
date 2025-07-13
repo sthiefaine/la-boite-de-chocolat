@@ -29,8 +29,8 @@ interface EpisodeSagaProps {
 
 export default function EpisodeSaga({ saga, sagaResult }: EpisodeSagaProps) {
   // Filtrer les films undefined et ceux sans année
-  const validFilms = sagaResult.saga.films.filter((film): film is Film => 
-    film !== undefined && film.year !== null
+  const validFilms = sagaResult.saga.films.filter(
+    (film): film is Film => film !== undefined && film.year !== null
   );
 
   return (
@@ -39,12 +39,12 @@ export default function EpisodeSaga({ saga, sagaResult }: EpisodeSagaProps) {
         <span className={styles.sagaLabel}>Saga du film</span>
         <div className={styles.sagaFilmsGrid}>
           <div className={styles.sagaCardWrapper}>
-            <SagaCard 
+            <SagaCard
               saga={{
                 ...saga,
                 films: validFilms,
-              }} 
-              variant="compact" 
+              }}
+              variant="compact"
             />
           </div>
           {validFilms.map((film) => {
@@ -69,6 +69,11 @@ export default function EpisodeSaga({ saga, sagaResult }: EpisodeSagaProps) {
                     }}
                     episode={episode}
                     variant="compact"
+                    imageConfig={{
+                      quality: 70,
+                      lazy: true,
+                      priority: false,
+                    }}
                   />
                 </Suspense>
               </div>
@@ -78,4 +83,4 @@ export default function EpisodeSaga({ saga, sagaResult }: EpisodeSagaProps) {
       </div>
     </div>
   );
-} 
+}

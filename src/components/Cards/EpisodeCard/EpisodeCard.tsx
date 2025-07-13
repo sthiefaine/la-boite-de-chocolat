@@ -10,6 +10,13 @@ const getStaticImageUrl = (imgFileName: string, age: string | null) => {
     ? `/api/image/masked/${imgFileName}`
     : `https://${IMAGE_CONFIG.domains.vercelBlob}/films/${imgFileName}`;
 };
+
+interface ImageConfig {
+  quality: number;
+  lazy: boolean;
+  priority: boolean;
+}
+
 interface EpisodeCardProps {
   film?: {
     id: string;
@@ -30,6 +37,7 @@ interface EpisodeCardProps {
   episodeGenre?: string | null;
   isNoResults?: boolean;
   variant?: "default" | "compact";
+  imageConfig?: ImageConfig;
 }
 
 export default function EpisodeCard({
@@ -41,6 +49,11 @@ export default function EpisodeCard({
   episodeGenre,
   isNoResults = false,
   variant = "default",
+  imageConfig = {
+    quality: IMAGE_CONFIG.defaultQuality,
+    lazy: true,
+    priority: false,
+  },
 }: EpisodeCardProps) {
   if (isNoResults) {
     return (
@@ -102,9 +115,9 @@ export default function EpisodeCard({
                   shouldBlur ? styles.blurredImage : ""
                 }`}
                 src={getStaticImageUrl(displayImage, displayAge)}
-                priority={false}
-                loading="lazy"
-                quality={IMAGE_CONFIG.defaultQuality}
+                priority={imageConfig.priority}
+                loading={imageConfig.lazy ? "lazy" : "eager"}
+                quality={imageConfig.quality}
               />
               {shouldBlur && (
                 <div className={styles.ageOverlay}>
