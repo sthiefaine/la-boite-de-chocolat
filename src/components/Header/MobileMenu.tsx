@@ -31,13 +31,18 @@ export function MobileMenu({ user, onSignOut }: MobileMenuProps) {
     return (
       <button className={styles.menuButton} onClick={toggleMenu}>
         <Menu size={24} className={styles.menuIcon} />
+        <X size={24} className={styles.closeIcon} />
       </button>
     );
   }
 
   return (
     <>
-      <button className={styles.menuButton} onClick={toggleMenu}>
+      <button
+        className={styles.menuButton}
+        onClick={toggleMenu}
+        data-open={isOpen}
+      >
         <Menu size={24} className={styles.menuIcon} />
         <X size={24} className={styles.closeIcon} />
       </button>

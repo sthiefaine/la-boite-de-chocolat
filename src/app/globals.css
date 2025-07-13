@@ -52,12 +52,20 @@
   --card-film-border: #dee2e6;
   --card-film-hover-bg: linear-gradient(145deg, #e9ecef, #ced4da);
   --card-film-hover-border: #adb5bd;
-  
-  --card-saga-bg: linear-gradient(145deg, var(--chocolate-secondary), var(--chocolate-primary));
+
+  --card-saga-bg: linear-gradient(
+    145deg,
+    var(--chocolate-secondary),
+    var(--chocolate-primary)
+  );
   --card-saga-border: var(--chocolate-primary);
-  --card-saga-hover-bg: linear-gradient(145deg, var(--chocolate-primary), var(--chocolate-dark));
+  --card-saga-hover-bg: linear-gradient(
+    145deg,
+    var(--chocolate-primary),
+    var(--chocolate-dark)
+  );
   --card-saga-hover-border: var(--chocolate-dark);
-  
+
   --card-film-text: #495057;
   --card-saga-text: var(--text-white);
 
@@ -77,15 +85,21 @@
   --glass-bg-medium: rgba(255, 255, 255, 0.15);
   --glass-bg-dark: rgba(0, 0, 0, 0.2);
   --glass-bg-darker: rgba(0, 0, 0, 0.25);
-  
+  --glass-bg-darkest: rgba(0, 0, 0, 0.5);
+  --glass-bg-black: rgba(0, 0, 0, 0.8);
+  --glass-bg-brown: rgba(107, 62, 38, 0.2);
+  --glass-bg-browner: rgba(107, 62, 38, 0.3);
+  --glass-bg-brownest: rgba(107, 62, 38, 0.4);
+  --glass-bg-brownest-dark: rgba(107, 62, 38, 0.8);
+
   --glass-border-light: 1px solid rgba(255, 255, 255, 0.2);
   --glass-border-medium: 1px solid rgba(255, 255, 255, 0.25);
   --glass-border-dark: 1px solid rgba(255, 255, 255, 0.3);
-  
+
   --glass-blur-light: blur(5px);
   --glass-blur-medium: blur(10px);
   --glass-blur: blur(15px);
-  
+
   --glass-shadow-light: 0 2px 8px rgba(0, 0, 0, 0.1);
   --glass-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.2);
   --glass-shadow-dark: 0 4px 16px rgba(0, 0, 0, 0.3);

@@ -6,6 +6,21 @@
   background: var(--bg-secondary);
   color: var(--text-primary);
   padding: 2rem 0;
+  position: relative;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(107, 62, 38, 0.05) 0%, 
+    rgba(166, 124, 82, 0.5) 50%, 
+    rgba(212, 165, 116, 0.85) 100%);
+  pointer-events: none;
 }
 
 .heroContent {
@@ -17,6 +32,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
+  position: relative;
+  z-index: 1;
 }
 
 .heroText {
@@ -32,6 +49,8 @@
   line-height: 1.1;
   margin-bottom: 2rem;
   color: var(--chocolate-primary);
+  text-shadow: 0 2px 8px rgba(107, 62, 38, 0.3);
+  position: relative;
 }
 
 .heroSubtitle {
@@ -40,6 +59,11 @@
   font-weight: 400;
   margin-top: 1rem;
   opacity: 0.9;
+  color: var(--chocolate-secondary);
+  text-shadow: 0 1px 4px rgba(166, 124, 82, 1);
+  position: relative;
+  padding: 0.5rem 1rem;
+
 }
 
 .heroSubtitle::first-letter {
@@ -51,6 +75,7 @@
   flex-direction: column;
   gap: 2rem;
   align-items: flex-start;
+  margin-top: 2rem;
 }
 
 .primaryButtons {
@@ -64,50 +89,99 @@
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
-  background: var(--chocolate-primary);
+  background: var(--glass-bg-brownest);
   color: var(--text-white);
   padding: 1rem 2rem;
   border-radius: 50px;
   text-decoration: none;
   font-weight: 700;
   font-size: 1.125rem;
-  transition: all 0.3s ease;
-  box-shadow: var(--shadow-heavy);
+  transition: all var(--transition-normal);
+  box-shadow: var(--glass-shadow-medium);
+  border: var(--glass-border-medium);
+  backdrop-filter: var(--glass-blur-medium);
+  position: relative;
+  overflow: hidden;
+}
+
+.ctaButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    var(--glass-bg-brownest), 
+    transparent);
+  transition: left var(--transition-normal);
 }
 
 .ctaButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  transform: translateY(-3px);
+  box-shadow: var(--glass-shadow-dark);
+  border-color: rgba(255, 255, 255, 0.4);
+  background: var(--glass-bg-brownest-dark);
+}
+
+.ctaButton:hover::before {
+  left: 100%;
 }
 
 .ctaIcon {
   font-size: 1.25rem;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
 }
 
 .secondaryButton {
   display: inline-flex;
   align-items: center;
-  background: transparent;
+  background: var(--glass-bg-light);
   color: var(--chocolate-primary);
   padding: 1rem 2rem;
   border-radius: 50px;
   text-decoration: none;
   font-weight: 700;
   font-size: 1.125rem;
-  transition: all 0.3s ease;
-  border: 2px solid var(--chocolate-primary);
+  transition: all var(--transition-normal);
+  border: var(--glass-border-light);
+  backdrop-filter: var(--glass-blur-light);
+  box-shadow: var(--glass-shadow-light);
+  position: relative;
+  overflow: hidden;
+}
+
+.secondaryButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    var(--glass-bg-brownest-dark), 
+    transparent);
+  transition: left var(--transition-normal);
 }
 
 .secondaryButton:hover {
-  background: var(--chocolate-primary);
-  color: var(--text-white);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-heavy);
+  background: var(--glass-bg-medium);
+  color: var(--chocolate-primary);
+  transform: translateY(-3px);
+  box-shadow: var(--glass-shadow-medium);
+  background: var(--glass-bg-brownest);
+}
+
+.secondaryButton:hover::before {
+  left: 100%;
 }
 
 .secondaryIcon {
   font-size: 1.25rem;
   margin-right: 0.5rem;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
 }
 
 .animatedNumber {
@@ -116,7 +190,7 @@
   color: var(--chocolate-secondary);
   min-width: 1.5em;
   text-align: center;
-  animation: numberPulse 0.5s ease-out;
+
 }
 
 @keyframes numberPulse {

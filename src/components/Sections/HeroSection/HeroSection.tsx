@@ -57,7 +57,7 @@ export default function HeroSection({ episodes }: HeroSectionProps) {
                 <p>
                   Voir les{" "}
                   <span className={styles.animatedNumber}>
-                    <NumberFlow value={episodesNumber} duration={2500} />
+                    <NumberFlow value={episodesNumber} duration={2000} />
                   </span>{" "}
                   épisodes
                 </p>
