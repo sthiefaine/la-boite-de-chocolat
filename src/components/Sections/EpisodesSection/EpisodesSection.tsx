@@ -1,3 +1,4 @@
+"use server";
 import EpisodeGrid from "@/components/Episode/EpisodeGrid/EpisodeGrid";
 import styles from "./EpisodesSection.module.css";
 
@@ -29,7 +30,7 @@ interface EpisodesSectionProps {
   episodes: Episode[];
 }
 
-export default function EpisodesSection({ episodes }: EpisodesSectionProps) {
+export default async function EpisodesSection({ episodes }: EpisodesSectionProps) {
   return (
     <section className={styles.section} id="episodes">
       <EpisodeGrid episodes={episodes} />

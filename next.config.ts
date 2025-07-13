@@ -1,6 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  ...(process.env.NODE_ENV === 'development' && {
+    webpack: (config) => {
+      config.infrastructureLogging = {
+        level: 'verbose'
+      }
+      return config
+    }
+  }),
   images: {
     remotePatterns: [
       {

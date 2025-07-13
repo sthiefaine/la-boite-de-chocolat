@@ -1,16 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo } from "react";
 import { formatDuration } from "@/lib/podcastHelpers";
 import { IMAGE_CONFIG } from "@/lib/imageConfig";
 import styles from "./EpisodeCard.module.css";
-
-const getStaticImageUrl = (imgFileName: string, age: string | null) => {
-  const isAdult = age === "18+" || age === "adult";
-  return isAdult
-    ? `/api/image/masked/${imgFileName}`
-    : `https://${IMAGE_CONFIG.domains.vercelBlob}/films/${imgFileName}`;
-};
 
 interface ImageConfig {
   quality: number;
@@ -41,6 +33,13 @@ interface EpisodeCardProps {
   imageConfig?: ImageConfig;
 }
 
+const getStaticImageUrl = (imgFileName: string, age: string | null): string => {
+  const isAdult = age === "18+" || age === "adult";
+  return isAdult
+    ? `/api/image/masked/${imgFileName}`
+    : `https://${IMAGE_CONFIG.domains.vercelBlob}/films/${imgFileName}`;
+};
+
 export default function EpisodeCard({
   film,
   episodeTitle,
@@ -56,20 +55,11 @@ export default function EpisodeCard({
     priority: false,
   },
 }: EpisodeCardProps) {
-  const displayTitle = useMemo(
-    () => (film ? film.title : episodeTitle || "Épisode sans titre"),
-    [film?.title, episodeTitle]
-  );
 
-  const displayImage = useMemo(
-    () => film?.imgFileName || null,
-    [film?.imgFileName]
-  );
-  const displayAge = useMemo(() => film?.age || null, [film?.age]);
-  const shouldBlur = useMemo(
-    () => displayAge === "18+" || displayAge === "adult",
-    [displayAge]
-  );
+  const displayTitle = film ? film.title : episodeTitle || "Épisode sans titre";
+  const displayImage = film?.imgFileName || null;
+  const displayAge = film?.age || null;
+  const shouldBlur = displayAge === "18+" || displayAge === "adult";
 
   if (isNoResults) {
     return (

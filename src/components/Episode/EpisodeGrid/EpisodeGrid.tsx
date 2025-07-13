@@ -7,19 +7,6 @@ import { PreserveScroll } from "@/hooks/preservScroll";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import EpisodeCard from "@/components/Cards/EpisodeCard/EpisodeCard";
 
-const MemoizedEpisodeCard = memo(EpisodeCard, (prevProps, nextProps) => {
-  return (
-    prevProps.film?.id === nextProps.film?.id &&
-    prevProps.episodeTitle === nextProps.episodeTitle &&
-    prevProps.episodeSlug === nextProps.episodeSlug &&
-    prevProps.episodeDate?.getTime() === nextProps.episodeDate?.getTime() &&
-    prevProps.episodeDuration === nextProps.episodeDuration &&
-    prevProps.episodeGenre === nextProps.episodeGenre &&
-    prevProps.isNoResults === nextProps.isNoResults &&
-    prevProps.variant === nextProps.variant
-  );
-});
-
 interface Film {
   id: string;
   title: string;
@@ -59,7 +46,7 @@ interface EpisodeGridProps {
   subtitle?: string;
 }
 
-export default function PodcastGrid({
+export default function EpisodeGrid({
   episodes,
   title = "Tous nos épisodes",
   subtitle,
@@ -177,7 +164,7 @@ export default function PodcastGrid({
 
       <div className={styles.episodesGrid}>
         {displayedEpisodes.length === 0 ? (
-          <MemoizedEpisodeCard isNoResults={true} />
+          <EpisodeCard isNoResults={true} />
         ) : (
           <>
             {displayedEpisodes.map((episode) => {
@@ -192,7 +179,7 @@ export default function PodcastGrid({
               if (episode.links.length > 0) {
                 const firstFilm = episode.links[0].film;
                 return (
-                  <MemoizedEpisodeCard
+                  <EpisodeCard
                     key={episode.id}
                     {...episodeProps}
                     film={firstFilm}
@@ -200,7 +187,7 @@ export default function PodcastGrid({
                 );
               } else {
                 return (
-                  <MemoizedEpisodeCard
+                  <EpisodeCard
                     key={episode.id}
                     {...episodeProps}
                   />
