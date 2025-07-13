@@ -71,6 +71,7 @@ export default function EpisodeHeader({
               quality={100}
               priority={true}
               style={{ objectFit: "cover" }}
+              loading="eager"
             />
             <div className={styles.backgroundOverlay}></div>
           </div>
