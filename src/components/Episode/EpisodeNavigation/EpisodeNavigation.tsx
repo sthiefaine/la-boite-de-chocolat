@@ -1,4 +1,4 @@
-"use client";
+"use server";
 
 import { Suspense } from "react";
 import PodcastCard from "@/components/Cards/EpisodeCard/EpisodeCard";
@@ -32,11 +32,10 @@ interface EpisodeNavigationProps {
   nextEpisode: Episode | null;
 }
 
-export default function EpisodeNavigation({
+export default async function EpisodeNavigation({
   previousEpisode,
   nextEpisode,
 }: EpisodeNavigationProps) {
-  // Ne rien afficher s'il n'y a pas d'épisodes de navigation
   if (!previousEpisode && !nextEpisode) {
     return null;
   }
@@ -46,9 +45,7 @@ export default function EpisodeNavigation({
       <div className={styles.navigationContainer}>
         {nextEpisode && (
           <div className={styles.navigationCard}>
-            <span className={styles.navigationLabel}>
-              Épisode suivant
-            </span>
+            <span className={styles.navigationLabel}>Épisode suivant</span>
             <Suspense fallback={null}>
               <PodcastCard
                 film={nextEpisode.links[0]?.film || undefined}
@@ -69,9 +66,7 @@ export default function EpisodeNavigation({
         )}
         {previousEpisode && (
           <div className={styles.navigationCard}>
-            <span className={styles.navigationLabel}>
-              Épisode précédent
-            </span>
+            <span className={styles.navigationLabel}>Épisode précédent</span>
             <Suspense fallback={null}>
               <PodcastCard
                 film={previousEpisode.links[0]?.film || undefined}
@@ -82,7 +77,6 @@ export default function EpisodeNavigation({
                 episodeGenre={previousEpisode.genre}
                 variant="compact"
                 imageConfig={{
-                  quality: 80,
                   lazy: true,
                   priority: false,
                 }}
@@ -93,4 +87,4 @@ export default function EpisodeNavigation({
       </div>
     </div>
   );
-} 
+}

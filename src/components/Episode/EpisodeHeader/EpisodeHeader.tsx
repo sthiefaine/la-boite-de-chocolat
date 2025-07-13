@@ -1,4 +1,4 @@
-"use client";
+"use server";
 
 import Image from "next/image";
 import { Suspense } from "react";
@@ -35,7 +35,7 @@ interface EpisodeHeaderProps {
   isAdultContent: boolean;
 }
 
-export default function EpisodeHeader({
+export default async function EpisodeHeader({
   episode,
   mainFilmImageUrl,
   isAdultContent,
@@ -53,7 +53,7 @@ export default function EpisodeHeader({
             alt="Poster navet - contenu 18+"
             className={styles.backgroundImage}
             sizes={IMAGE_CONFIG.sizes.background}
-            quality={IMAGE_CONFIG.defaultQuality}
+            quality={100}
             priority={true}
             style={{ objectFit: "cover" }}
           />
@@ -63,6 +63,8 @@ export default function EpisodeHeader({
         mainFilm?.imgFileName && (
           <div className={styles.backgroundPoster}>
             <Image
+              placeholder="blur"
+              blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
               fill={true}
               src={mainFilmImageUrl}
               alt={`Poster de ${mainFilm.title}`}

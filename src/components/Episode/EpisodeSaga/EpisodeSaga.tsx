@@ -1,4 +1,5 @@
-import { Suspense } from "react";
+"use server";
+
 import SagaCard from "@/components/Cards/SagaCard/SagaCard";
 import FilmCard from "@/components/Cards/FilmCard/FilmCard";
 import styles from "./EpisodeSaga.module.css";
@@ -27,7 +28,7 @@ interface EpisodeSagaProps {
   };
 }
 
-export default function EpisodeSaga({ saga, sagaResult }: EpisodeSagaProps) {
+export default async function EpisodeSaga({ saga, sagaResult }: EpisodeSagaProps) {
   // Filtrer les films undefined et ceux sans année
   const validFilms = sagaResult.saga.films.filter(
     (film): film is Film => film !== undefined && film.year !== null
@@ -52,7 +53,6 @@ export default function EpisodeSaga({ saga, sagaResult }: EpisodeSagaProps) {
 
             return (
               <div key={film.id} className={styles.sagaFilmCard}>
-                <Suspense fallback={null}>
                   <FilmCard
                     film={{
                       id: film.id,
@@ -70,12 +70,10 @@ export default function EpisodeSaga({ saga, sagaResult }: EpisodeSagaProps) {
                     episode={episode}
                     variant="compact"
                     imageConfig={{
-                      quality: 70,
                       lazy: true,
                       priority: false,
                     }}
                   />
-                </Suspense>
               </div>
             );
           })}

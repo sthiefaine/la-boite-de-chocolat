@@ -12,9 +12,9 @@ interface EpisodeData {
 }
 
 interface ImageConfig {
-  quality: number;
-  lazy: boolean;
-  priority: boolean;
+  quality?: number;
+  lazy?: boolean;
+  priority?: boolean;
 }
 
 interface FilmCardProps {

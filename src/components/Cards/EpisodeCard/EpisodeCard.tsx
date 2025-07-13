@@ -5,9 +5,9 @@ import { IMAGE_CONFIG } from "@/lib/imageConfig";
 import styles from "./EpisodeCard.module.css";
 
 interface ImageConfig {
-  quality: number;
-  lazy: boolean;
-  priority: boolean;
+  quality?: number;
+  lazy?: boolean;
+  priority?: boolean;
 }
 
 interface EpisodeCardProps {
@@ -68,7 +68,7 @@ export default function EpisodeCard({
           <Image
             alt="Navet - Aucun résultat"
             fill
-            sizes="(max-width: 768px) 320px, 180px"
+            sizes="200px"
             className={styles.cardImage}
             src="/images/navet.png"
             priority={false}
@@ -108,11 +108,7 @@ export default function EpisodeCard({
               <Image
                 alt={`Poster de ${displayTitle}`}
                 fill
-                sizes={
-                  variant === "compact"
-                    ? IMAGE_CONFIG.sizes.filmCardCompact
-                    : IMAGE_CONFIG.sizes.filmCard
-                }
+                sizes="200px"
                 className={`${styles.cardImage} ${
                   shouldBlur ? styles.blurredImage : ""
                 }`}

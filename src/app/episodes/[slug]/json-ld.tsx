@@ -1,3 +1,4 @@
+"use server";
 import { SITE_URL } from "@/lib/config";
 import { getMaskedImageUrl } from "@/app/actions/image";
 
