@@ -56,7 +56,7 @@ model Saga {
   id          String   @id @default(uuid())
   name        String
   description String?
-  imgFileName String? // Poster de la saga
+  imgFileName String?
   filmsOrder  String[] // IDs des films dans l'ordre
   films       Film[]
   createdAt   DateTime @default(now())

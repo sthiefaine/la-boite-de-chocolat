@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { IMAGE_CONFIG } from "@/lib/imageConfig";
 import styles from "./SagaCard.module.css";
 
@@ -29,10 +28,7 @@ export default function SagaCard({ saga, variant = "default" }: SagaCardProps) {
   const isCompact = variant === "compact";
 
   return (
-    <Link
-      href={`#`}
-      className={`${styles.sagaCard} ${isCompact ? styles.compact : ""}`}
-    >
+    <div className={`${styles.sagaCard} ${isCompact ? styles.compact : ""}`}>
       <div className={styles.sagaImage}>
         {saga.imgFileName ? (
           <Image
@@ -81,6 +77,6 @@ export default function SagaCard({ saga, variant = "default" }: SagaCardProps) {
           </div>
         )}
       </div>
-    </Link>
+    </div>
   );
 }

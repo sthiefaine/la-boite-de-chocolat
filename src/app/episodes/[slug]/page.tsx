@@ -5,20 +5,24 @@ import Image from "next/image";
 import { IMAGE_CONFIG } from "@/lib/imageConfig";
 import styles from "./PodcastPage.module.css";
 import { formatEpisodeDescription, truncateText } from "@/lib/podcastHelpers";
-import PodcastCard from "@/components/Episode/EpisodeCard/EpisodeCard";
-import SagaCard from "@/components/SagaCard/SagaCard";
+import PodcastCard from "@/components/Cards/EpisodeCard/EpisodeCard";
+import SagaCard from "@/components/Cards/SagaCard/SagaCard";
+import FilmCard from "@/components/Cards/FilmCard/FilmCard";
 import { generateMetadata } from "./metadata";
 import {
   getEpisodeNavigation,
   getAllEpisodeSlugs,
   getEpisodeBySlugCached,
+  getEpisodesWithFilms,
 } from "@/app/actions/episode";
+import { getSagaWithFilmsAndEpisodes } from "@/app/actions/saga";
 import { EpisodePlayerButton } from "@/components/Episode/EpisodePlayerButton/EpisodePlayerButton";
 import { AddToQueueButton } from "@/components/Queue/AddToQueueButton";
 import { ShareButton } from "@/components/ShareButton/ShareButton";
 import { PodcastJsonLd } from "./json-ld";
 import { SITE_URL } from "@/lib/config";
 import { Suspense } from "react";
+import ButtonSkeleton from "@/components/Button/ButtonSkeleton";
 
 interface EpisodePageProps {
   params: Promise<{
@@ -43,16 +47,25 @@ export async function generateStaticParams() {
 export default async function EpisodePage({ params }: EpisodePageProps) {
   const { slug } = await params;
 
-  const [episodeResult, finalNavigationResult] = await Promise.all([
-    getEpisodeBySlugCached(slug),
-    getEpisodeNavigation(slug),
-  ]);
+  const [episodeResult, finalNavigationResult, episodesResult] =
+    await Promise.all([
+      getEpisodeBySlugCached(slug),
+      getEpisodeNavigation(slug),
+      getEpisodesWithFilms(),
+    ]);
 
   if (!episodeResult) {
     notFound();
   }
 
   const episode = episodeResult.episode;
+  const mainFilm = episode.links[0]?.film;
+  const saga = mainFilm?.saga || null;
+  const isAdultContent = mainFilm?.age === "18+" || mainFilm?.age === "adult";
+  const episodes = episodesResult.success ? episodesResult.data : [];
+
+  // Récupérer les données de la saga si elle existe
+  const sagaResult = saga ? await getSagaWithFilmsAndEpisodes(saga.id) : null;
 
   const previousEpisode = finalNavigationResult.success
     ? finalNavigationResult?.data?.previousEpisode
@@ -60,10 +73,6 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
   const nextEpisode = finalNavigationResult.success
     ? finalNavigationResult?.data?.nextEpisode
     : null;
-
-  const mainFilm = episode.links[0]?.film;
-  const saga = mainFilm?.saga || null;
-  const isAdultContent = mainFilm?.age === "18+" || mainFilm?.age === "adult";
 
   const mainFilmImageUrl = decodeURIComponent(episodeResult.mainFilmImageUrl);
 
@@ -103,6 +112,7 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
                 sizes={IMAGE_CONFIG.sizes.background}
                 quality={IMAGE_CONFIG.defaultQuality}
                 priority={true}
+                style={{ objectFit: "cover" }}
               />
               <div className={styles.backgroundOverlay}></div>
             </div>
@@ -110,13 +120,14 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
             mainFilm?.imgFileName && (
               <div className={styles.backgroundPoster}>
                 <Image
-                  fill
+                  fill={true}
                   src={mainFilmImageUrl}
                   alt={`Poster de ${mainFilm.title}`}
                   className={styles.backgroundImage}
                   sizes={IMAGE_CONFIG.sizes.background}
                   quality={100}
                   priority={true}
+                  style={{ objectFit: "cover" }}
                 />
                 <div className={styles.backgroundOverlay}></div>
               </div>
@@ -139,31 +150,35 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
               )}
 
               <div className={styles.buttons}>
-                <EpisodePlayerButton
-                  title={episode.title}
-                  audioUrl={episode.audioUrl}
-                  imageUrl={isAdultContent ? undefined : mainFilmImageUrl}
-                  artist="La Boîte de Chocolat"
-                  slug={episode.slug ?? ""}
-                  className={`${styles.button} ${styles.listenButton}`}
-                >
-                  <span className={styles.buttonIcon}>🎧</span>
-                  Écouter
-                </EpisodePlayerButton>
+                <Suspense fallback={<ButtonSkeleton />}>
+                  <EpisodePlayerButton
+                    title={episode.title}
+                    audioUrl={episode.audioUrl}
+                    imageUrl={isAdultContent ? undefined : mainFilmImageUrl}
+                    artist="La Boîte de Chocolat"
+                    slug={episode.slug ?? ""}
+                    className={`${styles.button} ${styles.listenButton}`}
+                  >
+                    <span className={styles.buttonIcon}>🎧</span>
+                    Écouter
+                  </EpisodePlayerButton>
+                </Suspense>
 
-                <AddToQueueButton
-                  podcast={{
-                    id: episode.id,
-                    title: episode.title,
-                    artist: "La Boîte de Chocolat",
-                    url: episode.audioUrl,
-                    img: mainFilmImageUrl,
-                    slug: episode.slug ?? "",
-                    age: episode.age ?? "",
-                    movieAge: mainFilm?.age ?? "",
-                  }}
-                  className={`${styles.button} ${styles.queueButton}`}
-                />
+                <Suspense fallback={<ButtonSkeleton />}>
+                  <AddToQueueButton
+                    podcast={{
+                      id: episode.id,
+                      title: episode.title,
+                      artist: "La Boîte de Chocolat",
+                      url: episode.audioUrl,
+                      img: mainFilmImageUrl,
+                      slug: episode.slug ?? "",
+                      age: episode.age ?? "",
+                      movieAge: mainFilm?.age ?? "",
+                    }}
+                    className={`${styles.button} ${styles.queueButton}`}
+                  />
+                </Suspense>
 
                 <a
                   href={episode.audioUrl}
@@ -174,12 +189,13 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
                   Télécharger
                 </a>
 
-                <ShareButton
-                  title={mainFilm?.title || episode.title}
-                  url={`${SITE_URL}/episodes/${episode.slug}`}
-                  className={`${styles.button} ${styles.shareButton}`}
-                />
-
+                <Suspense fallback={<ButtonSkeleton />}>
+                  <ShareButton
+                    title={mainFilm?.title || episode.title}
+                    url={`${SITE_URL}/episodes/${episode.slug}`}
+                    className={`${styles.button} ${styles.shareButton}`}
+                  />
+                </Suspense>
                 {mainFilm?.tmdbId && (
                   <a
                     href={`https://www.themoviedb.org/movie/${mainFilm.tmdbId}`}
@@ -224,8 +240,8 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
           </div>
         </div>
 
-        {/* Navigation entre épisodes et saga */}
-        {(previousEpisode || nextEpisode || saga) && (
+        {/* Navigation entre épisodes */}
+        {(previousEpisode || nextEpisode) && (
           <div className={styles.navigationSection}>
             <div className={styles.navigationContainer}>
               {nextEpisode && (
@@ -265,14 +281,58 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
                   </Suspense>
                 </div>
               )}
-              {saga && (
-                <div className={styles.navigationCard}>
-                  <span className={styles.navigationLabel}>Saga du film</span>
-                  <Suspense fallback={null}>
-                    <SagaCard saga={saga} variant="compact" />
-                  </Suspense>
+            </div>
+          </div>
+        )}
+
+        {/* Section Saga */}
+        {saga && sagaResult && (
+          <div className={styles.sagaSection}>
+            <div className={styles.sagaContainer}>
+              <div className={styles.sagaCardWrapper}>
+                <span className={styles.sagaLabel}>Saga du film</span>
+                <Suspense fallback={null}>
+                  <SagaCard saga={saga} variant="compact" />
+                </Suspense>
+              </div>
+
+              <div className={styles.sagaFilmsContainer}>
+                <span className={styles.sagaFilmsLabel}>Films de la saga</span>
+                <div className={styles.sagaFilmsGrid}>
+                  {sagaResult.saga.films
+                    .filter(
+                      (film): film is NonNullable<typeof film> =>
+                        film !== null && film !== undefined
+                    )
+                    .map((film) => {
+                      const episode = sagaResult.filmToEpisodeMap.get(film.id);
+
+                      return (
+                        <div key={film.id} className={styles.sagaFilmCard}>
+                          <Suspense fallback={null}>
+                            <FilmCard
+                              film={{
+                                id: film.id,
+                                title: film.title,
+                                slug: film.slug,
+                                year: film.year || null,
+                                imgFileName: film.imgFileName,
+                                age: film.age,
+                                director: film.director || null,
+                                saga: {
+                                  id: saga.id,
+                                  name: saga.name,
+                                },
+                              }}
+                              episode={episode}
+                              variant="compact"
+                            />
+                          </Suspense>
+                        </div>
+                      );
+                    })}
                 </div>
-              )}
+              </div>
             </div>
           </div>
         )}

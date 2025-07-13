@@ -5,7 +5,7 @@ import SearchBar from "@/components/SearchBar/SearchBar";
 import styles from "./EpisodeGrid.module.css";
 import { PreserveScroll } from "@/hooks/preservScroll";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
-import EpisodeCard from "@/components/Episode/EpisodeCard/EpisodeCard";
+import EpisodeCard from "@/components/Cards/EpisodeCard/EpisodeCard";
 
 const MemoizedEpisodeCard = memo(EpisodeCard);
 
