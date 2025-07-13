@@ -64,7 +64,7 @@
   padding: 0 1rem;
 }
 
-.podcastGrid {
+.episodesGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 0.5rem;
@@ -162,7 +162,7 @@
     font-size: 1rem;
   }
 
-  .podcastGrid {
+  .episodesGrid {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 0.75rem;
     padding: 0;
@@ -222,7 +222,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
     transform: scale(1);
   }
@@ -230,4 +231,4 @@
     opacity: 0.7;
     transform: scale(1.1);
   }
-} 
+}

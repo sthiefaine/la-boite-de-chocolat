@@ -164,7 +164,7 @@ export default function PodcastGrid({
         </div>
       </div>
 
-      <div className={styles.podcastGrid}>
+      <div className={styles.episodesGrid}>
         {displayedEpisodes.length === 0 ? (
           <MemoizedEpisodeCard isNoResults={true} />
         ) : (

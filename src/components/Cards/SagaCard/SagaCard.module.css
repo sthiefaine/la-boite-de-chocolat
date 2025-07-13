@@ -1,49 +1,47 @@
-.sagaCard {
+.cardSaga {
   width: 100%;
   background: var(--card-saga-bg);
   border: 1px solid var(--card-saga-border);
   border-radius: 16px;
   overflow: hidden;
-  transition: all var(--transition-normal);
-  box-shadow: var(--shadow-medium);
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-medium), 0 2px 4px rgba(0, 0, 0, 0.05);
   position: relative;
-  text-decoration: none;
-  color: inherit;
 }
 
-.sagaCard:hover {
+.cardSaga:hover {
   transform: translateY(-6px);
-  box-shadow: var(--shadow-heavy);
+  box-shadow: var(--shadow-heavy), 0 4px 8px rgba(0, 0, 0, 0.1);
   border-color: var(--card-saga-hover-border);
   background: var(--card-saga-hover-bg);
 }
 
-.sagaCard.compact {
+.cardSagaCompact {
   height: 220px !important;
   display: flex !important;
   flex-direction: column !important;
 }
 
-.sagaCard.compact .sagaImage {
+.cardSagaCompact .cardImageContainer {
   height: 120px !important;
   padding-bottom: 0 !important;
   flex-shrink: 0 !important;
 }
 
-.sagaCard.compact .sagaLink {
+.cardSagaCompact .cardLink {
   display: flex !important;
   flex-direction: column !important;
   height: 100% !important;
 }
 
-.sagaCard.compact .sagaInfo {
+.cardSagaCompact .cardInformations {
   flex: 1 !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: space-between !important;
 }
 
-.sagaCard.compact .sagaTitle {
+.cardSagaCompact .cardTitle {
   font-size: 0.875rem !important;
   line-height: 1.2 !important;
   overflow: hidden !important;
@@ -53,18 +51,18 @@
   -webkit-box-orient: vertical !important;
 }
 
-.sagaCard.compact .filmsCount {
+.cardSagaCompact .episodeDate {
   font-size: 0.75rem !important;
   margin-top: auto !important;
 }
 
-.sagaLink {
+.cardLink {
   display: block;
   text-decoration: none;
   color: inherit;
 }
 
-.sagaImage {
+.cardImageContainer {
   position: relative;
   display: block;
   width: calc(100% - 12px);
@@ -75,10 +73,10 @@
   margin: 6px;
   background: var(--bg-secondary);
   border: none;
-  box-shadow: var(--shadow-light);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.image {
+.cardImage {
   position: absolute !important;
   top: 0;
   left: 0;
@@ -89,11 +87,11 @@
   transition: transform var(--transition-normal);
 }
 
-.sagaCard:hover .image {
+.cardSaga:hover .cardImage {
   transform: scale(1.05);
 }
 
-.placeholderImage {
+.noPoster {
   position: absolute;
   top: 0;
   left: 0;
@@ -107,19 +105,14 @@
   font-size: 2rem;
 }
 
-.placeholderText {
-  font-size: 2rem;
-  opacity: 0.7;
-}
-
-.sagaInfo {
+.cardInformations {
   padding: 0.5rem 0.8rem;
   padding-top: 0;
   background: transparent;
   border-top: none;
 }
 
-.sagaTop {
+.cardTop {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -127,7 +120,7 @@
   margin-bottom: 0.25rem;
 }
 
-.sagaTitle {
+.cardTitle {
   font-size: 0.875rem;
   font-weight: 700;
   color: var(--card-saga-text);
@@ -137,7 +130,7 @@
   min-width: 0;
 }
 
-.sagaOptions {
+.cardOptions {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -145,7 +138,7 @@
   flex-shrink: 0;
 }
 
-.sagaBottom {
+.cardBottom {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -153,99 +146,37 @@
   gap: 0.5rem;
 }
 
-.sagaDescription {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  margin: 0;
-  line-height: 1.4;
-  flex: 1;
-}
-
-.filmsCount {
+.episodeDate {
   font-size: 0.75rem;
   color: var(--chocolate-light);
   font-weight: 600;
 }
 
-.filmsList {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: 8px;
-}
-
-.filmItem {
-  font-size: 0.8rem;
-  color: var(--text-light);
-  padding: 2px 0;
-}
-
-.moreFilms {
-  font-size: 0.8rem;
-  color: var(--gray-medium);
-  font-style: italic;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
-  .sagaCard {
+  .cardSaga {
     flex: 1 1 100%;
     max-width: 220px;
     min-width: 90px;
     border-radius: 10px;
   }
 
-  .sagaCard.compact {
-    max-width: 220px;
-    min-width: 90px;
-    height: 200px !important;
-    width: 100%;
-  }
-
-  .sagaTitle {
+  .cardTitle {
     font-size: 0.85rem;
     line-height: 1.2;
   }
 
-  .sagaCard.compact .sagaTitle {
-    font-size: 0.8rem !important;
-    line-height: 1.1 !important;
-  }
-
-  .sagaImage {
+  .cardImageContainer {
     padding-bottom: 60%;
     border-radius: 8px;
     margin: 4px;
   }
 
-  .sagaCard.compact .sagaImage {
-    height: 100px !important;
-    margin: 4px;
-  }
-
-  .sagaInfo {
+  .cardInformations {
     padding: 0.3rem 0.5rem;
   }
 
-  .sagaCard.compact .sagaInfo {
-    padding: 0.3rem 0.5rem;
-    padding-top: 0;
-  }
-
-  .filmsCount {
+  .episodeDate {
     font-size: 0.68rem;
-  }
-
-  .sagaCard.compact .filmsCount {
-    font-size: 0.68rem !important;
-  }
-
-  .sagaDescription {
-    font-size: 0.8rem;
-    line-height: 1.3;
-  }
-
-  .filmItem {
-    font-size: 0.75rem;
   }
 }

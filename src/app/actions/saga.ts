@@ -64,14 +64,12 @@ export async function getSagaWithFilmsAndEpisodes(sagaId: string) {
       return null;
     }
 
-    // Trier les films selon filmsOrder
     const sortedFilms = saga.filmsOrder
       ? saga.filmsOrder
           .map((filmId) => saga.films.find((film) => film.id === filmId))
           .filter(Boolean)
       : saga.films;
 
-    // Récupérer les épisodes qui correspondent aux films de la saga
     const episodes = await prisma.podcastEpisode.findMany({
       where: {
         links: {

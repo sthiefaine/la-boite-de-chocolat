@@ -13,7 +13,6 @@ import {
   getEpisodeNavigation,
   getAllEpisodeSlugs,
   getEpisodeBySlugCached,
-  getEpisodesWithFilms,
 } from "@/app/actions/episode";
 import { getSagaWithFilmsAndEpisodes } from "@/app/actions/saga";
 import { EpisodePlayerButton } from "@/components/Episode/EpisodePlayerButton/EpisodePlayerButton";
@@ -47,11 +46,10 @@ export async function generateStaticParams() {
 export default async function EpisodePage({ params }: EpisodePageProps) {
   const { slug } = await params;
 
-  const [episodeResult, finalNavigationResult, episodesResult] =
+  const [episodeResult, finalNavigationResult] =
     await Promise.all([
       getEpisodeBySlugCached(slug),
       getEpisodeNavigation(slug),
-      getEpisodesWithFilms(),
     ]);
 
   if (!episodeResult) {
@@ -62,9 +60,7 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
   const mainFilm = episode.links[0]?.film;
   const saga = mainFilm?.saga || null;
   const isAdultContent = mainFilm?.age === "18+" || mainFilm?.age === "adult";
-  const episodes = episodesResult.success ? episodesResult.data : [];
 
-  // Récupérer les données de la saga si elle existe
   const sagaResult = saga ? await getSagaWithFilmsAndEpisodes(saga.id) : null;
 
   const previousEpisode = finalNavigationResult.success
@@ -78,7 +74,6 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
 
   return (
     <>
-      <Suspense fallback={null}>
         <PodcastJsonLd
           episode={{
             title: episode.title,
@@ -98,7 +93,6 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
           }}
           canonicalUrl={`${SITE_URL}/podcast/${episode.slug}`}
         />
-      </Suspense>
       <div className={styles.container}>
         {/* Header avec poster en background */}
         <div className={styles.header}>
@@ -289,22 +283,14 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
         {saga && sagaResult && (
           <div className={styles.sagaSection}>
             <div className={styles.sagaContainer}>
-              <div className={styles.sagaCardWrapper}>
-                <span className={styles.sagaLabel}>Saga du film</span>
-                <Suspense fallback={null}>
-                  <SagaCard saga={saga} variant="compact" />
-                </Suspense>
-              </div>
-
-              <div className={styles.sagaFilmsContainer}>
-                <span className={styles.sagaFilmsLabel}>Films de la saga</span>
-                <div className={styles.sagaFilmsGrid}>
-                  {sagaResult.saga.films
-                    .filter(
-                      (film): film is NonNullable<typeof film> =>
-                        film !== null && film !== undefined
-                    )
-                    .map((film) => {
+              <span className={styles.sagaLabel}>Saga du film</span>
+                              <div className={styles.sagaFilmsGrid}>
+                  <div className={styles.sagaCardWrapper}>
+                    <SagaCard saga={saga} variant="compact" />
+                  </div>
+                  {sagaResult.saga.films.map((film) => {
+                    if (!film) return null;
+                    if(!film.year) return null;
                       const episode = sagaResult.filmToEpisodeMap.get(film.id);
 
                       return (
@@ -332,7 +318,6 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
                       );
                     })}
                 </div>
-              </div>
             </div>
           </div>
         )}

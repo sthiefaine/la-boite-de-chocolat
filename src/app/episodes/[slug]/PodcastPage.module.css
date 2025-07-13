@@ -336,20 +336,20 @@
 }
 
 .navigationContainer {
-  max-width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.5rem;
+  padding: 0;
+  justify-items: start;
+  max-width: 1400px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  gap: 2rem;
 }
 
 .navigationCard {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  flex: 1;
-  max-width: 200px;
+  width: 100%;
   min-width: 0;
 }
 
@@ -380,17 +380,18 @@
   }
 
   .navigationContainer {
-    flex-direction: column;
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 0.75rem;
+    padding: 0;
+    justify-items: center;
+    max-width: 100%;
   }
 
   .navigationCard {
-    max-width: none;
     width: 100%;
   }
 }
 
-/* Section Saga */
 .sagaSection {
   background: #1a1a1a;
   padding: 1rem;
@@ -398,22 +399,16 @@
 }
 
 .sagaContainer {
-  max-width: 100%;
-  margin: 0 auto;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0px;
   display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  gap: 2rem;
-  align-items: flex-start;
+  gap: 0.5rem;
 }
 
 .sagaCardWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  flex: 0 0 auto;
-  max-width: 200px;
-  width: 200px;
+  width: 100%;
+  min-width: 0;
 }
 
 .sagaLabel {
@@ -437,41 +432,20 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-.sagaFilmsContainer {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  min-width: 0;
-}
-
-.sagaFilmsLabel {
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: #9ca3af;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  text-align: left;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
-  align-self: flex-start;
-  opacity: 0.8;
-}
-
 .sagaFilmsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-  padding: 0.5rem 0;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.5rem;
+  padding: 0;
+  justify-items: start;
+  justify-content: start;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .sagaFilmCard {
-  flex: 0 0 auto;
-  width: 200px;
-  min-width: 200px;
+  width: 100%;
+  min-width: 0;
 }
 
 .sagaFilmCard.disabled {
@@ -541,40 +515,20 @@
     padding: 1.5rem 1rem;
   }
 
-  .sagaContainer {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .sagaCardWrapper {
-    max-width: none;
-  }
-
   .sagaFilmsGrid {
-    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.5rem;
+    padding: 0;
+    justify-items: start;
+    justify-content: start;
+    max-width: 100%;
   }
 
   .sagaFilmCard {
-    width: 180px;
-    min-width: 180px;
+    width: 100%;
   }
 
   .disabledSagaFilmCard {
     height: 200px;
-  }
-
-  .sagaFilmsGrid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 0.75rem;
-    padding: 0.25rem 0;
-  }
-
-  .sagaFilmsContainer {
-    gap: 0.4rem;
-  }
-
-  .sagaFilmsLabel {
-    font-size: 0.65rem;
-    padding: 0.2rem 0.6rem;
   }
 }

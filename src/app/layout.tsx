@@ -21,7 +21,8 @@ export const metadata = {
   },
   openGraph: {
     title: "La Boîte de Chocolat - Podcast Cinéma",
-    description: "Podcast cinéma avec Thomas, Charlie et Thomas. Du cinéma, de la mauvaise foi, un soupçon de beauferie et le tour est joué !",
+    description:
+      "Podcast cinéma avec Thomas, Charlie et Thomas. Du cinéma, de la mauvaise foi, un soupçon de beauferie et le tour est joué !",
     type: "website",
     locale: "fr_FR",
     siteName: "La Boîte de Chocolat",
@@ -38,7 +39,8 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "La Boîte de Chocolat - Podcast Cinéma",
-    description: "Podcast cinéma avec Thomas, Charlie et Thomas. Du cinéma, de la mauvaise foi, un soupçon de beauferie et le tour est joué !",
+    description:
+      "Podcast cinéma avec Thomas, Charlie et Thomas. Du cinéma, de la mauvaise foi, un soupçon de beauferie et le tour est joué !",
     images: ["/twitter-image"],
   },
 };
@@ -53,9 +55,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <Header />
         <main>{children}</main>
-        <FooterTransition />
         <Footer />
         <Suspense fallback={null}>
+          <FooterTransition />
           <PlayerBar />
         </Suspense>
       </body>
