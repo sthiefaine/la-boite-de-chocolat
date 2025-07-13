@@ -7,7 +7,18 @@ import { PreserveScroll } from "@/hooks/preservScroll";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import EpisodeCard from "@/components/Cards/EpisodeCard/EpisodeCard";
 
-const MemoizedEpisodeCard = memo(EpisodeCard);
+const MemoizedEpisodeCard = memo(EpisodeCard, (prevProps, nextProps) => {
+  return (
+    prevProps.film?.id === nextProps.film?.id &&
+    prevProps.episodeTitle === nextProps.episodeTitle &&
+    prevProps.episodeSlug === nextProps.episodeSlug &&
+    prevProps.episodeDate?.getTime() === nextProps.episodeDate?.getTime() &&
+    prevProps.episodeDuration === nextProps.episodeDuration &&
+    prevProps.episodeGenre === nextProps.episodeGenre &&
+    prevProps.isNoResults === nextProps.isNoResults &&
+    prevProps.variant === nextProps.variant
+  );
+});
 
 interface Film {
   id: string;
@@ -170,28 +181,28 @@ export default function PodcastGrid({
         ) : (
           <>
             {displayedEpisodes.map((episode) => {
+              const episodeProps = {
+                episodeTitle: episode.title,
+                episodeDate: episode.pubDate,
+                episodeDuration: episode.duration,
+                episodeSlug: episode.slug,
+                episodeGenre: episode.genre,
+              };
+
               if (episode.links.length > 0) {
                 const firstFilm = episode.links[0].film;
                 return (
                   <MemoizedEpisodeCard
                     key={episode.id}
+                    {...episodeProps}
                     film={firstFilm}
-                    episodeTitle={episode.title}
-                    episodeDate={episode.pubDate}
-                    episodeDuration={episode.duration}
-                    episodeSlug={episode.slug}
-                    episodeGenre={episode.genre}
                   />
                 );
               } else {
                 return (
                   <MemoizedEpisodeCard
                     key={episode.id}
-                    episodeTitle={episode.title}
-                    episodeDate={episode.pubDate}
-                    episodeDuration={episode.duration}
-                    episodeSlug={episode.slug}
-                    episodeGenre={episode.genre}
+                    {...episodeProps}
                   />
                 );
               }

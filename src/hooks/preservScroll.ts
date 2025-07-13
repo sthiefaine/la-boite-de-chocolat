@@ -19,7 +19,7 @@ export const PreserveScroll = () => {
 
   useEffect(() => {
     if (scrollPosition !== 0) {
-      localStorage.setItem("scrollPosition", scrollPosition.toString());
+      localStorage.setItem("scrollPosition", (scrollPosition + 10).toString());
     }
   }, [scrollPosition]);
 

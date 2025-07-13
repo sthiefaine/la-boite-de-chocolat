@@ -99,6 +99,7 @@ export default function FilmCard({
                   <Link
                     href={`/episodes/${episode.slug}`}
                     className={styles.listenButtonOverlay}
+                    prefetch={true}
                   >
                     <span className={styles.buttonIcon}>🎬</span>
                     Afficher

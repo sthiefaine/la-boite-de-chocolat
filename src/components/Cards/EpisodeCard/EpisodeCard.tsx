@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useMemo } from "react";
 import { formatDuration } from "@/lib/podcastHelpers";
 import { IMAGE_CONFIG } from "@/lib/imageConfig";
 import styles from "./EpisodeCard.module.css";
@@ -55,6 +56,21 @@ export default function EpisodeCard({
     priority: false,
   },
 }: EpisodeCardProps) {
+  const displayTitle = useMemo(
+    () => (film ? film.title : episodeTitle || "Épisode sans titre"),
+    [film?.title, episodeTitle]
+  );
+
+  const displayImage = useMemo(
+    () => film?.imgFileName || null,
+    [film?.imgFileName]
+  );
+  const displayAge = useMemo(() => film?.age || null, [film?.age]);
+  const shouldBlur = useMemo(
+    () => displayAge === "18+" || displayAge === "adult",
+    [displayAge]
+  );
+
   if (isNoResults) {
     return (
       <article className={`${styles.cardArticle} ${styles.noResultsCard}`}>
@@ -85,11 +101,6 @@ export default function EpisodeCard({
     );
   }
 
-  const displayTitle = film ? film.title : episodeTitle || "Épisode sans titre";
-  const displayImage = film?.imgFileName || null;
-  const displayAge = film?.age || null;
-  const shouldBlur = displayAge === "18+" || displayAge === "adult";
-
   return (
     <article
       className={`${styles.cardArticle} ${
@@ -99,8 +110,9 @@ export default function EpisodeCard({
       <Link
         href={`/episodes/${episodeSlug}`}
         className={styles.cardLink}
+        prefetch={true}
       >
-        <span className={styles.cardImageContainer}>
+        <div className={styles.cardImageContainer}>
           {displayImage ? (
             <>
               <Image
@@ -140,7 +152,7 @@ export default function EpisodeCard({
               {formatDuration(episodeDuration)}
             </span>
           )}
-        </span>
+        </div>
         <div className={styles.cardInformations}>
           <div className={styles.cardTop}>
             <h2 className={styles.cardTitle}>{displayTitle}</h2>
