@@ -4,15 +4,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import styles from "./Header.module.css";
-
-const ButtonSkeleton = ({ className }: { className: string }) => (
-  <div className={`${className}`}>
-    <div>Chargement</div>
-  </div>
-);
+import { User } from "@/lib/auth/auth-client";
 
 interface MobileMenuProps {
-  user: any;
+  user?: User;
   onSignOut: () => Promise<void>;
 }
 
@@ -49,41 +44,56 @@ export function MobileMenu({ user, onSignOut }: MobileMenuProps) {
 
       {isOpen && (
         <nav className={styles.mobileNav}>
-          <Link href="/" className={styles.mobileNavLink} onClick={handleLinkClick}>
+          <Link
+            href="/"
+            className={styles.mobileNavLink}
+            onClick={handleLinkClick}
+          >
             Accueil
           </Link>
-          <Link href="/episodes" className={styles.mobileNavLink} onClick={handleLinkClick}>
+          <Link
+            href="/episodes"
+            className={styles.mobileNavLink}
+            onClick={handleLinkClick}
+          >
             Épisodes
           </Link>
-          <Link href="/options" className={styles.mobileNavLink} onClick={handleLinkClick}>
+          <Link
+            href="/options"
+            className={styles.mobileNavLink}
+            onClick={handleLinkClick}
+          >
             Options
           </Link>
-          <MobileAdminLink 
-            className={styles.mobileNavLink} 
-            onLinkClick={handleLinkClick}
-            user={user}
-          />
-          <MobileAuthButton 
-            className={styles.mobileNavLink} 
-            onLinkClick={handleLinkClick}
-            user={user}
-            onSignOut={onSignOut}
-          />
+          {user && (
+            <MobileAdminLink
+              className={styles.mobileNavLink}
+              onLinkClick={handleLinkClick}
+              user={user}
+            />
+          )}
+          {user && (
+            <MobileAuthButton
+              className={styles.mobileNavLink}
+              onLinkClick={handleLinkClick}
+              user={user}
+              onSignOut={onSignOut}
+            />
+          )}
         </nav>
       )}
     </>
   );
 }
 
-// Composants client pour les liens conditionnels
-function MobileAdminLink({ 
-  className, 
-  onLinkClick, 
-  user 
-}: { 
-  className: string; 
+function MobileAdminLink({
+  className,
+  onLinkClick,
+  user,
+}: {
+  className: string;
   onLinkClick: () => void;
-  user: any;
+  user: User;
 }) {
   if (!user || user.role !== "admin") {
     return null;
@@ -96,15 +106,15 @@ function MobileAdminLink({
   );
 }
 
-function MobileAuthButton({ 
-  className, 
-  onLinkClick, 
-  user, 
-  onSignOut 
-}: { 
-  className: string; 
+function MobileAuthButton({
+  className,
+  onLinkClick,
+  user,
+  onSignOut,
+}: {
+  className: string;
   onLinkClick: () => void;
-  user: any;
+  user: User;
   onSignOut: () => Promise<void>;
 }) {
   if (!user) {
@@ -129,4 +139,4 @@ function MobileAuthButton({
       Déconnexion
     </button>
   );
-} 
+}

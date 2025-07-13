@@ -9,6 +9,7 @@ import { redirect } from "next/navigation";
 import { MobileMenu } from "./MobileMenu";
 import styles from "./Header.module.css";
 
+
 const ButtonSkeleton = ({ className }: { className: string }) => (
   <div className={`${className}`}>
     <div>Chargement</div>

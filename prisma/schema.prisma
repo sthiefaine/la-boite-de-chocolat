@@ -57,6 +57,7 @@ model Saga {
   name        String
   description String?
   imgFileName String?
+  tmdbId      Int?     @unique // ID TMDB de la saga
   filmsOrder  String[] // IDs des films dans l'ordre
   films       Film[]
   createdAt   DateTime @default(now())

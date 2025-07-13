@@ -137,19 +137,19 @@ export async function checkFilmExists(tmdbId: number) {
     });
 
     if (existingFilm) {
-      return { 
-        success: true, 
-        exists: true, 
+      return {
+        success: true,
+        exists: true,
         film: existingFilm,
-        message: `Le film "${existingFilm.title}" existe déjà dans la base de données`
+        message: `Le film "${existingFilm.title}" existe déjà dans la base de données`,
       };
     }
 
-    return { 
-      success: true, 
-      exists: false, 
+    return {
+      success: true,
+      exists: false,
       film: null,
-      message: "Le film n'existe pas encore dans la base de données"
+      message: "Le film n'existe pas encore dans la base de données",
     };
   } catch (error) {
     console.error("Erreur vérification film:", error);
@@ -160,19 +160,45 @@ export async function checkFilmExists(tmdbId: number) {
   }
 }
 
-export async function getOrCreateSagaFromTMDB(collectionName: string) {
+export async function getOrCreateSagaFromTMDB(
+  collectionName: string,
+  tmdbId?: number,
+  collectionPosterPath?: string
+) {
   try {
-    // Vérifier si la saga existe déjà
     let saga = await prisma.saga.findFirst({
-      where: { name: collectionName },
+      where: {
+        OR: [{ name: collectionName }, ...(tmdbId ? [{ tmdbId: tmdbId }] : [])],
+      },
     });
 
-    // Si elle n'existe pas, la créer
+    let imgFileName: string | undefined;
+    if (collectionPosterPath && (!saga || !saga.imgFileName)) {
+      const uploadResult = await uploadSagaPosterFromTMDB(
+        collectionPosterPath,
+        collectionName
+      );
+      if (uploadResult.success) {
+        imgFileName = uploadResult.filename;
+      }
+    }
+
     if (!saga) {
       saga = await prisma.saga.create({
-        data: { name: collectionName },
+        data: {
+          name: collectionName,
+          ...(tmdbId && { tmdbId: tmdbId }),
+          ...(imgFileName && { imgFileName: imgFileName }),
+        },
       });
-      console.log(`Saga créée: ${collectionName} (ID: ${saga.id})`);
+    } else if ((tmdbId && !saga.tmdbId) || (imgFileName && !saga.imgFileName)) {
+      saga = await prisma.saga.update({
+        where: { id: saga.id },
+        data: {
+          ...(tmdbId && !saga.tmdbId && { tmdbId: tmdbId }),
+          ...(imgFileName && !saga.imgFileName && { imgFileName: imgFileName }),
+        },
+      });
     }
 
     return { success: true, saga };
@@ -231,9 +257,81 @@ export async function uploadPosterFromTMDB(
       addRandomSuffix: true,
     });
 
-    return { success: true, filename: blob.pathname };
+
+    const filenameWithoutPrefix = blob.pathname.replace(/^films\//, '');
+
+    return { success: true, filename: filenameWithoutPrefix };
   } catch (error) {
     console.error("Erreur upload poster TMDB:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Erreur d'upload",
+    };
+  }
+}
+
+export async function uploadSagaPosterFromTMDB(
+  posterPath: string,
+  sagaName: string
+): Promise<{ success: boolean; filename?: string; error?: string }> {
+  try {
+    // Télécharger l'image depuis TMDB en qualité HD/Retina
+    const imageUrl = `https://image.tmdb.org/t/p/w1280${posterPath}`;
+    const imageResponse = await fetch(imageUrl);
+
+    if (!imageResponse.ok) {
+      throw new Error("Impossible de télécharger l'image depuis TMDB");
+    }
+
+    const imageBuffer = await imageResponse.arrayBuffer();
+    const imageBlob = new Blob([imageBuffer]);
+
+    // Générer un nom de fichier unique
+    const timestamp = Date.now();
+    const sanitizedName = sagaName
+      .replace(/[^a-zA-Z0-9]/g, "_")
+      .toLowerCase();
+    const filename = `sagas/poster_${sanitizedName}_${timestamp}.jpg`;
+
+    // Upload vers Vercel Blob avec le SDK
+    const blob = await put(filename, imageBlob, {
+      access: "public",
+      addRandomSuffix: true,
+    });
+
+    // Retourner seulement le nom de fichier sans le préfixe sagas/
+    const filenameWithoutPrefix = blob.pathname.replace(/^sagas\//, '');
+
+    return { success: true, filename: filenameWithoutPrefix };
+  } catch (error) {
+    console.error("Erreur upload poster saga TMDB:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Erreur d'upload",
+    };
+  }
+}
+
+export async function uploadSagaImage(file: File, sagaName: string) {
+  try {
+    // Générer un nom de fichier unique
+    const timestamp = Date.now();
+    const sanitizedName = sagaName
+      .replace(/[^a-zA-Z0-9]/g, "_")
+      .toLowerCase();
+    const filename = `sagas/poster_${sanitizedName}_${timestamp}.jpg`;
+
+    const blob = await put(filename, file, {
+      access: "public",
+      addRandomSuffix: true,
+    });
+
+    // Retourner seulement le nom de fichier sans le préfixe sagas/
+    const filenameWithoutPrefix = blob.pathname.replace(/^sagas\//, '');
+
+    return { success: true, url: blob.url, filename: filenameWithoutPrefix };
+  } catch (error) {
+    console.error("Erreur upload image saga:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Erreur d'upload",
@@ -245,19 +343,20 @@ export async function createFilmFromTMDB(
   tmdbId: number,
   sagaId?: string,
   detectedSagaName?: string,
-  age?: string
+  age?: string,
+  detectedSagaTmdbId?: number
 ) {
   try {
     // Vérifier si le film existe déjà par son ID TMDB
     const existingFilm = await prisma.film.findUnique({
-      where: { tmdbId: tmdbId }
+      where: { tmdbId: tmdbId },
     });
 
     if (existingFilm) {
-      return { 
-        success: false, 
+      return {
+        success: false,
         error: `Le film "${existingFilm.title}" existe déjà dans la base de données`,
-        film: existingFilm
+        film: existingFilm,
       };
     }
 
@@ -293,21 +392,30 @@ export async function createFilmFromTMDB(
     }
     // Sinon, si une saga a été détectée automatiquement, la créer/utiliser
     else if (detectedSagaName) {
-      const sagaResult = await getOrCreateSagaFromTMDB(detectedSagaName);
+      const sagaResult = await getOrCreateSagaFromTMDB(
+        detectedSagaName,
+        detectedSagaTmdbId
+      );
       if (sagaResult.success && sagaResult.saga) {
         finalSagaId = sagaResult.saga.id;
-        console.log(`Saga automatiquement assignée: ${detectedSagaName}`);
+        console.log(
+          `Saga automatiquement assignée: ${detectedSagaName} (TMDB ID: ${
+            detectedSagaTmdbId || "non défini"
+          })`
+        );
       }
     }
     // Sinon, essayer de détecter depuis TMDB
     else if (tmdbMovie.belongs_to_collection) {
       const sagaResult = await getOrCreateSagaFromTMDB(
-        tmdbMovie.belongs_to_collection.name
+        tmdbMovie.belongs_to_collection.name,
+        tmdbMovie.belongs_to_collection.id,
+        tmdbMovie.belongs_to_collection.poster_path
       );
       if (sagaResult.success && sagaResult.saga) {
         finalSagaId = sagaResult.saga.id;
         console.log(
-          `Saga automatiquement assignée: ${tmdbMovie.belongs_to_collection.name}`
+          `Saga automatiquement assignée: ${tmdbMovie.belongs_to_collection.name} (TMDB ID: ${tmdbMovie.belongs_to_collection.id})`
         );
       }
     }

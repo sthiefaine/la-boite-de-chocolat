@@ -127,3 +127,47 @@ export async function getSagaWithFilmsAndEpisodes(sagaId: string) {
     return null;
   }
 }
+export async function searchCollection(
+  query: string,
+  page: number = 1
+): Promise<any> {
+  const apiKey = process.env.TMDB_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("TMDB API key non configurée");
+  }
+
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/search/collection?api_key=${apiKey}&language=fr-FR&query=${encodeURIComponent(
+        query
+      )}&page=${page}`,
+      { next: { revalidate: 3600 } } // Cache 1 heure
+    );
+
+    if (!response.ok) {
+      throw new Error(`Erreur TMDB: ${response.status} ${response.statusText}`);
+    }
+
+    const text = await response.text();
+
+    if (!text) {
+      throw new Error("Réponse vide de l'API TMDB");
+    }
+
+    try {
+      const data = JSON.parse(text);
+      return data;
+    } catch (parseError) {
+      console.error("Erreur parsing JSON TMDB:", text);
+      throw new Error(
+        `Erreur parsing JSON: ${
+          parseError instanceof Error ? parseError.message : "Erreur inconnue"
+        }`
+      );
+    }
+  } catch (error) {
+    console.error("Erreur recherche collection TMDB:", error);
+    throw error;
+  }
+}

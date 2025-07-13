@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import {
   searchMovies,
   createFilmFromTMDB,
@@ -34,13 +33,11 @@ type Step =
   | "loading";
 
 export default function AddFilmForm({
-  episodeId,
   podcastName,
   onFilmCreated,
   onCancel,
   onFilmLinked,
 }: AddFilmFormProps) {
-  const router = useRouter();
   const [step, setStep] = useState<Step>("search");
   const [searchQuery, setSearchQuery] = useState(podcastName || "");
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -146,17 +143,17 @@ export default function AddFilmForm({
     setPosterFile(file);
     setStep("loading");
 
-    // Créer le film avec les informations collectées
     let finalSagaId: string | undefined = selectedSaga;
     let detectedSagaName: string | undefined = undefined;
+    let detectedSagaTmdbId: number | undefined = undefined;
 
-    // Si on a sélectionné la saga détectée, utiliser son nom
     if (selectedSaga === "detected" && detectedSaga) {
       detectedSagaName = detectedSaga.name;
-      finalSagaId = undefined; // La saga sera créée automatiquement
+      detectedSagaTmdbId = detectedSaga.id;
+      finalSagaId = undefined;
     }
 
-    createFilmFromTMDB(selectedMovie.id, finalSagaId, detectedSagaName, selectedAge).then(
+    createFilmFromTMDB(selectedMovie.id, finalSagaId, detectedSagaName, selectedAge, detectedSagaTmdbId).then(
       (result) => {
         if (result.success && result.film) {
           onFilmCreated(result.film.id);
