@@ -30,7 +30,7 @@ export default async function PodcastsPage() {
   const episodes = result || [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[var(--chocolate-cream)] to-white pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-[var(--chocolate-cream)] to-white pb-24 pt-[60px]">
       <EpisodeGrid
         episodes={episodes}
         title="Tous nos épisodes"
