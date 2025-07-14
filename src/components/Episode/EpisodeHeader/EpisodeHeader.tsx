@@ -157,8 +157,7 @@ export default async function EpisodeHeader({
                   width={100}
                   height={30}
                   className={styles.tmdbIcon}
-                  priority={false}
-                  loading="lazy"
+                  quality={50}
                 />
               </a>
             )}

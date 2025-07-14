@@ -167,7 +167,7 @@ export default function EpisodeGrid({
           <EpisodeCard isNoResults={true} />
         ) : (
           <>
-            {displayedEpisodes.map((episode) => {
+            {displayedEpisodes.map((episode, index) => {
               const episodeProps = {
                 episodeTitle: episode.title,
                 episodeDate: episode.pubDate,
@@ -175,23 +175,27 @@ export default function EpisodeGrid({
                 episodeSlug: episode.slug,
                 episodeGenre: episode.genre,
               };
+              const isMarvel =
+                episode.links[0]?.film?.saga?.name
+                  .toLowerCase()
+                  .includes("marvel") ||
+                episode.parentSaga?.name.toLowerCase().includes("marvel");
+              const isFirst = index === 0;
+              const effect = isMarvel ? "prism" : isFirst ? "glow" : "none";
 
               if (episode.links.length > 0) {
                 const firstFilm = episode.links[0].film;
+
                 return (
                   <EpisodeCard
                     key={episode.id}
                     {...episodeProps}
                     film={firstFilm}
+                    effect={effect}
                   />
                 );
               } else {
-                return (
-                  <EpisodeCard
-                    key={episode.id}
-                    {...episodeProps}
-                  />
-                );
+                return <EpisodeCard key={episode.id} {...episodeProps} />;
               }
             })}
             {/* Observer pour l'infinite scroll */}

@@ -31,6 +31,7 @@ interface EpisodeCardProps {
   isNoResults?: boolean;
   variant?: "default" | "compact";
   imageConfig?: ImageConfig;
+  effect?: "none" | "prism" | "holo" | "glow";
 }
 
 const getStaticImageUrl = (imgFileName: string, age: string | null): string => {
@@ -54,12 +55,15 @@ export default function EpisodeCard({
     lazy: true,
     priority: false,
   },
+  effect = "none",
 }: EpisodeCardProps) {
 
   const displayTitle = film ? film.title : episodeTitle || "Épisode sans titre";
   const displayImage = film?.imgFileName || null;
   const displayAge = film?.age || null;
   const shouldBlur = displayAge === "18+" || displayAge === "adult";
+
+  const effectClass = effect !== "none" ? styles[`effect${effect}`] : "";
 
   if (isNoResults) {
     return (
@@ -102,7 +106,7 @@ export default function EpisodeCard({
         className={styles.cardLink}
         prefetch={true}
       >
-        <div className={styles.cardImageContainer}>
+        <div className={`${styles.cardImageContainer} ${effectClass}`}>
           {displayImage ? (
             <>
               <Image

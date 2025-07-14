@@ -1,8 +1,8 @@
 "use server";
 
 import { Suspense } from "react";
-import PodcastCard from "@/components/Cards/EpisodeCard/EpisodeCard";
 import styles from "./EpisodeNavigation.module.css";
+import EpisodeCard from "@/components/Cards/EpisodeCard/EpisodeCard";
 
 interface Episode {
   id: string;
@@ -47,7 +47,7 @@ export default async function EpisodeNavigation({
           <div className={styles.navigationCard}>
             <span className={styles.navigationLabel}>Épisode suivant</span>
             <Suspense fallback={null}>
-              <PodcastCard
+              <EpisodeCard
                 film={nextEpisode.links[0]?.film || undefined}
                 episodeTitle={nextEpisode.title}
                 episodeDate={nextEpisode.pubDate}
@@ -56,7 +56,6 @@ export default async function EpisodeNavigation({
                 episodeGenre={nextEpisode.genre}
                 variant="compact"
                 imageConfig={{
-                  quality: 80,
                   lazy: true,
                   priority: false,
                 }}
@@ -68,7 +67,7 @@ export default async function EpisodeNavigation({
           <div className={styles.navigationCard}>
             <span className={styles.navigationLabel}>Épisode précédent</span>
             <Suspense fallback={null}>
-              <PodcastCard
+              <EpisodeCard
                 film={previousEpisode.links[0]?.film || undefined}
                 episodeTitle={previousEpisode.title}
                 episodeDate={previousEpisode.pubDate}

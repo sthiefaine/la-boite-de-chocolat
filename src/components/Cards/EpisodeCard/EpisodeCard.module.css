@@ -87,7 +87,146 @@
   height: 100% !important;
   object-fit: cover;
   color: transparent;
+  filter: brightness(0.9);
+  transform-style: preserve-3d;
+  perspective: 1000px;
 }
+
+.cardArticle:hover .cardImage {
+  filter: brightness(1) drop-shadow(0 8px 25px rgba(0, 0, 0, 0.4));
+  transform: scale(1.1) rotate(1deg) translateZ(5px);
+}
+
+/* EFFET HOLOGRAMME avec scan lines */
+.effectholo::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 255, 0.15) 2px,
+    rgba(0, 255, 255, 0.15) 4px
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 3;
+  border-radius: 12px;
+}
+
+.cardArticle:hover .effectholo::after {
+  opacity: 1;
+  animation: scan-lines 1.5s linear infinite;
+}
+
+@keyframes scan-lines {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* EFFET HOLOGRAMME sur l'image */
+.cardArticle:hover .effectholo .cardImage {
+  filter: brightness(1.3) saturate(1.4) hue-rotate(180deg)
+    drop-shadow(0 0 20px rgba(0, 255, 255, 0.6));
+  transform: scale(1.08) rotateY(5deg) perspective(1000px);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.5),
+    inset 0 0 30px rgba(0, 255, 255, 0.1);
+}
+
+/* EFFET GLOW pulsant */
+.effectglow {
+  transition: all 0.3s ease;
+}
+
+.cardArticle:hover .effectglow {
+  box-shadow: 0 0 20px rgba(138, 43, 226, 0.4), 0 0 40px rgba(138, 43, 226, 0.2),
+    0 0 60px rgba(138, 43, 226, 0.1);
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* EFFET GLOW sur l'image */
+.cardArticle:hover .effectglow .cardImage {
+  filter: brightness(1.1);
+  transform: scale(1.05);
+  transition: all 0.3s ease;
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(138, 43, 226, 0.4),
+      0 0 40px rgba(138, 43, 226, 0.2), 0 0 60px rgba(138, 43, 226, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(138, 43, 226, 0.6),
+      0 0 60px rgba(138, 43, 226, 0.4), 0 0 90px rgba(138, 43, 226, 0.2);
+  }
+}
+
+/* EFFET PRISME */
+.effectprism::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 0, 0, 0.3),
+    rgba(255, 165, 0, 0.3),
+    rgba(255, 255, 0, 0.3),
+    rgba(0, 255, 0, 0.3),
+    rgba(0, 0, 255, 0.3),
+    rgba(75, 0, 130, 0.3),
+    rgba(238, 130, 238, 0.3),
+    transparent
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 3;
+  border-radius: 12px;
+}
+
+.cardArticle:hover .effectprism::after {
+  opacity: 1;
+  animation: prism-sweep 1.5s ease-in-out infinite;
+}
+
+@keyframes prism-sweep {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* EFFET PRISME sur l'image */
+.cardArticle:hover .effectprism .cardImage {
+  filter: brightness(1.1);
+  transform: scale(1.06) rotate(1deg);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+}
+
+/* EFFET GLOW sur l'image */
+.cardArticle:hover .effectglow .cardImage {
+  filter: brightness(1.1);
+  transform: scale(1.05);
+}
+
+
 
 .noPoster {
   position: absolute;
@@ -271,5 +410,70 @@
   .genreBadge {
     padding: 0.2rem 0.6rem;
     font-size: 0.7rem;
+  }
+}
+
+.cardArticle {
+  /* Force la création d'un nouveau layer */
+  transform: translateZ(0);
+  /* Optimise le rendu */
+  backface-visibility: hidden;
+  /* Améliore les performances de scroll */
+  contain: layout style paint;
+}
+
+.cardImage,
+.cardImageholo,
+.cardImageglow {
+  /* Force l'accélération matérielle */
+  transform: translateZ(0);
+  /* Optimise le rendu */
+  backface-visibility: hidden;
+
+  contain: layout style paint;
+}
+
+/* Optimisation spécifique pour les animations */
+.cardArticle:hover .cardImageContainerholo::after,
+.cardArticle:hover .cardImageContainerglow {
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: opacity, transform;
+}
+
+@keyframes scan-lines {
+  0% {
+    transform: translateY(-100%) translateZ(0);
+  }
+  100% {
+    transform: translateY(100%) translateZ(0);
+  }
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(138, 43, 226, 0.4),
+      0 0 40px rgba(138, 43, 226, 0.2), 0 0 60px rgba(138, 43, 226, 0.1);
+    transform: translateZ(0);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(138, 43, 226, 0.6),
+      0 0 60px rgba(138, 43, 226, 0.4), 0 0 90px rgba(138, 43, 226, 0.2);
+    transform: translateZ(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cardArticle,
+  .cardImage,
+  .cardImageholo,
+  .cardImageglow,
+  .cardImageContainerholo,
+  .cardImageContainerglow,
+  .cardImageContainerprism,
+  .cardImageprism {
+    transition: none;
+    animation: none;
   }
 }
