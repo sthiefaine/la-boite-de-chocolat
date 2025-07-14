@@ -3,121 +3,123 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(
+    135deg,
+    var(--chocolate-dark) 0%,
+    var(--chocolate-primary) 50%,
+    var(--chocolate-secondary) 100%
+  );
   padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="chocolate" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23chocolate)"/></svg>');
+  opacity: 0.3;
+  pointer-events: none;
 }
 
 .formContainer {
-  background: white;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  background: var(--glass-bg-medium);
+  backdrop-filter: var(--glass-blur);
+  border: var(--glass-border-medium);
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: var(--glass-shadow-dark);
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 0.6s ease-out;
 }
 
 .title {
   text-align: center;
-  margin-bottom: 30px;
-  color: #333;
-  font-size: 28px;
-  font-weight: 600;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.inputGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.label {
-  font-weight: 500;
-  color: #555;
-  font-size: 14px;
-}
-
-.input {
-  padding: 12px 16px;
-  border: 2px solid #e1e5e9;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 0.2s ease;
-  background: #fafbfc;
-}
-
-.input:focus {
-  outline: none;
-  border-color: #667eea;
-  background: white;
-}
-
-.input::placeholder {
-  color: #999;
-}
-
-.button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 14px 24px;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  margin-top: 10px;
-}
-
-.button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-}
-
-.button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.error {
-  background: #fee;
-  color: #c53030;
-  padding: 12px;
-  border-radius: 6px;
-  font-size: 14px;
-  border: 1px solid #feb2b2;
+  margin-bottom: 2rem;
+  color: var(--text-white);
+  font-size: 2rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.025em;
 }
 
 .links {
-  margin-top: 24px;
+  margin-top: 2rem;
   text-align: center;
 }
 
 .link {
-  color: #667eea;
+  color: var(--chocolate-light);
   text-decoration: none;
-  font-size: 14px;
-  transition: color 0.2s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--accent-gold);
+  transition: width var(--transition-normal);
 }
 
 .link:hover {
-  color: #764ba2;
-  text-decoration: underline;
+  color: var(--accent-gold);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.link:hover::after {
+  width: 100%;
 }
 
 /* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .formContainer {
+    padding: 2rem 1.5rem;
+    max-width: 100%;
+  }
+
+  .title {
+    font-size: 1.75rem;
+  }
+}
+
 @media (max-width: 480px) {
   .formContainer {
-    padding: 30px 20px;
+    padding: 1.5rem 1rem;
   }
-  
+
   .title {
-    font-size: 24px;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
   }
-} 
+}
+
+/* Animation d'apparition */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

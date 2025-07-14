@@ -2,27 +2,8 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import styles from "../AuthPage.module.css";
-import SignUpForm from "./SignUpForm";
-
-function SignUpFormSkeleton() {
-  return (
-    <div className={styles.form}>
-      <div className={styles.inputGroup}>
-        <div className={styles.label}>Email</div>
-        <div className={styles.input} style={{ height: "2.5rem", backgroundColor: "var(--bg-primary)" }}></div>
-      </div>
-      <div className={styles.inputGroup}>
-        <div className={styles.label}>Mot de passe</div>
-        <div className={styles.input} style={{ height: "2.5rem", backgroundColor: "var(--bg-primary)" }}></div>
-      </div>
-      <div className={styles.inputGroup}>
-        <div className={styles.label}>Confirmer le mot de passe</div>
-        <div className={styles.input} style={{ height: "2.5rem", backgroundColor: "var(--bg-primary)" }}></div>
-      </div>
-      <div className={styles.button} style={{ height: "2.5rem", backgroundColor: "var(--chocolate-light)" }}></div>
-    </div>
-  );
-}
+import SignUpForm from "@/components/Form/SignUpForm";
+import FormSkeleton from "@/components/Form/FormSkeleton";
 
 export default function SignUpPage() {
   return (
@@ -30,7 +11,7 @@ export default function SignUpPage() {
       <div className={styles.formContainer}>
         <h1 className={styles.title}>Inscription</h1>
 
-        <Suspense fallback={<SignUpFormSkeleton />}>
+        <Suspense fallback={<FormSkeleton fields={4} />}>
           <SignUpForm />
         </Suspense>
 

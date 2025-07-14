@@ -12,6 +12,12 @@ export const auth = betterAuth({
         enabled: true,
         requireEmailVerification: false,
     },
+    trustedOrigins: [
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "https://la-boite-de-chocolat.vercel.app",
+        "https://laboitedechocolat.vercel.app"
+    ],
     plugins: [
         admin({
             defaultRole: "user",

@@ -1,0 +1,184 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-white);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.required {
+  color: var(--accent-red);
+  font-weight: 600;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--glass-bg-light);
+  backdrop-filter: var(--glass-blur-light);
+  border: var(--glass-border-light);
+  border-radius: 0.5rem;
+  color: var(--text-white);
+  font-size: 1rem;
+  transition: all var(--transition-fast);
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--chocolate-primary);
+  box-shadow: 0 0 0 2px rgba(107, 62, 38, 0.1);
+}
+
+.input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.passwordHint {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
+.button {
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  background: linear-gradient(135deg, var(--chocolate-primary) 0%, var(--chocolate-secondary) 100%);
+  border: none;
+  border-radius: 0.5rem;
+  color: var(--text-white);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+}
+
+.button:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--chocolate-secondary) 0%, var(--chocolate-light) 100%);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-light);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.button:focus {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+.error {
+  padding: 0.75rem 1rem;
+  background: rgba(139, 38, 53, 0.1);
+  border: 1px solid rgba(139, 38, 53, 0.3);
+  border-radius: 0.5rem;
+  color: var(--accent-red);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+  backdrop-filter: var(--glass-blur-light);
+}
+
+.successCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  background: var(--glass-bg-light);
+  backdrop-filter: var(--glass-blur-medium);
+  border: var(--glass-border-medium);
+  border-radius: 1rem;
+  text-align: center;
+  box-shadow: var(--glass-shadow-medium);
+}
+
+.successIcon {
+  width: 4rem;
+  height: 4rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: var(--shadow-medium);
+}
+
+.successTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-white);
+  margin: 0;
+}
+
+.successMessage {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+.captcha {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.25rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form {
+    gap: 1.25rem;
+  }
+  
+  .input {
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+  }
+  
+  .button {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    min-height: 3.5rem;
+  }
+  
+  .successCard {
+    padding: 1.5rem;
+  }
+  
+  .successTitle {
+    font-size: 1.25rem;
+  }
+} 

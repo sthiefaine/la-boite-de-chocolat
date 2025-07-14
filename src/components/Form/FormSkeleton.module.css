@@ -1,0 +1,66 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  height: 1rem;
+  width: 40%;
+  background: var(--glass-bg-light);
+  backdrop-filter: var(--glass-blur-light);
+  border: var(--glass-border-light);
+  border-radius: 0.25rem;
+  animation: shimmer 2s infinite;
+}
+
+.input {
+  height: 3rem;
+  background: var(--glass-bg-light);
+  backdrop-filter: var(--glass-blur-light);
+  border: var(--glass-border-light);
+  border-radius: 0.5rem;
+  animation: shimmer 2s infinite;
+}
+
+.button {
+  height: 3.5rem;
+  background: linear-gradient(135deg, var(--chocolate-primary) 0%, var(--chocolate-secondary) 100%);
+  border-radius: 0.5rem;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form {
+    gap: 1.25rem;
+  }
+  
+  .input {
+    height: 3.5rem;
+  }
+  
+  .button {
+    height: 4rem;
+  }
+} 

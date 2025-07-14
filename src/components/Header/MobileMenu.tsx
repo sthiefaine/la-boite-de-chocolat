@@ -77,14 +77,12 @@ export function MobileMenu({ user, onSignOut }: MobileMenuProps) {
               user={user}
             />
           )}
-          {user && (
-            <MobileAuthButton
-              className={styles.mobileNavLink}
-              onLinkClick={handleLinkClick}
-              user={user}
-              onSignOut={onSignOut}
-            />
-          )}
+          <MobileAuthButton
+            className={styles.mobileNavLink}
+            onLinkClick={handleLinkClick}
+            user={user}
+            onSignOut={onSignOut}
+          />
         </nav>
       )}
     </>
@@ -119,7 +117,7 @@ function MobileAuthButton({
 }: {
   className: string;
   onLinkClick: () => void;
-  user: User;
+  user?: User;
   onSignOut: () => Promise<void>;
 }) {
   if (!user) {
@@ -132,8 +130,8 @@ function MobileAuthButton({
 
   const handleSignOut = async () => {
     try {
+      onLinkClick(); 
       await onSignOut();
-      onLinkClick();
     } catch (error) {
       console.error("Erreur lors de la déconnexion:", error);
     }
