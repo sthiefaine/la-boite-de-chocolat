@@ -39,8 +39,8 @@ export default function ChocolateBox({
   className,
   episodes = [],
 }: ChocolateBoxProps) {
-  const [setRandomEpisode] = usePlayerStore(
-    useShallow((state) => [state.setRandomEpisode])
+  const { setRandomEpisode } = usePlayerStore(
+    useShallow((state) => ({ setRandomEpisode: state.setRandomEpisode }))
   );
 
   const [isLoading, setIsLoading] = useState(false);
@@ -53,40 +53,41 @@ export default function ChocolateBox({
 
     setIsLoading(true);
 
-    setTimeout(() => {
-      const availableEpisodes = episodes.filter(
-        (episode) => !playedEpisodeIds.has(episode.id)
+    const availableEpisodes = episodes.filter(
+      (episode) => !playedEpisodeIds.has(episode.id)
+    );
+
+    let selectedEpisode: Episode;
+    let newPlayedIds: Set<string>;
+    if (availableEpisodes.length === 0) {
+      const randomIndex = Math.floor(Math.random() * episodes.length);
+      selectedEpisode = episodes[randomIndex];
+      newPlayedIds = new Set([selectedEpisode.id]);
+    } else {
+      const randomIndex = Math.floor(
+        Math.random() * availableEpisodes.length
       );
+      selectedEpisode = availableEpisodes[randomIndex];
+      newPlayedIds = new Set([...playedEpisodeIds, selectedEpisode.id]);
+    }
 
-      let selectedEpisode: Episode;
-      let newPlayedIds: Set<string>;
-      if (availableEpisodes.length === 0) {
-        const randomIndex = Math.floor(Math.random() * episodes.length);
-        selectedEpisode = episodes[randomIndex];
-        newPlayedIds = new Set([selectedEpisode.id]);
-      } else {
-        const randomIndex = Math.floor(
-          Math.random() * availableEpisodes.length
-        );
-        selectedEpisode = availableEpisodes[randomIndex];
-        newPlayedIds = new Set([...playedEpisodeIds, selectedEpisode.id]);
-      }
+    setPlayedEpisodeIds(newPlayedIds);
 
-      setPlayedEpisodeIds(newPlayedIds);
+    const mainFilm = selectedEpisode.links[0]?.film;
 
-      const mainFilm = selectedEpisode.links[0]?.film;
+    setRandomEpisode({
+      id: selectedEpisode.id,
+      title: selectedEpisode.title,
+      url: selectedEpisode.audioUrl,
+      img: mainFilm?.imgFileName ?? "",
+      slug: selectedEpisode.slug ?? "",
+      artist: "La Boîte de Chocolat",
+      age: mainFilm?.age || null,
+    });
 
-      setRandomEpisode({
-        id: selectedEpisode.id,
-        title: selectedEpisode.title,
-        url: selectedEpisode.audioUrl,
-        img: mainFilm?.imgFileName ?? "",
-        slug: selectedEpisode.slug ?? "",
-        artist: "La Boîte de Chocolat",
-        age: mainFilm?.age || null,
-      });
+    setTimeout(() => {
       setIsLoading(false);
-    }, 1000);
+    }, 500);
   };
 
   return (

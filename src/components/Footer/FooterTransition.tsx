@@ -5,13 +5,20 @@ import styles from "./FooterTransition.module.css";
 import { useShallow } from "zustand/react/shallow";
 
 export default function FooterTransition() {
-  const [episode, isMinimized] = usePlayerStore(
-    useShallow((state) => [state.episode, state.isMinimized])
+  const { episode, isMinimized } = usePlayerStore(
+    useShallow((state) => ({
+      episode: state.episode,
+      isMinimized: state.isMinimized,
+    }))
   );
 
-    if (episode === null) {
+  if (episode === null) {
     return null;
   }
 
-  return <div className={`${styles.transition} ${isMinimized ? styles.minimized : ""}`} />;
+  return (
+    <div
+      className={`${styles.transition} ${isMinimized ? styles.minimized : ""}`}
+    />
+  );
 }

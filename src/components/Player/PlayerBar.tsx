@@ -15,6 +15,7 @@ export const PlayerBar = ({ audioRef, isPlaying }: PlayerBarProps) => {
     useState("00:00:00");
   const [totalDuration, setTotalDuration] = useState(0);
 
+
   useEffect(() => {
     const audioElement = audioRef.current;
     if (!audioElement) return;
@@ -84,6 +85,8 @@ export const PlayerBar = ({ audioRef, isPlaying }: PlayerBarProps) => {
       audioElement.removeEventListener("timeupdate", updateCurrentTime);
     };
   }, [audioRef]);
+
+
 
   const padZero = (num: number) => {
     return num.toString().padStart(2, "0");

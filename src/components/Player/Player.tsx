@@ -2,6 +2,7 @@
 import { getAverageRGB } from "@/lib/helpers";
 import { usePlayerStore } from "@/lib/store/player";
 import { useQueueStore } from "@/lib/store/queue";
+import { useOptionsStore } from "@/lib/store/options";
 import { getVercelBlobUrl } from "@/lib/imageConfig";
 import {
   CircleX,
@@ -17,7 +18,6 @@ import {
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/shallow";
-import { useOptionsStore } from "@/lib/store/options";
 import { PlayerBar } from "@/components/Player/PlayerBar";
 import { PlayerQueue } from "./PlayerQueue";
 import styles from "./PlayerBar.module.css";
@@ -74,7 +74,7 @@ const useMediaSession = (episode: any) => {
 };
 
 export const Player = () => {
-  const [
+  const {
     episode,
     isPlaying,
     setIsPlaying,
@@ -82,19 +82,21 @@ export const Player = () => {
     setEpisode,
     isMinimized,
     setIsMinimized,
-  ] = usePlayerStore(
-    useShallow((state) => [
-      state.episode,
-      state.isPlaying,
-      state.setIsPlaying,
-      state.setClearPlayerStore,
-      state.setEpisode,
-      state.isMinimized,
-      state.setIsMinimized,
-    ])
+  } = usePlayerStore(
+    useShallow((state) => {
+      return {
+        episode: state.episode,
+        isPlaying: state.isPlaying,
+        setIsPlaying: state.setIsPlaying,
+        setClearPlayerStore: state.setClearPlayerStore,
+        setEpisode: state.setEpisode,
+        isMinimized: state.isMinimized,
+        setIsMinimized: state.setIsMinimized,
+      };
+    })
   );
 
-  const [
+  const {
     queue,
     currentIndex,
     getNextEpisode,
@@ -102,23 +104,27 @@ export const Player = () => {
     setCurrentIndex,
     getFirstEpisode,
     removeFirstEpisode,
-  ] = useQueueStore(
-    useShallow((state) => [
-      state.queue,
-      state.currentIndex,
-      state.getNextEpisode,
-      state.getPreviousEpisode,
-      state.setCurrentIndex,
-      state.getFirstEpisode,
-      state.removeFirstEpisode,
-    ])
+  } = useQueueStore(
+    useShallow((state) => {
+      return {
+        queue: state.queue,
+        currentIndex: state.currentIndex,
+        getNextEpisode: state.getNextEpisode,
+        getPreviousEpisode: state.getPreviousEpisode,
+        setCurrentIndex: state.setCurrentIndex,
+        getFirstEpisode: state.getFirstEpisode,
+        removeFirstEpisode: state.removeFirstEpisode,
+      };
+    })
   );
 
   const audioRef = useRef<HTMLAudioElement>(null);
   useMediaSession(episode);
   const [showQueue, setShowQueue] = useState(false);
-  const [options] = useOptionsStore(useShallow((state) => [state.options]));
   const backgroundColor = useBackgroundColor(episode?.img);
+  const { options } = useOptionsStore(
+    useShallow((state) => ({ options: state.options }))
+  );
 
   useEffect(() => {
     const audioElement = audioRef.current;
@@ -130,23 +136,6 @@ export const Player = () => {
       audioElement.play();
     }
   }, [isPlaying]);
-
-  useEffect(() => {
-    const audioElement = audioRef.current;
-    if (!audioElement || !isPlaying) return;
-
-    const skipTimeMs = options.skipIntro ? options.introSkipTime * 1000 : 0;
-    if (skipTimeMs > 0 && audioElement.currentTime < skipTimeMs / 1000) {
-      // si le podcast fait moins de 1h, on ne skip pas l'intro
-      if (
-        audioElement.duration &&
-        !isNaN(audioElement.duration) &&
-        audioElement.duration > 3600
-      ) {
-        audioElement.currentTime = skipTimeMs / 1000;
-      }
-    }
-  }, [isPlaying, options, episode?.url]);
 
   const togglePlay = () => {
     const audioElement = audioRef.current;
@@ -209,7 +198,25 @@ export const Player = () => {
   return (
     <>
       <audio
-        onPlaying={() => setIsPlaying(true)}
+        onPlaying={() => {
+          setIsPlaying(true);
+          const audioElement = audioRef.current;
+          if (!audioElement) return;
+
+          const skipTimeMs = options.skipIntro
+            ? options.introSkipTime * 1000
+            : 0;
+          if (skipTimeMs > 0 && audioElement.currentTime < skipTimeMs / 1000) {
+            // si le podcast fait moins de 1h, on ne skip pas l'intro
+            if (
+              audioElement.duration &&
+              !isNaN(audioElement.duration) &&
+              audioElement.duration > 3600
+            ) {
+              audioElement.currentTime = skipTimeMs / 1000;
+            }
+          }
+        }}
         onPause={() => setIsPlaying(false)}
         onEnded={() => {
           const firstEpisode = getFirstEpisode();

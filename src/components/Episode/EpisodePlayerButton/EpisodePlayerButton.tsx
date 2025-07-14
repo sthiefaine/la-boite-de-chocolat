@@ -24,15 +24,15 @@ export const EpisodePlayerButton = ({
   className = "",
   children,
 }: EpisodePlayerButtonProps) => {
-  const [episode, setEpisode, isPlaying, setIsPlaying, setClearPlayerStore] =
+  const { episode, setEpisode, isPlaying, setIsPlaying, setClearPlayerStore } =
     usePlayerStore(
-      useShallow((state) => [
-        state.episode,
-        state.setEpisode,
-        state.isPlaying,
-        state.setIsPlaying,
-        state.setClearPlayerStore,
-      ])
+      useShallow((state) => ({
+        episode: state.episode,
+        setEpisode: state.setEpisode,
+        isPlaying: state.isPlaying,
+        setIsPlaying: state.setIsPlaying,
+        setClearPlayerStore: state.setClearPlayerStore,
+      }))
     );
 
   const handleListen = () => {

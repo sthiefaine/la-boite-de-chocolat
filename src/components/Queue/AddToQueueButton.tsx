@@ -3,6 +3,7 @@ import { useQueueStore } from "@/lib/store/queue";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import styles from "./AddToQueueButton.module.css";
+import { useShallow } from "zustand/shallow";
 
 interface AddToQueueButtonProps {
   podcast: {
@@ -22,7 +23,12 @@ export const AddToQueueButton = ({
   podcast,
   className,
 }: AddToQueueButtonProps) => {
-  const { addToQueue, queue } = useQueueStore();
+  const { addToQueue, queue } = useQueueStore(
+    useShallow((state) => ({
+      addToQueue: state.addToQueue,
+      queue: state.queue,
+    }))
+  );
   const [isAdded, setIsAdded] = useState(false);
 
   const isInQueue = queue.some((item) => item.id === podcast.id);
@@ -53,7 +59,9 @@ export const AddToQueueButton = ({
 
   return (
     <button
-      className={className || `${styles.addToQueueButton} ${isAdded ? styles.added : ""}`}
+      className={
+        className || `${styles.addToQueueButton} ${isAdded ? styles.added : ""}`
+      }
       onClick={handleAddToQueue}
       title="Ajouter à la file d'attente"
     >
