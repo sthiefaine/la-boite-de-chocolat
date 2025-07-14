@@ -24,14 +24,6 @@ const adminCards = [
     href: "/admin/list/podcast/la-boite-de-chocolat",
   },
   {
-    id: "films",
-    title: "Films",
-    description: "Base de données des films et sagas",
-    icon: "🎬",
-    color: "blue" as const,
-    href: "/admin/list/films",
-  },
-  {
     id: "users",
     title: "Utilisateurs",
     description: "Gérer les utilisateurs, rôles et permissions",
@@ -46,14 +38,6 @@ const adminCards = [
     icon: "📥",
     color: "green" as const,
     buttonText: "Importer",
-  },
-  {
-    id: "analytics",
-    title: "Analytics",
-    description: "Statistiques et performances",
-    icon: "📊",
-    color: "purple" as const,
-    href: "/admin/analytics",
   },
 ];
 
