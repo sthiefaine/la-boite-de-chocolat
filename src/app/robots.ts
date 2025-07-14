@@ -1,16 +1,38 @@
 import { MetadataRoute } from "next";
 
-const AI_BOTS = ["GPTBot", "ChatGPT-User", "Claude-Web", "Bard", "Perplexity", "Gemini", "Google-Extended"];
+const AI_BOTS = [
+  "GPTBot",
+  "ChatGPT-User",
+  "Claude-Web",
+  "Bard",
+  "Perplexity",
+  "Gemini",
+  "Google-Extended",
+];
 
-const SOCIAL_BOTS = ["facebookexternalhit", "Twitterbot", "LinkedInBot", "TikTokBot", "DouyinBot"];
+const SOCIAL_BOTS = [
+  "facebookexternalhit",
+  "Twitterbot",
+  "LinkedInBot",
+  "TikTokBot",
+  "DouyinBot",
+];
 
-const SEARCH_ENGINE_BOTS = ["Baiduspider", "Sogou", "360Spider", "YisouSpider", "NaverBot", "YandexBot", "ByteDance"];
+const SEARCH_ENGINE_BOTS = [
+  "Baiduspider",
+  "Sogou",
+  "360Spider",
+  "YisouSpider",
+  "NaverBot",
+  "YandexBot",
+  "ByteDance",
+];
 
 const DEFAULT_RULES = {
   allow: "/",
   disallow: ["/admin/", "/api/", "/private/", "/*?*utm*", "/*?*ref*"],
 };
-  
+
 const AI_RULES = {
   allow: ["/episodes/", "/films/", "/"],
   disallow: ["/admin/", "/api/"],
@@ -26,9 +48,7 @@ const SEARCH_ENGINE_RULES = {
 };
 
 export default function robots(): MetadataRoute.Robots {
-
   const allRules = [
-
     {
       userAgent: "*",
       ...DEFAULT_RULES,

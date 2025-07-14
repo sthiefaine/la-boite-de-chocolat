@@ -55,7 +55,7 @@ export default async function Header() {
             Options
           </Link>
           <Suspense fallback={<ButtonSkeleton className={styles.navLink} />}>
-            <AdminLinkConditional className={styles.navLink} />
+            <ProfileLinkConditional className={styles.navLink} />
           </Suspense>
           <Suspense fallback={<ButtonSkeleton className={styles.navLink} />}>
             <AuthButton className={styles.navLink} />
@@ -68,20 +68,20 @@ export default async function Header() {
   );
 }
 
-export const AdminLinkConditional = async ({
+export const ProfileLinkConditional = async ({
   className,
 }: {
   className: string;
 }) => {
   const user = await getUser();
 
-  if (!user || !isAdminRole(user.role)) {
+  if (!user) {
     return null;
   }
 
   return (
-    <Link href="/admin" className={className}>
-      Admin
+    <Link href="/user/profile" className={className}>
+      Profil
     </Link>
   );
 };

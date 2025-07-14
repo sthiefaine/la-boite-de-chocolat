@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowLeft, Settings, SkipForward, RotateCcw } from "lucide-react";
+import { Settings, SkipForward, RotateCcw } from "lucide-react";
 import { useOptionsStore } from "@/lib/store/options";
 import styles from "./OptionsPage.module.css";
 

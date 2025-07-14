@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import styles from "./Header.module.css";
 import { User } from "@/lib/auth/auth-client";
-import { isAdminRole } from "@/lib/auth/auth-helpers";
 
 interface MobileMenuProps {
   user?: User;
@@ -72,7 +71,7 @@ export function MobileMenu({ user, onSignOut }: MobileMenuProps) {
             Options
           </Link>
           {user && (
-            <MobileAdminLink
+            <MobileProfileLink
               className={styles.mobileNavLink}
               onLinkClick={handleLinkClick}
               user={user}
@@ -90,7 +89,7 @@ export function MobileMenu({ user, onSignOut }: MobileMenuProps) {
   );
 }
 
-function MobileAdminLink({
+function MobileProfileLink({
   className,
   onLinkClick,
   user,
@@ -99,13 +98,13 @@ function MobileAdminLink({
   onLinkClick: () => void;
   user: User;
 }) {
-  if (!user || !isAdminRole(user.role)) {
+  if (!user) {
     return null;
   }
 
   return (
-    <Link href="/admin" className={className} onClick={onLinkClick}>
-      Admin
+    <Link href="/user/profile" className={className} onClick={onLinkClick}>
+      Profil
     </Link>
   );
 }

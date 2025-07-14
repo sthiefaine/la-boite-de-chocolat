@@ -130,7 +130,6 @@ export default function UsersAdminPage() {
   };
 
   const handleUnbanUser = async (userId: string) => {
-    // Vérifier que l'utilisateur actuel peut débannir
     if (!isAdminRole(currentUserRole)) {
       setError(
         "Vous n'avez pas les permissions pour débannir des utilisateurs"
