@@ -32,6 +32,7 @@ export type PlayerActions = {
   setIsMinimized: (isMinimized: boolean) => void;
   playNext: () => void;
   playPrevious: () => void;
+  setRandomEpisode: (episode: EpisodeInfo) => void;
 };
 
 export type PlayerStore = PlayerState & PlayerActions;
@@ -57,6 +58,13 @@ export const usePlayerStore = create(
         if (queueIndex !== -1) {
           queueStore.setCurrentIndex(queueIndex);
         }
+      },
+      setRandomEpisode: (episode: EpisodeInfo) => {
+        set({ isPlaying: false });
+        set({ currentPlayTime: 0 });
+        set({ episode });
+        set({ launchPlay: true });
+        set({ isPlaying: true });
       },
       setLaunchPlay: (launchPlay: boolean) => set({ launchPlay }),
       setCurrentPlayTime: (currentPlayTime: number) => set({ currentPlayTime }),

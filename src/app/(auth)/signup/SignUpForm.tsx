@@ -17,6 +17,14 @@ async function signUpAction(
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const confirmPassword = formData.get("confirmPassword") as string;
+  const captcha = formData.get("captcha") as string;
+
+  if (captcha){
+    return {
+      error: "Le captcha est incorrect",
+      success: false,
+    };
+  }
 
   if (password !== confirmPassword) {
     return {
@@ -122,6 +130,20 @@ export default function SignUpForm() {
           type="password"
           placeholder="Confirmez votre mot de passe"
           required
+          className={styles.input}
+        />
+      </div>
+
+      <div className={styles.inputGroup} style={{ visibility: 'hidden' }}>
+        <label htmlFor="captcha" className={styles.label}>
+          Captcha
+        </label>
+        <span className={styles.captcha}>3+3 = ?</span>
+        <input
+          id="captcha"
+          name="captcha"
+          type="number"
+          placeholder="3+3 = ?"
           className={styles.input}
         />
       </div>

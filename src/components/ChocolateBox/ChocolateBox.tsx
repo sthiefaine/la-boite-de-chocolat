@@ -39,8 +39,8 @@ export default function ChocolateBox({
   className,
   episodes = [],
 }: ChocolateBoxProps) {
-  const [setEpisode, setLaunchPlay] = usePlayerStore(
-    useShallow((state) => [state.setEpisode, state.setLaunchPlay])
+  const [setRandomEpisode] = usePlayerStore(
+    useShallow((state) => [state.setRandomEpisode])
   );
 
   const [isLoading, setIsLoading] = useState(false);
@@ -76,7 +76,7 @@ export default function ChocolateBox({
 
       const mainFilm = selectedEpisode.links[0]?.film;
 
-      setEpisode({
+      setRandomEpisode({
         id: selectedEpisode.id,
         title: selectedEpisode.title,
         url: selectedEpisode.audioUrl,
@@ -85,9 +85,8 @@ export default function ChocolateBox({
         artist: "La Boîte de Chocolat",
         age: mainFilm?.age || null,
       });
-      setLaunchPlay(true);
       setIsLoading(false);
-    }, 100);
+    }, 1000);
   };
 
   return (

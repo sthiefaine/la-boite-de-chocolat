@@ -23,6 +23,14 @@ type SignInState = {
 async function signInAction(prevState: SignInState, formData: FormData): Promise<SignInState> {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+  const captcha = formData.get("captcha") as string;
+
+  if (captcha){
+    return {
+      error: "Le captcha est incorrect",
+      success: false,
+    };
+  }
   try {
     const { data, error } = await signIn.email({
       email,
@@ -62,7 +70,6 @@ export default function SignInForm() {
 
   useEffect(() => {
     if (state.success) {
-      // Redirection côté client pour s'assurer que ça fonctionne
       router.push(callbackUrl);
       router.refresh();
     }
@@ -94,6 +101,20 @@ export default function SignInForm() {
           type="password"
           placeholder="Votre mot de passe"
           required
+          className={styles.input}
+        />
+      </div>
+
+      <div className={styles.inputGroup} style={{ visibility: 'hidden' }}>
+        <label htmlFor="captcha" className={styles.label}>
+          Captcha
+        </label>
+        <span className={styles.captcha}>3+3 = ?</span>
+        <input
+          id="captcha"
+          name="captcha"
+          type="number"
+          placeholder="3+3 = ?"
           className={styles.input}
         />
       </div>
