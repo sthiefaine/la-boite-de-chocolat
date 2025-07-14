@@ -43,6 +43,9 @@ export const metadata = {
       "Podcast cinéma avec Thomas, Charlie et Thomas. Du cinéma, de la mauvaise foi, un soupçon de beauferie et le tour est joué !",
     images: ["/twitter-image"],
   },
+  verification: {
+    google: "jrDp0QVGcGDSNDLuJYNCjT9n7upHjSNow3WRqDNGFDc",
+  },
 };
 
 export default function RootLayout({
