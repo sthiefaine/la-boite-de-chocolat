@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getUser } from "@/lib/auth/auth-server";
 import { searchCollection } from "@/app/actions/saga";
+import { isAdminRole } from "@/lib/auth/auth-helpers";
 
 export async function POST(request: NextRequest) {
   try {
     const user = await getUser();
-    if (!user || user.role !== "admin") {
+    if (!user || !isAdminRole(user.role)) {
       return NextResponse.json(
         { error: "Accès non autorisé" },
         { status: 401 }

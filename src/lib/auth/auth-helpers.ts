@@ -1,6 +1,40 @@
 import { authClient, User } from "./auth-client";
 
-export type UserRole = "user" | "admin";
+export const ROLES = {
+  DEVELOPER: "developer",
+  ADMIN: "admin",
+  MODERATOR: "moderator",
+  USER: "user",
+} as const;
+
+export const ROLE_HIERARCHY = [
+  ROLES.DEVELOPER,
+  ROLES.ADMIN,
+  ROLES.MODERATOR,
+  ROLES.USER,
+];
+
+export const ROLE_LABELS = {
+  [ROLES.DEVELOPER]: "Développeur",
+  [ROLES.ADMIN]: "Administrateur",
+  [ROLES.MODERATOR]: "Modérateur",
+  [ROLES.USER]: "Utilisateur",
+} as const;
+
+export type UserRole = (typeof ROLES)[keyof typeof ROLES];
+
+export const ADMIN_ROLES = [
+  ROLES.DEVELOPER,
+  ROLES.ADMIN,
+  ROLES.MODERATOR,
+] as const;
+export const VALID_ROLES = Object.values(ROLES);
+
+export const isAdminRole = (role: string | null | undefined): boolean =>
+  role ? ADMIN_ROLES.includes(role as (typeof ADMIN_ROLES)[number]) : false;
+
+export const isValidRole = (role: string): boolean =>
+  VALID_ROLES.includes(role as UserRole);
 
 export interface Session {
   user: User;
@@ -22,6 +56,22 @@ export async function isAdmin(): Promise<boolean> {
 }
 
 /**
+ * Vérifie si l'utilisateur actuel a un rôle d'administration (developer, admin, moderator)
+ */
+export async function isAdminOrHigher(): Promise<boolean> {
+  try {
+    const { data: session } = await authClient.getSession();
+    return isAdminRole(session?.user?.role);
+  } catch (error) {
+    console.error(
+      "Erreur lors de la vérification du rôle d'administration:",
+      error
+    );
+    return false;
+  }
+}
+
+/**
  * Vérifie si l'utilisateur actuel a un rôle spécifique
  */
 export async function hasRole(role: UserRole): Promise<boolean> {
@@ -35,13 +85,62 @@ export async function hasRole(role: UserRole): Promise<boolean> {
 }
 
 /**
+ * Vérifie si l'utilisateur actuel a au moins le niveau de rôle spécifié
+ */
+export async function hasRoleOrHigher(
+  requiredRole: UserRole
+): Promise<boolean> {
+  try {
+    const { data: session } = await authClient.getSession();
+    const userRole = session?.user?.role;
+
+    if (!userRole) return false;
+
+    const userRoleIndex = ROLE_HIERARCHY.indexOf(userRole as UserRole);
+    const requiredRoleIndex = ROLE_HIERARCHY.indexOf(requiredRole);
+
+    return userRoleIndex <= requiredRoleIndex;
+  } catch (error) {
+    console.error("Erreur lors de la vérification du niveau de rôle:", error);
+    return false;
+  }
+}
+
+/**
+ * Vérifie si un utilisateur peut modifier le rôle d'un autre utilisateur
+ */
+export async function canModifyUserRole(
+  targetUserRole: UserRole
+): Promise<boolean> {
+  try {
+    const { data: session } = await authClient.getSession();
+    const currentUserRole = session?.user?.role;
+
+    if (!currentUserRole) return false;
+
+    const currentUserIndex = ROLE_HIERARCHY.indexOf(
+      currentUserRole as UserRole
+    );
+    const targetUserIndex = ROLE_HIERARCHY.indexOf(targetUserRole);
+
+    // Un utilisateur ne peut modifier que les rôles de niveau inférieur ou égal
+    return currentUserIndex <= targetUserIndex;
+  } catch (error) {
+    console.error("Erreur lors de la vérification des permissions:", error);
+    return false;
+  }
+}
+
+/**
  * Récupère le rôle de l'utilisateur actuel
  */
 export async function getUserRole(): Promise<UserRole | null> {
   try {
     const { data: session } = await authClient.getSession();
     const role = session?.user?.role;
-    return role === "admin" || role === "user" ? role : null;
+    return Object.values(ROLES).includes(role as UserRole)
+      ? (role as UserRole)
+      : null;
   } catch (error) {
     console.error("Erreur lors de la récupération du rôle:", error);
     return null;
@@ -75,21 +174,21 @@ export async function listUsers(options?: {
   sortDirection?: "asc" | "desc";
 }) {
   try {
-    const { data, error } = await authClient.admin.listUsers({
-      query: {
-        limit: options?.limit || 10,
-        offset: options?.offset || 0,
-        searchValue: options?.search,
-        sortBy: options?.sortBy || "createdAt",
-        sortDirection: options?.sortDirection || "desc",
-      },
+    const params = new URLSearchParams({
+      limit: (options?.limit || 10).toString(),
+      offset: (options?.offset || 0).toString(),
+      search: options?.search || "",
+      sortBy: options?.sortBy || "createdAt",
+      sortDirection: options?.sortDirection || "desc",
     });
 
-    if (error) {
-      throw new Error(error.message);
+    const response = await fetch(`/api/admin/users/list?${params}`);
+
+    if (!response.ok) {
+      throw new Error("Erreur lors de la récupération des utilisateurs");
     }
 
-    return data;
+    return await response.json();
   } catch (error) {
     console.error("Erreur lors de la récupération des utilisateurs:", error);
     throw error;
@@ -101,16 +200,21 @@ export async function listUsers(options?: {
  */
 export async function setUserRole(userId: string, role: UserRole) {
   try {
-    const { data, error } = await authClient.admin.setRole({
-      userId,
-      role,
+    // Utiliser l'API personnalisée pour tous les rôles
+    // car Better Auth a des limitations avec les rôles personnalisés
+    const response = await fetch("/api/admin/users/role", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId, role }),
     });
 
-    if (error) {
-      throw new Error(error.message);
+    if (!response.ok) {
+      throw new Error("Erreur lors du changement de rôle");
     }
 
-    return data;
+    return await response.json();
   } catch (error) {
     console.error("Erreur lors du changement de rôle:", error);
     throw error;
@@ -126,17 +230,19 @@ export async function banUser(
   expiresIn?: number
 ) {
   try {
-    const { data, error } = await authClient.admin.banUser({
-      userId,
-      banReason: reason,
-      banExpiresIn: expiresIn,
+    const response = await fetch("/api/admin/users/ban", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId, reason, expiresIn }),
     });
 
-    if (error) {
-      throw new Error(error.message);
+    if (!response.ok) {
+      throw new Error("Erreur lors du bannissement");
     }
 
-    return data;
+    return await response.json();
   } catch (error) {
     console.error("Erreur lors du bannissement:", error);
     throw error;
@@ -148,15 +254,19 @@ export async function banUser(
  */
 export async function unbanUser(userId: string) {
   try {
-    const { data, error } = await authClient.admin.unbanUser({
-      userId,
+    const response = await fetch("/api/admin/users/unban", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId }),
     });
 
-    if (error) {
-      throw new Error(error.message);
+    if (!response.ok) {
+      throw new Error("Erreur lors du débannissement");
     }
 
-    return data;
+    return await response.json();
   } catch (error) {
     console.error("Erreur lors du débannissement:", error);
     throw error;

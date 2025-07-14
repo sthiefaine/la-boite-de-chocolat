@@ -21,7 +21,7 @@ export const auth = betterAuth({
     plugins: [
         admin({
             defaultRole: "user",
-            adminRoles: ["admin"],
+            adminRoles: ["developer", "admin", "moderator"],
             impersonationSessionDuration: 60 * 60, // 1 heure
             defaultBanReason: "Violation des règles",
             bannedUserMessage: "Votre compte a été suspendu. Contactez le support si vous pensez qu'il s'agit d'une erreur."

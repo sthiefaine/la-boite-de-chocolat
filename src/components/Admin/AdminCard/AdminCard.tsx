@@ -27,7 +27,7 @@ export default function AdminCard({
   onClick,
   loading = false,
   buttonText = "Accéder",
-  stats
+  stats,
 }: AdminCardProps) {
   return (
     <div className={`${styles.card} ${styles[color]}`}>
@@ -35,22 +35,19 @@ export default function AdminCard({
         <div className={styles.cardIcon}>{icon}</div>
         <div className={styles.cardTitle}>{title}</div>
       </div>
-      
+
       <p className={styles.cardDescription}>{description}</p>
-      
+
       {stats && (
         <div className={styles.cardStats}>
           <span className={styles.cardStatValue}>{stats.value}</span>
           <span className={styles.cardStatLabel}>{stats.label}</span>
         </div>
       )}
-      
+
       <div className={styles.cardActions}>
         {href ? (
-          <Link
-            href={href}
-            className={styles.cardButton}
-          >
+          <Link href={href} className={styles.cardButton}>
             {buttonText}
             <span className={styles.buttonArrow}>→</span>
           </Link>
@@ -67,4 +64,4 @@ export default function AdminCard({
       </div>
     </div>
   );
-} 
+}

@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import Modal from '@/components/Modal/Modal';
-import { deleteEpisode } from '@/app/actions/admin';
-import styles from './PodcastAdmin.module.css';
+import { useState } from "react";
+import Link from "next/link";
+import Modal from "@/components/Modal/Modal";
+import { deleteEpisode } from "@/app/actions/admin";
+import styles from "./PodcastAdmin.module.css";
 
 interface PodcastEpisode {
   id: string;
@@ -38,10 +38,12 @@ export default function PodcastListClient({
   nameId,
   showLinked,
   linkedCount,
-  unlinkedCount
+  unlinkedCount,
 }: PodcastListClientProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [episodeToDelete, setEpisodeToDelete] = useState<PodcastEpisode | null>(null);
+  const [episodeToDelete, setEpisodeToDelete] = useState<PodcastEpisode | null>(
+    null
+  );
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDeleteClick = (episode: PodcastEpisode) => {
@@ -59,10 +61,10 @@ export default function PodcastListClient({
         // Recharger la page pour mettre à jour la liste
         window.location.reload();
       } else {
-        alert('Erreur lors de la suppression : ' + result.error);
+        alert("Erreur lors de la suppression : " + result.error);
       }
     } catch (error) {
-      alert('Erreur lors de la suppression');
+      alert("Erreur lors de la suppression");
     } finally {
       setIsDeleting(false);
     }
@@ -75,14 +77,15 @@ export default function PodcastListClient({
           {/* Header */}
           <div className={styles.header}>
             <div className={styles.headerContent}>
-              <h1 className={styles.title}>
-                Administration - {nameId}
-              </h1>
+              <h1 className={styles.title}>Administration - {nameId}</h1>
               <p className={styles.subtitle}>
-                {episodes.length} épisode{episodes.length > 1 ? "s" : ""} affiché{episodes.length > 1 ? "s" : ""} 
+                {episodes.length} épisode{episodes.length > 1 ? "s" : ""}{" "}
+                affiché{episodes.length > 1 ? "s" : ""}
                 {!showLinked && linkedCount > 0 && (
                   <span className={styles.filterInfo}>
-                    ({linkedCount} épisode{linkedCount > 1 ? "s" : ""} lié{linkedCount > 1 ? "s" : ""} masqué{linkedCount > 1 ? "s" : ""})
+                    ({linkedCount} épisode{linkedCount > 1 ? "s" : ""} lié
+                    {linkedCount > 1 ? "s" : ""} masqué
+                    {linkedCount > 1 ? "s" : ""})
                   </span>
                 )}
               </p>
@@ -94,10 +97,7 @@ export default function PodcastListClient({
               >
                 Importer les épisodes
               </Link>
-              <Link
-                href="/admin"
-                className={styles.backButton}
-              >
+              <Link href="/admin" className={styles.backButton}>
                 ← Retour à l&apos;admin
               </Link>
             </div>
@@ -106,17 +106,23 @@ export default function PodcastListClient({
           {/* Filtres */}
           <div className={styles.filters}>
             <div className={styles.filterToggle}>
-              <span className={styles.filterLabel}>Afficher les épisodes liés :</span>
+              <span className={styles.filterLabel}>
+                Afficher les épisodes liés :
+              </span>
               <div className={styles.toggleButtons}>
                 <Link
                   href={`/admin/list/podcast/${nameId}?showLinked=false`}
-                  className={`${styles.toggleButton} ${!showLinked ? styles.active : ''}`}
+                  className={`${styles.toggleButton} ${
+                    !showLinked ? styles.active : ""
+                  }`}
                 >
                   Non ({unlinkedCount})
                 </Link>
                 <Link
                   href={`/admin/list/podcast/${nameId}?showLinked=true`}
-                  className={`${styles.toggleButton} ${showLinked ? styles.active : ''}`}
+                  className={`${styles.toggleButton} ${
+                    showLinked ? styles.active : ""
+                  }`}
                 >
                   Oui ({episodes.length + (showLinked ? 0 : linkedCount)})
                 </Link>
@@ -143,20 +149,17 @@ export default function PodcastListClient({
                   <tr key={episode.id} className={styles.tableRow}>
                     <td className={styles.tableCell}>
                       <div>
-                        <p className={styles.episodeTitle}>
-                          {episode.title}
-                        </p>
+                        <p className={styles.episodeTitle}>{episode.title}</p>
                         <p className={styles.episodeDescription}>
-                          {episode.description.length > 100 
-                            ? `${episode.description.substring(0, 100)}...` 
-                            : episode.description
-                          }
+                          {episode.description.length > 100
+                            ? `${episode.description.substring(0, 100)}...`
+                            : episode.description}
                         </p>
                       </div>
                     </td>
                     <td className={styles.tableCell}>
                       <div className={styles.episodeDate}>
-                        {new Date(episode.pubDate).toLocaleDateString('fr-FR')}
+                        {new Date(episode.pubDate).toLocaleDateString("fr-FR")}
                       </div>
                     </td>
                     <td className={styles.tableCell}>
@@ -173,9 +176,7 @@ export default function PodcastListClient({
                     <td className={styles.tableCell}>
                       <div className={styles.ageCell}>
                         {episode.age ? (
-                          <span className={styles.ageTag}>
-                            {episode.age}
-                          </span>
+                          <span className={styles.ageTag}>{episode.age}</span>
                         ) : (
                           <span className={styles.noAge}>Non défini</span>
                         )}
@@ -183,13 +184,18 @@ export default function PodcastListClient({
                     </td>
                     <td className={styles.tableCell}>
                       <div className={styles.updatedAtCell}>
-                        {new Date(episode.updatedAt).toLocaleDateString('fr-FR')}
+                        {new Date(episode.updatedAt).toLocaleDateString(
+                          "fr-FR"
+                        )}
                         <br />
                         <span className={styles.updatedAtTime}>
-                          {new Date(episode.updatedAt).toLocaleTimeString('fr-FR', {
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
+                          {new Date(episode.updatedAt).toLocaleTimeString(
+                            "fr-FR",
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          )}
                         </span>
                       </div>
                     </td>
@@ -197,11 +203,9 @@ export default function PodcastListClient({
                       <div className={styles.filmTags}>
                         {episode.links.length > 0 ? (
                           episode.links.map((link) => (
-                            <span
-                              key={link.id}
-                              className={styles.filmTag}
-                            >
-                              {link.film.title} {link.film.year && `(${link.film.year})`}
+                            <span key={link.id} className={styles.filmTag}>
+                              {link.film.title}{" "}
+                              {link.film.year && `(${link.film.year})`}
                             </span>
                           ))
                         ) : (
@@ -227,13 +231,13 @@ export default function PodcastListClient({
                         >
                           Éditer
                         </Link>
-                        <button 
+                        <button
                           onClick={() => handleDeleteClick(episode)}
                           className={`${styles.actionButton} ${styles.deleteButton}`}
                           disabled={isDeleting}
                           title="Supprimer l'épisode"
                         >
-                          {isDeleting ? 'Suppression...' : 'Supprimer'}
+                          {isDeleting ? "Suppression..." : "Supprimer"}
                         </button>
                       </div>
                     </td>
@@ -245,17 +249,26 @@ export default function PodcastListClient({
 
           {episodes.length === 0 && (
             <div className={styles.emptyState}>
-              <svg className={styles.emptyIcon} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+              <svg
+                className={styles.emptyIcon}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
+                />
               </svg>
               <h3 className={styles.emptyTitle}>
-                {showLinked ? 'Aucun épisode' : 'Aucun épisode non lié'}
+                {showLinked ? "Aucun épisode" : "Aucun épisode non lié"}
               </h3>
               <p className={styles.emptyDescription}>
-                {showLinked 
+                {showLinked
                   ? "Aucun épisode n'a été importé pour le moment."
-                  : "Tous les épisodes sont déjà liés à des films."
-                }
+                  : "Tous les épisodes sont déjà liés à des films."}
               </p>
               <Link
                 href={`/api/import/${nameId}`}
@@ -280,4 +293,4 @@ export default function PodcastListClient({
       />
     </>
   );
-} 
+}

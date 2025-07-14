@@ -23,7 +23,6 @@ interface RssItemWithItunes {
 
 export async function GET() {
   try {
-    // Vérifier si on doit exécuter l'import selon l'heure
     const shouldRun = await shouldRunImport();
     if (!shouldRun) {
       return Response.json({

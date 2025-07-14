@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { isAdminRole } from "@/lib/auth/auth-helpers";
 
 export default async function AdminLayout({
   children,
@@ -15,7 +16,7 @@ export default async function AdminLayout({
     redirect("/unauthorized");
   }
 
-  if (session.user.role !== "admin") {
+  if (!isAdminRole(session.user.role)) {
     redirect("/unauthorized");
   }
 

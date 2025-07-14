@@ -7,6 +7,7 @@ import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { MobileMenu } from "./MobileMenu";
+import { isAdminRole } from "@/lib/auth/auth-helpers";
 import styles from "./Header.module.css";
 
 
@@ -74,7 +75,7 @@ export const AdminLinkConditional = async ({
 }) => {
   const user = await getUser();
 
-  if (!user || user.role !== "admin") {
+  if (!user || !isAdminRole(user.role)) {
     return null;
   }
 

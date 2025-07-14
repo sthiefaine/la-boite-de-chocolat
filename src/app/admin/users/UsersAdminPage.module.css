@@ -83,6 +83,11 @@
   border-bottom: 1px solid var(--chocolate-light);
 }
 
+.hierarchySection {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--chocolate-light);
+}
+
 .searchContainer {
   display: flex;
   justify-content: space-between;
@@ -240,6 +245,59 @@
   outline: none;
   border-color: var(--chocolate-primary);
   box-shadow: 0 0 0 2px rgba(107, 62, 38, 0.1);
+}
+
+/* Styles pour les différents rôles */
+.roleBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.roleDeveloper {
+  background-color: #1e293b;
+  color: #f8fafc;
+  border: 1px solid #475569;
+}
+
+.roleAdmin {
+  background-color: #dc2626;
+  color: #fef2f2;
+  border: 1px solid #ef4444;
+}
+
+.roleModerator {
+  background-color: #7c3aed;
+  color: #f3f4f6;
+  border: 1px solid #8b5cf6;
+}
+
+.roleUser {
+  background-color: #059669;
+  color: #f0fdf4;
+  border: 1px solid #10b981;
+}
+
+.roleContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.noPermission {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  padding: 0.25rem 0.5rem;
+  background: var(--bg-primary);
+  border-radius: 0.25rem;
+  border: 1px solid var(--chocolate-light);
 }
 
 .statusBadge {

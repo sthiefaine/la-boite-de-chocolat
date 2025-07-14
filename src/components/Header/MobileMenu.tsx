@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import styles from "./Header.module.css";
 import { User } from "@/lib/auth/auth-client";
+import { isAdminRole } from "@/lib/auth/auth-helpers";
 
 interface MobileMenuProps {
   user?: User;
@@ -98,7 +99,7 @@ function MobileAdminLink({
   onLinkClick: () => void;
   user: User;
 }) {
-  if (!user || user.role !== "admin") {
+  if (!user || !isAdminRole(user.role)) {
     return null;
   }
 
