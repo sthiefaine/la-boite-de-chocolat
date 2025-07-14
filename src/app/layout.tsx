@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import FooterTransition from "@/components/Footer/FooterTransition";
-import { PlayerBar } from "@/components/Player/PlayerBar";
+import { Player } from "@/components/Player/Player";
 import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -58,7 +58,7 @@ export default function RootLayout({
         <Footer />
         <Suspense fallback={null}>
           <FooterTransition />
-          <PlayerBar />
+          <Player />
         </Suspense>
       </body>
     </html>
