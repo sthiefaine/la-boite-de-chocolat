@@ -1,11 +1,51 @@
 "use client";
 
-import { useState, useMemo, useCallback, useDeferredValue, memo } from "react";
+import { useState, useMemo, useCallback, useDeferredValue } from "react";
 import SearchBar from "@/components/SearchBar/SearchBar";
 import styles from "./EpisodeGrid.module.css";
 import { PreserveScroll } from "@/hooks/preservScroll";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import EpisodeCard from "@/components/Cards/EpisodeCard/EpisodeCard";
+
+// Composant pour les suggestions d'amélioration
+const NoResultsSuggestions = ({
+  searchQuery,
+  yearFilter,
+  genreFilter,
+  marvelFilter,
+}: {
+  searchQuery: string;
+  yearFilter: string;
+  genreFilter: string;
+  marvelFilter: boolean;
+}) => {
+  const suggestions = [];
+
+  if (searchQuery.trim()) {
+    suggestions.push("Vérifiez l'orthographe de votre recherche");
+    suggestions.push("Essayez des mots-clés plus généraux");
+  }
+
+  if (yearFilter || genreFilter || marvelFilter) {
+    suggestions.push("Essayez de retirer certains filtres");
+  }
+
+  if (suggestions.length === 0) {
+    suggestions.push("Aucun épisode ne correspond à vos critères");
+  }
+
+  return (
+    <div className={styles.noResultsCard}>
+      <div className={styles.noResultsImage}>
+        <span style={{ fontSize: "3rem" }}>🔍</span>
+      </div>
+      <div className={styles.noResultsContent}>
+        <h3 className={styles.noResultsTitle}>Aucun épisode trouvé</h3>
+        <p className={styles.noResultsText}>{suggestions.join(" • ")}</p>
+      </div>
+    </div>
+  );
+};
 
 interface Film {
   id: string;
@@ -53,6 +93,7 @@ export default function EpisodeGrid({
 }: EpisodeGridProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [yearFilter, setYearFilter] = useState("");
+  const [genreFilter, setGenreFilter] = useState("");
   const [marvelFilter, setMarvelFilter] = useState(false);
 
   const deferredSearchQuery = useDeferredValue(searchQuery);
@@ -68,6 +109,24 @@ export default function EpisodeGrid({
     return Array.from(years).sort((a, b) => b - a);
   }, [episodes]);
 
+  const availableGenres = useMemo(() => {
+    const genres = new Set<string>();
+    episodes.forEach((episode) => {
+      if (episode.genre) {
+        genres.add(episode.genre);
+      }
+    });
+
+    const hasEpisodesWithFilms = episodes.some(
+      (episode) => episode.links.length > 0
+    );
+    if (hasEpisodesWithFilms) {
+      genres.add("Film");
+    }
+
+    return Array.from(genres).sort();
+  }, [episodes]);
+
   const filteredEpisodes = useMemo(() => {
     let filtered = episodes;
 
@@ -76,7 +135,6 @@ export default function EpisodeGrid({
       filtered = filtered.filter(
         (episode) =>
           episode.title.toLowerCase().includes(query) ||
-          episode.description.toLowerCase().includes(query) ||
           (episode.parentSaga &&
             episode.parentSaga.name.toLowerCase().includes(query)) ||
           episode.links.some(
@@ -97,6 +155,14 @@ export default function EpisodeGrid({
       );
     }
 
+    if (genreFilter) {
+      if (genreFilter === "Film") {
+        filtered = filtered.filter((episode) => episode.links.length > 0);
+      } else {
+        filtered = filtered.filter((episode) => episode.genre === genreFilter);
+      }
+    }
+
     if (marvelFilter) {
       filtered = filtered.filter((episode) =>
         episode.links.some(
@@ -108,7 +174,16 @@ export default function EpisodeGrid({
     }
 
     return filtered;
-  }, [episodes, deferredSearchQuery, yearFilter, marvelFilter]);
+  }, [episodes, deferredSearchQuery, yearFilter, genreFilter, marvelFilter]);
+
+  const hasActiveFilters = useMemo(() => {
+    return !!(
+      deferredSearchQuery.trim() ||
+      yearFilter ||
+      genreFilter ||
+      marvelFilter
+    );
+  }, [deferredSearchQuery, yearFilter, genreFilter, marvelFilter]);
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value);
@@ -118,9 +193,37 @@ export default function EpisodeGrid({
     setYearFilter(value);
   }, []);
 
+  const handleGenreChange = useCallback((value: string) => {
+    setGenreFilter(value);
+  }, []);
+
   const handleMarvelClick = useCallback(() => {
     setMarvelFilter(!marvelFilter);
   }, [marvelFilter]);
+
+  const handleClearFilters = useCallback(() => {
+    setSearchQuery("");
+    setYearFilter("");
+    setGenreFilter("");
+    setMarvelFilter(false);
+  }, []);
+
+  const handleRemoveFilter = useCallback((filterType: string) => {
+    switch (filterType) {
+      case "search":
+        setSearchQuery("");
+        break;
+      case "year":
+        setYearFilter("");
+        break;
+      case "genre":
+        setGenreFilter("");
+        break;
+      case "marvel":
+        setMarvelFilter(false);
+        break;
+    }
+  }, []);
 
   const {
     displayedItems: displayedEpisodes,
@@ -130,8 +233,51 @@ export default function EpisodeGrid({
     items: filteredEpisodes,
     itemsPerPage: 12,
     rootMargin: "300px",
-    resetDependencies: [deferredSearchQuery, yearFilter, marvelFilter],
+    resetDependencies: [
+      deferredSearchQuery,
+      yearFilter,
+      genreFilter,
+      marvelFilter,
+    ],
   });
+
+  // Générer les badges de filtres actifs
+  const activeFilters = useMemo(() => {
+    const filters = [];
+
+    if (deferredSearchQuery.trim()) {
+      filters.push({
+        type: "search",
+        label: `"${deferredSearchQuery}"`,
+        icon: "🔍",
+      });
+    }
+
+    if (yearFilter) {
+      filters.push({
+        type: "year",
+        label: `Année ${yearFilter}`,
+        icon: "📅",
+      });
+    }
+
+    if (genreFilter) {
+      filters.push({
+        type: "genre",
+        label: genreFilter,
+        icon: genreFilter === "Film" ? "🎬" : "🏷️",
+      });
+    }
+
+    if (marvelFilter) {
+      filters.push({
+        type: "marvel",
+        label: "Marvel",
+      });
+    }
+
+    return filters;
+  }, [deferredSearchQuery, yearFilter, genreFilter, marvelFilter]);
 
   return (
     <div className={styles.container}>
@@ -140,7 +286,15 @@ export default function EpisodeGrid({
       {/* Section Header */}
       <div className={styles.sectionHeader}>
         <div className={styles.titleSection}>
-          <h2 className={styles.sectionTitle}>{title}</h2>
+          <h2 className={styles.sectionTitle}>
+            {title}
+            <span className={styles.episodeCount}>
+              {" "}
+              {filteredEpisodes.length === 1
+                ? "1 épisode"
+                : `${filteredEpisodes.length} épisodes`}
+            </span>
+          </h2>
           {subtitle && <p className={styles.sectionSubtitle}>{subtitle}</p>}
         </div>
 
@@ -154,17 +308,49 @@ export default function EpisodeGrid({
               onChange: handleYearChange,
               years: availableYears,
             }}
+            genreFilter={{
+              value: genreFilter,
+              onChange: handleGenreChange,
+              genres: availableGenres,
+            }}
             marvelButton={{
               onClick: handleMarvelClick,
               label: marvelFilter ? "Tous" : "Marvel",
             }}
+            clearFilters={handleClearFilters}
+            hasActiveFilters={hasActiveFilters}
           />
+        </div>
+
+        {/* Indicateurs de filtres actifs */}
+        <div className={styles.activeFiltersContainer}>
+          {activeFilters.length > 0 ? (
+            activeFilters.map((filter) => (
+              <div
+                key={filter.type}
+                className={styles.activeFilterBadge}
+                onClick={() => handleRemoveFilter(filter.type)}
+                title={`Retirer le filtre ${filter.label}`}
+              >
+                <span>{filter.icon}</span>
+                <span>{filter.label}</span>
+                <span className={styles.removeIcon}>×</span>
+              </div>
+            ))
+          ) : (
+            <div style={{ visibility: "hidden", height: "2rem" }}></div>
+          )}
         </div>
       </div>
 
       <div className={styles.episodesGrid}>
         {displayedEpisodes.length === 0 ? (
-          <EpisodeCard isNoResults={true} />
+          <NoResultsSuggestions
+            searchQuery={searchQuery}
+            yearFilter={yearFilter}
+            genreFilter={genreFilter}
+            marvelFilter={marvelFilter}
+          />
         ) : (
           <>
             {displayedEpisodes.map((episode, index) => {

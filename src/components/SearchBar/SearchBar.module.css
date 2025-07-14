@@ -8,9 +8,8 @@
 
 .searchRow {
   display: flex;
+  flex-direction: column;
   gap: 1rem;
-  align-items: center;
-  flex-wrap: wrap;
   background: var(--white);
   padding: 1.5rem;
   border-radius: 12px;
@@ -35,11 +34,18 @@
   border-radius: 12px 12px 0 0;
 }
 
+.searchInputGroup {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
 .searchInput {
   flex: 1;
-  min-width: 200px;
-  max-width: 500px;
+  width: 100%;
   padding: 0.875rem 1.25rem;
+  padding-right: 3rem;
   border: 2px solid rgba(107, 62, 38, 0.2);
   border-radius: 10px;
   font-size: 0.95rem;
@@ -70,22 +76,54 @@
   transform: translateY(-1px);
 }
 
-.yearFilter {
-  padding: 0.875rem 1.25rem;
+.clearButton {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.clearButton:hover {
+  background: rgba(107, 62, 38, 0.1);
+  color: var(--chocolate-primary);
+}
+
+.filtersGroup {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filterSelect {
+  padding: 0.75rem 1rem;
   border: 2px solid rgba(107, 62, 38, 0.2);
-  border-radius: 10px;
-  font-size: 0.95rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
   background: var(--bg-primary);
   color: var(--text-primary);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  min-width: 150px;
+  min-width: 140px;
   will-change: border-color, box-shadow, transform;
   position: relative;
 }
 
-.yearFilter:focus {
+.filterSelect:focus {
   outline: none;
   border-color: var(--chocolate-secondary);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05),
@@ -94,16 +132,16 @@
   background: var(--white);
 }
 
-.yearFilter:hover {
+.filterSelect:hover {
   border-color: var(--chocolate-light);
   transform: translateY(-1px);
 }
 
 .marvelButton {
-  padding: 0.875rem 1.5rem;
+  padding: 0.75rem 1.25rem;
   border: 2px solid #d32f2f;
-  border-radius: 10px;
-  font-size: 0.95rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
   font-weight: 700;
   background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%);
   color: white;
@@ -111,8 +149,8 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: var(--shadow-light);
   text-transform: uppercase;
-  letter-spacing: 1px;
-  min-width: 120px;
+  letter-spacing: 0.5px;
+  min-width: 100px;
   will-change: border-color, box-shadow, transform;
   position: relative;
   overflow: hidden;
@@ -145,31 +183,143 @@
   box-shadow: var(--shadow-light);
 }
 
+.clearFiltersButton {
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--chocolate-light);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-light);
+  min-width: 120px;
+  will-change: border-color, box-shadow, transform;
+  position: relative;
+}
+
+.clearFiltersButton:hover {
+  background: var(--chocolate-light);
+  color: var(--text-primary);
+  border-color: var(--chocolate-secondary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+}
+
+.clearFiltersButton:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-light);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .searchContainer {
-    padding: 0 0.5rem;
+    padding: 0;
   }
 
   .searchRow {
     flex-direction: column;
     gap: 0.75rem;
-    padding: 1rem;
+    padding: 1rem 0.75rem;
+    border-radius: 10px;
+  }
+
+  .searchInputGroup {
+    width: 100%;
   }
 
   .searchInput {
-    max-width: 100%;
-    min-width: auto;
     width: 100%;
+    padding: 0.75rem 1rem;
+    padding-right: 2.5rem;
+    font-size: 0.9rem;
+    border-radius: 8px;
   }
 
-  .yearFilter {
-    min-width: auto;
+  .clearButton {
+    right: 0.5rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    font-size: 1rem;
+  }
+
+  .filtersGroup {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
     width: 100%;
+    justify-content: center;
+  }
+
+  .filterSelect {
+    width: auto;
+    min-width: 120px;
+    padding: 0.625rem 0.75rem;
+    font-size: 0.85rem;
+    border-radius: 6px;
+  }
+
+  .marvelButton {
+    width: auto;
+    min-width: 80px;
+    padding: 0.625rem 1rem;
+    font-size: 0.85rem;
+    border-radius: 6px;
+  }
+
+  .clearFiltersButton {
+    width: auto;
+    min-width: 100px;
+    padding: 0.625rem 0.75rem;
+    font-size: 0.85rem;
+    border-radius: 6px;
+  }
+}
+
+/* Mobile très petit */
+@media (max-width: 480px) {
+  .searchRow {
+    padding: 0.75rem 0.5rem;
+    gap: 0.5rem;
+  }
+
+  .searchInput {
+    padding: 0.625rem 0.875rem;
+    padding-right: 2.25rem;
+    font-size: 0.85rem;
+  }
+
+  .clearButton {
+    right: 0.375rem;
+    width: 1.125rem;
+    height: 1.125rem;
+    font-size: 0.9rem;
+  }
+
+  .filtersGroup {
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .filterSelect {
+    width: 100%;
+    min-width: auto;
+    padding: 0.5rem 0.625rem;
+    font-size: 0.8rem;
   }
 
   .marvelButton {
     width: 100%;
     min-width: auto;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .clearFiltersButton {
+    width: 100%;
+    min-width: auto;
+    padding: 0.5rem 0.625rem;
+    font-size: 0.8rem;
   }
 }

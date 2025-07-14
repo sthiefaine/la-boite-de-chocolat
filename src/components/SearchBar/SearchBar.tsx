@@ -12,10 +12,17 @@ interface SearchBarProps {
     onChange: (value: string) => void;
     years: number[];
   };
+  genreFilter?: {
+    value: string;
+    onChange: (value: string) => void;
+    genres: string[];
+  };
   marvelButton?: {
     onClick: () => void;
     label?: string;
   };
+  clearFilters?: () => void;
+  hasActiveFilters?: boolean;
 }
 
 export default function SearchBar({
@@ -24,49 +31,92 @@ export default function SearchBar({
   placeholder = "Rechercher...",
   className = "",
   yearFilter,
+  genreFilter,
   marvelButton,
+  clearFilters,
+  hasActiveFilters = false,
 }: SearchBarProps) {
   return (
     <div className={`${styles.searchContainer} ${className}`}>
       <div className={styles.searchRow}>
-        <input
-          type="search"
-          placeholder={placeholder}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className={styles.searchInput}
-          autoComplete="off"
-          onKeyDown={(e) => {
-            if (e.key === "Escape") {
-              onChange("");
-            }
-          }}
-        />
+        <div className={styles.searchInputGroup}>
+          <input
+            type="search"
+            placeholder={placeholder}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            className={styles.searchInput}
+            autoComplete="off"
+            onKeyDown={(e) => {
+              if (e.key === "Escape") {
+                onChange("");
+              }
+            }}
+          />
+          {value && (
+            <button
+              type="button"
+              onClick={() => onChange("")}
+              className={styles.clearButton}
+              aria-label="Effacer la recherche"
+            >
+              ✕
+            </button>
+          )}
+        </div>
 
-        {yearFilter && (
-          <select
-            value={yearFilter.value}
-            onChange={(e) => yearFilter.onChange(e.target.value)}
-            className={styles.yearFilter}
-          >
-            <option value="">Saison</option>
-            {yearFilter.years.map((year) => (
-              <option key={year} value={year.toString()}>
-                {year}
-              </option>
-            ))}
-          </select>
-        )}
-        
-        {marvelButton && (
-          <button
-            type="button"
-            onClick={marvelButton.onClick}
-            className={styles.marvelButton}
-          >
-            {marvelButton.label || "Marvel"}
-          </button>
-        )}
+        <div className={styles.filtersGroup}>
+          {yearFilter && (
+            <select
+              value={yearFilter.value}
+              onChange={(e) => yearFilter.onChange(e.target.value)}
+              className={styles.filterSelect}
+            >
+              <option value="">Toutes les années</option>
+              {yearFilter.years.map((year) => (
+                <option key={year} value={year.toString()}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          )}
+
+          {genreFilter && (
+            <select
+              value={genreFilter.value}
+              onChange={(e) => genreFilter.onChange(e.target.value)}
+              className={styles.filterSelect}
+            >
+              <option value="">Tous les genres</option>
+              {genreFilter.genres.map((genre) => (
+                <option key={genre} value={genre}>
+                  {genre}
+                </option>
+              ))}
+            </select>
+          )}
+          
+          {marvelButton && (
+            <button
+              type="button"
+              onClick={marvelButton.onClick}
+              className={styles.marvelButton}
+            >
+              {marvelButton.label || "Marvel"}
+            </button>
+          )}
+
+          {hasActiveFilters && clearFilters && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className={styles.clearFiltersButton}
+              aria-label="Effacer tous les filtres"
+            >
+              Effacer les filtres
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
