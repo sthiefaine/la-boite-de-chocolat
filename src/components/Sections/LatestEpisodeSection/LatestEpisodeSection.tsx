@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { getLatestEpisode } from "@/app/actions/episode";
 import { IMAGE_CONFIG, getVercelBlobUrl } from "@/lib/imageConfig";
 import {
   formatEpisodeDescription,
@@ -9,11 +8,16 @@ import {
 } from "@/lib/podcastHelpers";
 import { EpisodePlayerButton } from "@/components/Episode/EpisodePlayerButton/EpisodePlayerButton";
 import styles from "./LatestEpisodeSection.module.css";
+import { LatestEpisodeData } from "@/app/page";
 
-export default async function LatestEpisodeSection() {
-  const result = await getLatestEpisode();
+interface LatestEpisodeSectionProps {
+  episode: LatestEpisodeData | null;
+}
 
-  if (!result.success || !result.data) {
+export default async function LatestEpisodeSection({
+  episode,
+}: LatestEpisodeSectionProps) {
+  if (!episode) {
     return (
       <section className={styles.latestEpisode} id="latest-episode">
         <div className={styles.container}>
@@ -37,7 +41,6 @@ export default async function LatestEpisodeSection() {
     );
   }
 
-  const episode = result.data;
   const mainFilm = episode.links[0]?.film;
 
   const seasonEpisode =
@@ -134,8 +137,7 @@ export default async function LatestEpisodeSection() {
                 artist="La Boîte de Chocolat"
                 slug={episode.slug ?? ""}
                 className={styles.playButton}
-              >
-              </EpisodePlayerButton>
+              ></EpisodePlayerButton>
 
               {episode.slug && (
                 <Link

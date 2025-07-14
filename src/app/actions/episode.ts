@@ -438,6 +438,7 @@ export async function getLatestEpisode() {
             film: {
               select: {
                 id: true,
+                slug: true,
                 title: true,
                 year: true,
                 imgFileName: true,

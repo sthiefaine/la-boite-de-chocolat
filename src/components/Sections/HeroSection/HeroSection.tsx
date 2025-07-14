@@ -2,30 +2,7 @@ import Link from "next/link";
 import ChocolateBox from "../../ChocolateBox/ChocolateBox";
 import NumberFlow from "../../NumberFlow/NumberFlow";
 import styles from "./HeroSection.module.css";
-
-interface Episode {
-  id: string;
-  title: string;
-  description: string;
-  pubDate: Date;
-  audioUrl: string;
-  duration?: number | null;
-  slug: string | null;
-  links: Array<{
-    film: {
-      id: string;
-      title: string;
-      slug: string;
-      year: number | null;
-      imgFileName: string | null;
-      age: string | null;
-      saga: {
-        name: string;
-        id: string;
-      } | null;
-    };
-  }>;
-}
+import { Episode } from "@/app/page";
 
 interface HeroSectionProps {
   episodes: Episode[];

@@ -130,6 +130,14 @@
     inset 0 -2px 4px rgba(0, 0, 0, 0.3);
 }
 
+/* Optimisations mobile pour box3D */
+@media (max-width: 768px) {
+  .box3D:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+}
+
 .hole {
   background: radial-gradient(
     circle at 30% 30%,
@@ -161,6 +169,16 @@
     inset 8px 8px 16px rgba(0, 0, 0, 0.5), 
     0 6px 8px var(--box-shadow-dark),
     0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Optimisations mobile pour les trous */
+@media (max-width: 768px) {
+  .hole:hover {
+    box-shadow: 
+      inset -4px -4px 8px var(--box-shadow-light),
+      inset 4px 4px 8px rgba(0, 0, 0, 0.3), 
+      0 4px 6px var(--box-shadow-dark);
+  }
 }
 
 .holeDouble {
@@ -482,6 +500,8 @@
 @media (max-width: 768px) {
   .coffret {
     padding: 6px;
+    /* Désactiver les effets 3D lourds sur mobile */
+    transform-style: flat;
   }
 
   .box3D {
@@ -489,12 +509,20 @@
     height: 280px;
     padding: 16px;
     gap: 12px;
+    /* Optimisations pour mobile */
+    transform-style: flat;
+    backface-visibility: hidden;
   }
 
   .hole {
     width: 75px;
     height: 75px;
     padding: 6px;
+    /* Réduire les ombres sur mobile */
+    box-shadow: 
+      inset -3px -3px 6px var(--box-shadow-light),
+      inset 3px 3px 6px rgba(0, 0, 0, 0.3), 
+      0 2px 4px var(--box-shadow-dark);
   }
 
   .holeDouble {
@@ -503,6 +531,8 @@
 
   .choco {
     padding: 8px;
+    /* Simplifier les transitions sur mobile */
+    transition: all 0.2s ease;
   }
 
   .chocoIcon {
