@@ -13,7 +13,7 @@ interface UseInfiniteScrollProps {
 export function useInfiniteScroll({
   items,
   itemsPerPage = 12,
-  rootMargin = "300px",
+  rootMargin = "100px",
   threshold = 0.1,
   resetDependencies = [],
 }: UseInfiniteScrollProps) {

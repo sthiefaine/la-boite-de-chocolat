@@ -3,22 +3,26 @@
 @tailwind utilities;
 
 :root {
-  /* Couleurs principales modernes */
-  --chocolate-primary: #6b3e26;    /* Brun chocolat foncé - utilisé avec parcimonie */
-  --chocolate-secondary: #a67c52;  /* Brun chocolat moyen - utilisé avec parcimonie */
-  --chocolate-light: #d4a574;      /* Brun chocolat clair - utilisé avec parcimonie */
-  --chocolate-cream: #f7f3ef;      /* Crème chocolatée - fond principal */
-  --chocolate-dark: #3d2b1f;       /* Brun très foncé - utilisé avec parcimonie */
+  --chocolate-primary: #6b3e26;
+  --chocolate-secondary: #a67c52;
+  --chocolate-light: #d4a574;
+  --chocolate-cream: #f7f3ef;
+  --chocolate-dark: #3d2b1f;
 
-  /* Couleurs d'accent modernes */
-  --accent-gold: #d4af37;          /* Or pour éléments importants */
-  --accent-red: #8b2635;           /* Rouge pour alertes/CTA */
-  --accent-green: #4caf50;         /* Vert pour les boutons d'action */
-  --accent-green-dark: #388e3c;    /* Vert foncé pour les hovers */
-  --accent-blue: #3b82f6;          /* Bleu moderne */
-  --accent-purple: #8b5cf6;        /* Violet moderne */
+  --box-red: #d32f2f;
+  --box-shadow-dark: rgba(0, 0, 0, 0.3);
+  --box-shadow-light: rgba(255, 255, 255, 0.1);
+  --hole-dark: #1c120b;
+  --choco-base: #3e2f1c;
+  --choco-dark: #2c1e12;
 
-  /* Couleurs neutres modernes */
+  --accent-gold: #d4af37;
+  --accent-red: #8b2635;
+  --accent-green: #4caf50;
+  --accent-green-dark: #388e3c;
+  --accent-blue: #3b82f6;
+  --accent-purple: #8b5cf6;
+
   --white: #ffffff;
   --black: #000000;
   --gray-50: #f9fafb;
@@ -32,25 +36,21 @@
   --gray-800: #1f2937;
   --gray-900: #111827;
 
-  /* Couleurs de fond modernes */
-  --bg-primary: var(--gray-50);    /* Fond principal très clair */
-  --bg-secondary: var(--white);    /* Fond secondaire blanc */
-  --bg-dark: var(--gray-900);      /* Fond sombre */
+  --bg-primary: var(--gray-50);
+  --bg-secondary: var(--white);
+  --bg-dark: var(--gray-900);
   --bg-gradient: linear-gradient(135deg, var(--gray-50) 0%, var(--white) 100%);
 
-  /* Couleurs de texte modernes */
-  --text-primary: var(--gray-900);     /* Texte principal sombre */
-  --text-secondary: var(--gray-600);   /* Texte secondaire */
-  --text-light: var(--gray-500);       /* Texte clair */
-  --text-white: var(--white);          /* Texte blanc */
-  --text-muted: var(--gray-400);       /* Texte atténué */
+  --text-primary: var(--gray-900);
+  --text-secondary: var(--gray-600);
+  --text-light: var(--gray-500);
+  --text-white: var(--white);
+  --text-muted: var(--gray-400);
 
-  /* Couleurs d'interaction modernes */
   --hover-primary: var(--gray-100);
   --hover-secondary: var(--gray-200);
   --focus-ring: var(--accent-blue);
 
-  /* Ombres modernes */
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -58,21 +58,18 @@
   --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
   --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.25);
 
-  /* Transitions modernes */
   --transition-fast: 0.15s ease;
   --transition-normal: 0.3s ease;
   --transition-slow: 0.5s ease;
   --bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
-  /* Glassmorphism moderne */
   --glass-bg-light: rgba(255, 255, 255, 0.1);
   --glass-bg-medium: rgba(255, 255, 255, 0.15);
   --glass-bg-dark: rgba(0, 0, 0, 0.2);
   --glass-bg-darker: rgba(0, 0, 0, 0.25);
   --glass-bg-darkest: rgba(0, 0, 0, 0.5);
   --glass-bg-black: rgba(0, 0, 0, 0.8);
-  
-  /* Glassmorphism avec couleurs subtiles */
+
   --glass-bg-blue: rgba(59, 130, 246, 0.1);
   --glass-bg-purple: rgba(139, 92, 246, 0.1);
   --glass-bg-green: rgba(34, 197, 94, 0.1);
@@ -90,29 +87,61 @@
   --glass-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.2);
   --glass-shadow-dark: 0 4px 16px rgba(0, 0, 0, 0.3);
 
-  /* Gradients modernes */
-  --gradient-primary: linear-gradient(135deg, var(--gray-50) 0%, var(--white) 100%);
-  --gradient-secondary: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-50) 100%);
-  --gradient-accent: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
-  --gradient-subtle: linear-gradient(135deg, 
-    rgba(107, 62, 38, 0.05) 0%, 
-    rgba(166, 124, 82, 0.03) 50%, 
-    rgba(61, 43, 31, 0.08) 100%);
-  --gradient-hero: linear-gradient(135deg, 
-    rgba(107, 62, 38, 0.05) 0%, 
-    rgba(166, 124, 82, 0.5) 50%, 
-    rgba(212, 165, 116, 0.85) 100%);
+  --gradient-primary: linear-gradient(
+    135deg,
+    var(--gray-50) 0%,
+    var(--white) 100%
+  );
+  --gradient-secondary: linear-gradient(
+    135deg,
+    var(--gray-100) 0%,
+    var(--gray-50) 100%
+  );
+  --gradient-accent: linear-gradient(
+    135deg,
+    var(--accent-red) 0%,
+    var(--chocolate-primary) 100%
+  );
+  --gradient-subtle: linear-gradient(
+    135deg,
+    rgba(107, 62, 38, 0.05) 0%,
+    rgba(166, 124, 82, 0.03) 50%,
+    rgba(61, 43, 31, 0.08) 100%
+  );
+  --gradient-hero: linear-gradient(
+    135deg,
+    rgba(107, 62, 38, 0.05) 0%,
+    rgba(166, 124, 82, 0.5) 50%,
+    rgba(212, 165, 116, 0.85) 100%
+  );
 
-  /* Border radius modernes */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-xl: 16px;
   --radius-2xl: 24px;
   --radius-full: 9999px;
+
+  /* ========================================
+     VARIABLES POUR LES CARTES
+     ======================================== */
+  --card-saga-bg: #f8f0e0;
+  --card-saga-border: #e8d5b7;
+  --card-saga-hover-bg: #f5e6d3;
+  --card-saga-hover-border: #d4c4a8;
+  --card-saga-text: var(--text-primary);
+
+  --card-film-bg: var(--white);
+  --card-film-border: var(--gray-200);
+  --card-film-hover-bg: var(--gray-50);
+  --card-film-hover-border: var(--gray-300);
+  --card-film-text: var(--text-primary);
+
+  --shadow-light: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow-heavy: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
-/* Reset de base */
 * {
   box-sizing: border-box;
   padding: 0;
@@ -152,39 +181,79 @@ a {
   text-decoration: none;
 }
 
-/* Classes utilitaires de texte */
-.text-primary { color: var(--text-primary); }
-.text-secondary { color: var(--text-secondary); }
-.text-light { color: var(--text-light); }
-.text-white { color: var(--text-white); }
-.text-muted { color: var(--text-muted); }
+.text-primary {
+  color: var(--text-primary);
+}
+.text-secondary {
+  color: var(--text-secondary);
+}
+.text-light {
+  color: var(--text-light);
+}
+.text-white {
+  color: var(--text-white);
+}
+.text-muted {
+  color: var(--text-muted);
+}
 
-/* Classes utilitaires de fond */
-.bg-primary { background-color: var(--bg-primary); }
-.bg-secondary { background-color: var(--bg-secondary); }
-.bg-dark { background-color: var(--bg-dark); }
-.bg-gradient { background: var(--gradient-primary); }
+.bg-primary {
+  background-color: var(--bg-primary);
+}
+.bg-secondary {
+  background-color: var(--bg-secondary);
+}
+.bg-dark {
+  background-color: var(--bg-dark);
+}
+.bg-gradient {
+  background: var(--gradient-primary);
+}
 
-/* Classes utilitaires de bordure */
-.border-light { border-color: var(--gray-200); }
-.border-medium { border-color: var(--gray-300); }
+.border-light {
+  border-color: var(--gray-200);
+}
+.border-medium {
+  border-color: var(--gray-300);
+}
 
-/* Animations modernes */
 @keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 @keyframes bounce {
-  0%, 20%, 53%, 80%, 100% { transform: translate3d(0, 0, 0); }
-  40%, 43% { transform: translate3d(0, -8px, 0); }
-  70% { transform: translate3d(0, -4px, 0); }
-  90% { transform: translate3d(0, -2px, 0); }
+  0%,
+  20%,
+  53%,
+  80%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%,
+  43% {
+    transform: translate3d(0, -8px, 0);
+  }
+  70% {
+    transform: translate3d(0, -4px, 0);
+  }
+  90% {
+    transform: translate3d(0, -2px, 0);
+  }
 }
 
 @keyframes fadeInUp {
@@ -209,18 +278,29 @@ a {
   }
 }
 
-/* Classes d'animation */
-.animate-pulse { animation: pulse 2s infinite; }
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
 .animate-shimmer {
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
 }
-.animate-bounce { animation: bounce 1s infinite; }
-.animate-fadeInUp { animation: fadeInUp 0.4s ease-out; }
-.animate-slideInLeft { animation: slideInLeft 0.4s ease-out; }
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+.animate-fadeInUp {
+  animation: fadeInUp 0.4s ease-out;
+}
+.animate-slideInLeft {
+  animation: slideInLeft 0.4s ease-out;
+}
 
-/* Focus states modernes */
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
@@ -231,7 +311,6 @@ textarea:focus-visible {
   border-radius: var(--radius-md);
 }
 
-/* Glassmorphism classes */
 .glass {
   background: var(--glass-bg-light);
   backdrop-filter: var(--glass-blur-medium);
@@ -260,7 +339,6 @@ textarea:focus-visible {
   border-radius: var(--radius-lg);
 }
 
-/* Boutons modernes */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -312,7 +390,6 @@ textarea:focus-visible {
   box-shadow: var(--shadow-md);
 }
 
-/* Cartes modernes */
 .card {
   background: var(--bg-secondary);
   border-radius: var(--radius-xl);
@@ -341,23 +418,25 @@ textarea:focus-visible {
   box-shadow: var(--glass-shadow-medium);
 }
 
-/* Responsive utilities */
 @media (max-width: 768px) {
-  .mobile-center { text-align: center; }
-  .mobile-full-width { width: 100%; }
-  .mobile-stack { flex-direction: column; }
+  .mobile-center {
+    text-align: center;
+  }
+  .mobile-full-width {
+    width: 100%;
+  }
+  .mobile-stack {
+    flex-direction: column;
+  }
 }
 
-/* Transitions globales subtiles */
 * {
   transition: color var(--transition-normal),
     background-color var(--transition-normal),
-    border-color var(--transition-normal), 
-    transform var(--transition-normal),
+    border-color var(--transition-normal), transform var(--transition-normal),
     box-shadow var(--transition-normal);
 }
 
-/* Scrollbar moderne */
 ::-webkit-scrollbar {
   width: 8px;
 }

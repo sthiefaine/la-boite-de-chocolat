@@ -1,13 +1,24 @@
 .latestEpisode {
-  padding: 2rem 0;
-  background: linear-gradient(135deg, var(--chocolate-primary) 0%, var(--chocolate-secondary) 100%);
-  color: var(--text-white);
+  padding: 4rem 0;
+  background: var(--bg-gradient);
+  color: var(--text-primary);
   position: relative;
   overflow: hidden;
 }
 
+.latestEpisode::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--gradient-subtle);
+  pointer-events: none;
+}
+
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 2rem;
   position: relative;
@@ -18,44 +29,50 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 3rem;
 }
 
 .title {
-  font-size: 2.25rem;
-  font-weight: 800;
+  font-size: 2.5rem;
+  font-weight: 900;
   margin: 0;
-  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  color: var(--text-primary);
   text-align: center;
+  letter-spacing: -0.02em;
 }
 
 .episodeCard {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 1.75rem;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: var(--shadow-heavy);
+  align-items: flex-start;
+  background: var(--gradient-hero);
+  border-radius: var(--radius-2xl);
+  padding: 2.5rem;
+  backdrop-filter: var(--glass-blur-medium);
+  border: var(--glass-border-light);
+  box-shadow: var(--glass-shadow-medium);
   transition: all var(--transition-normal);
   position: relative;
   overflow: hidden;
 }
 
+.episodeCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--glass-shadow-dark);
+}
+
 .episodeInfo {
   flex: 1;
-  margin-right: 2rem;
+  margin-right: 3rem;
 }
 
 .episodeBadge {
   display: inline-block;
-  background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
-  padding: 0.4rem 0.9rem;
-  border-radius: 20px;
-  margin-bottom: 0.75rem;
-  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+  background: var(--accent-red);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-sm);
   position: relative;
   overflow: hidden;
   animation: pulse 2s ease-in-out infinite;
@@ -79,7 +96,7 @@
 .badgeText {
   font-size: 0.8rem;
   font-weight: 700;
-  color: white;
+  color: var(--text-white);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   position: relative;
@@ -87,24 +104,24 @@
 }
 
 .episodeTitle {
-  font-size: 1.6rem;
-  font-weight: 700;
+  font-size: 1.8rem;
+  font-weight: 800;
   line-height: 1.2;
-  margin: 0 0 0.75rem 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
   transition: color var(--transition-fast);
 }
 
 .episodeDescription {
-  font-size: 1rem;
+  font-size: 1.1rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.9);
-  margin: 0 0 1.25rem 0;
+  color: var(--text-secondary);
+  margin: 0 0 1.5rem 0;
 }
 
 .episodeMeta {
   display: flex;
-  gap: 1.25rem;
+  gap: 1rem;
   align-items: center;
   flex-wrap: wrap;
 }
@@ -113,35 +130,35 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 0.4rem 0.9rem;
-  border-radius: 15px;
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--glass-bg-light);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-lg);
+  backdrop-filter: var(--glass-blur-light);
+  border: var(--glass-border-light);
   transition: all var(--transition-fast);
   cursor: pointer;
 }
 
 .metaItem:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--glass-bg-medium);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--glass-shadow-light);
 }
 
 .metaIcon {
-  font-size: 0.9rem;
+  font-size: 1rem;
   transition: transform var(--transition-fast);
 }
 
 .metaItem:hover .metaIcon {
-  transform: scale(1.2);
+  transform: scale(1.1);
 }
 
 .episodeDate,
 .episodeDuration,
-.filmsCount {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 0.8rem;
+.seasonEpisode {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
   font-weight: 500;
 }
 
@@ -149,15 +166,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.25rem;
-  min-width: 200px;
+  gap: 1.5rem;
+  min-width: 220px;
 }
 
 .filmPoster {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
   transition: transform var(--transition-normal);
 }
 
@@ -166,16 +183,14 @@
 }
 
 .posterImage {
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
   transition: all var(--transition-normal);
-  filter: brightness(0.9);
 }
 
 .posterImage:hover {
   transform: scale(1.08) rotate(2deg);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
-  filter: brightness(1.1);
+  box-shadow: var(--shadow-xl);
 }
 
 .filmInfo {
@@ -183,21 +198,20 @@
 }
 
 .filmTitle {
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
   margin: 0;
-  color: var(--text-white);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  color: var(--text-primary);
   transition: color var(--transition-fast);
 }
 
 .filmPoster:hover .filmTitle {
-  color: var(--chocolate-light);
+  color: var(--accent-blue);
 }
 
 .filmYear {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
   margin-left: 0.25rem;
 }
 
@@ -205,24 +219,25 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.9rem;
+  gap: 1rem;
 }
 
 .playButton {
   display: inline-flex !important;
   align-items: center;
-  gap: 1rem;
-  background: linear-gradient(135deg, #1db954, #1ed760) !important;
+  gap: 0.75rem;
+  background: var(--accent-green) !important;
   color: var(--text-white) !important;
-  padding: 1.1rem 1.8rem !important;
-  border-radius: 30px !important;
+  padding: 1rem 2rem !important;
+  border-radius: var(--radius-full) !important;
   text-decoration: none !important;
   font-weight: 700 !important;
+  font-size: 1rem !important;
   transition: all var(--transition-normal) !important;
-  box-shadow: 0 6px 20px rgba(29, 185, 84, 0.4) !important;
+  box-shadow: var(--shadow-md) !important;
   border: none !important;
   cursor: pointer !important;
-  min-width: 180px !important;
+  min-width: 200px !important;
   justify-content: center !important;
   position: relative;
   overflow: hidden;
@@ -244,27 +259,26 @@
 }
 
 .playButton:hover {
-  transform: translateY(-4px) scale(1.05) !important;
-  box-shadow: 0 12px 32px rgba(29, 185, 84, 0.6) !important;
-  background: linear-gradient(135deg, #1ed760, #1db954) !important;
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow: var(--shadow-lg) !important;
+  background: var(--accent-green-dark) !important;
 }
 
 .visitButton {
   display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-white);
-  padding: 0.7rem 1.4rem;
-  border-radius: 25px;
+  gap: 0.5rem;
+  background: var(--glass-bg-light);
+  color: var(--text-primary);
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-full);
   text-decoration: none;
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   transition: all var(--transition-normal);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  min-width: 150px;
-  justify-content: center;
+  border: var(--glass-border-light);
+  backdrop-filter: var(--glass-blur-light);
+  box-shadow: var(--glass-shadow-light);
   position: relative;
   overflow: hidden;
 }
@@ -276,8 +290,8 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  transition: left 0.5s ease;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+  transition: left 0.6s ease;
 }
 
 .visitButton:hover::before {
@@ -285,152 +299,116 @@
 }
 
 .visitButton:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  background: var(--glass-bg-medium);
+  color: var(--accent-blue);
+  transform: translateY(-2px);
+  box-shadow: var(--glass-shadow-medium);
 }
 
 .visitIcon {
-  font-size: 0.9rem;
+  font-size: 1rem;
   transition: transform var(--transition-fast);
 }
 
 .visitButton:hover .visitIcon {
-  transform: scale(1.2);
+  transform: scale(1.1);
 }
 
 .visitText {
-  font-size: 0.8rem;
   font-weight: 600;
-}
-
-.playIcon {
-  font-size: 1.4rem;
-}
-
-.buttonText {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.25rem;
-}
-
-.buttonMain {
-  font-size: 1rem;
-  font-weight: 700;
-}
-
-.buttonSub {
-  font-size: 0.8rem;
-  font-weight: 500;
-  opacity: 0.9;
-}
-
-.seasonEpisode {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 0.8rem;
-  font-weight: 600;
-  font-family: 'Courier New', monospace;
-  letter-spacing: 0.5px;
 }
 
 /* Responsive */
-@media (max-width: 768px) {
-  .latestEpisode {
-    padding: 1.5rem 0;
-  }
-
-  .header {
-    margin-bottom: 1.25rem;
-  }
-
-  .title {
-    font-size: 1.8rem;
-  }
-
+@media (max-width: 1024px) {
   .episodeCard {
     flex-direction: column;
-    gap: 1.25rem;
-    padding: 1.25rem;
+    gap: 2rem;
   }
 
   .episodeInfo {
     margin-right: 0;
   }
 
+  .mediaSection {
+    min-width: auto;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .latestEpisode {
+    padding: 3rem 0;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
+  .header {
+    margin-bottom: 2rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .episodeCard {
+    padding: 2rem;
+  }
+
   .episodeTitle {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
   }
 
   .episodeMeta {
-    gap: 0.9rem;
+    gap: 0.75rem;
   }
 
   .metaItem {
-    padding: 0.35rem 0.7rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
   }
 
   .mediaSection {
-    width: 100%;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .filmPoster {
-    flex-direction: row;
-    gap: 0.9rem;
-  }
-
-  .filmInfo {
-    text-align: left;
+    gap: 1.25rem;
   }
 
   .playButton {
-    width: auto;
-    padding: 0.9rem 1.3rem !important;
+    padding: 0.875rem 1.75rem !important;
+    min-width: 180px !important;
+    font-size: 0.95rem !important;
   }
 
   .visitButton {
-    width: auto;
-    padding: 0.5rem 1rem;
+    padding: 0.7rem 1.25rem;
+    font-size: 0.85rem;
   }
 }
 
 @media (max-width: 480px) {
   .episodeMeta {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.6rem;
+    flex-direction: row;
+    gap: 0.5rem;
+    flex-wrap: wrap;
   }
 
   .metaItem {
-    width: 100%;
-    justify-content: flex-start;
+    justify-content: center;
+    padding: 0.5rem 1rem;
   }
 
   .mediaSection {
-    flex-direction: column;
-    gap: 0.9rem;
-  }
-
-  .filmPoster {
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-
-  .filmInfo {
-    text-align: center;
+    gap: 1rem;
   }
 
   .playButton {
-    width: 100%;
-    padding: 0.9rem 1.3rem !important;
+    padding: 0.75rem 1.5rem !important;
+    min-width: 160px !important;
+    font-size: 0.9rem !important;
   }
 
   .visitButton {
-    width: 100%;
-    padding: 0.5rem 1rem;
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
   }
 }

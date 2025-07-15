@@ -2,16 +2,16 @@
   width: 100%;
   background: var(--card-saga-bg);
   border: 1px solid var(--card-saga-border);
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   overflow: hidden;
-  transition: all 0.3s ease;
-  box-shadow: var(--shadow-medium), 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-medium);
   position: relative;
 }
 
 .cardSaga:hover {
   transform: translateY(-6px);
-  box-shadow: var(--shadow-heavy), 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-heavy);
   border-color: var(--card-saga-hover-border);
   background: var(--card-saga-hover-bg);
 }
@@ -69,11 +69,11 @@
   height: 0;
   padding-bottom: calc(75% - 9px);
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   margin: 6px;
   background: var(--bg-secondary);
   border: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-light);
 }
 
 .cardImage {
@@ -100,7 +100,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--chocolate-primary) 0%, var(--chocolate-dark) 100%);
+  background: var(--gradient-accent);
   color: var(--text-white);
   font-size: 2rem;
 }
@@ -148,7 +148,7 @@
 
 .episodeDate {
   font-size: 0.75rem;
-  color: var(--chocolate-light);
+  color: var(--text-secondary);
   font-weight: 600;
 }
 
@@ -161,7 +161,7 @@
 
 .statItem {
   font-size: 0.75rem;
-  color: var(--chocolate-light);
+  color: var(--text-secondary);
   font-weight: 600;
   display: flex;
   align-items: center;

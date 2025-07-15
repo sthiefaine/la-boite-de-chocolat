@@ -1,5 +1,4 @@
 "use server";
-import styles from "./Home.module.css";
 import { getEpisodesWithFilms, getLatestEpisode } from "./actions/episode";
 
 import LatestEpisodeSection from "@/components/Sections/LatestEpisodeSection/LatestEpisodeSection";
@@ -44,7 +43,7 @@ export default async function Home() {
   const episodes = episodesResult.success ? episodesResult.data : [];
   const latestEpisode = await getLatestEpisode();
   return (
-    <main className={styles.main}>
+    <main>
       <HeroSection episodes={episodes || []} />
       <LatestEpisodeSection episode={latestEpisode.data || null} />
       <EpisodesSection episodes={episodes || []} />
