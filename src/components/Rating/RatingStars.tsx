@@ -9,6 +9,7 @@ import {
 } from "@/app/actions/rating";
 import { useSession } from "@/lib/auth/auth-client";
 import styles from "./RatingStars.module.css";
+import RatingIcon from "./RatingIcon";
 
 interface RatingStarsProps {
   episodeId: string;
@@ -23,7 +24,6 @@ interface RatingStarsProps {
 
 export default function RatingStars({
   episodeId,
-  episodeSlug,
   userRating: initialUserRating,
   stats: initialStats,
 }: RatingStarsProps) {
@@ -62,7 +62,7 @@ export default function RatingStars({
     loadUserRating();
   }, [session?.user, episodeId, initialUserRating]);
 
-  const handleStarClick = async (rating: number) => {
+  const handleRatingClick = async (rating: number) => {
     if (isPending) return;
 
     startTransition(async () => {
@@ -84,11 +84,11 @@ export default function RatingStars({
     });
   };
 
-  const handleStarHover = (rating: number) => {
+  const handleRatingHover = (rating: number) => {
     setHoverRating(rating);
   };
 
-  const handleStarLeave = () => {
+  const handleRatingLeave = () => {
     setHoverRating(null);
   };
 
@@ -115,14 +115,22 @@ export default function RatingStars({
     });
   };
 
-  const getStarClass = (starNumber: number) => {
+  const getRatingVariant = (ratingNumber: number) => {
     const currentRating = hoverRating || optimisticRating;
 
-    if (currentRating && starNumber <= currentRating) {
-      return `${styles.starButton} ${styles.filled}`;
+    if (currentRating && ratingNumber <= currentRating) {
+      // Note maximale (5) = chocolat doré
+      if (ratingNumber === 5 && currentRating === 5) {
+        return 'golden';
+      }
+      // Note minimale (1) = caramel
+      if (ratingNumber === 1 && currentRating === 1) {
+        return 'caramel';
+      }
+      return 'filled';
     }
 
-    return `${styles.starButton} ${styles.empty}`;
+    return 'empty';
   };
 
   const getRatingText = (rating: number) => {
@@ -155,39 +163,40 @@ export default function RatingStars({
         )}
       </div>
 
-      <div className={styles.starsContainer}>
-        {[1, 2, 3, 4, 5].map((star) => (
+      <div className={styles.ratingButtonsContainer}>
+        {[1, 2, 3, 4, 5].map((rating) => (
           <button
-            key={star}
-            className={getStarClass(star)}
-            onClick={() => handleStarClick(star)}
-            onMouseEnter={() => handleStarHover(star)}
-            onMouseLeave={handleStarLeave}
+            key={rating}
+            className={styles.ratingButton}
+            onClick={() => handleRatingClick(rating)}
+            onMouseEnter={() => handleRatingHover(rating)}
+            onMouseLeave={handleRatingLeave}
             disabled={isPending || !session?.user}
             title={
               session?.user
-                ? `${star} étoile${star > 1 ? "s" : ""} - ${getRatingText(
-                    star
+                ? `${rating} ${rating === 1 ? "caramel" : "chocolat"}${rating > 1 ? "s" : ""} - ${getRatingText(
+                    rating
                   )}`
                 : "Connectez-vous pour noter"
             }
             aria-label={
               session?.user
-                ? `Noter ${star} étoile${star > 1 ? "s" : ""}`
+                ? `Noter ${rating} chocolat${rating > 1 ? "s" : ""}`
                 : "Connectez-vous pour noter"
             }
           >
-            ★
+            <RatingIcon variant={getRatingVariant(rating)} />
           </button>
         ))}
       </div>
 
       <div className={styles.ratingInfo}>
         {!session?.user ? (
-          <span className={styles.infoText}>Connectez-vous pour noter</span>
+          <span className={styles.infoText}>Connectez-vous pour noter l'épisode</span>
         ) : optimisticRating ? (
           <span className={styles.infoText}>
-            Vous avez mis {optimisticRating}/5
+            {optimisticRating === 1 && "Vous avez mis 1 caramel."}
+            {optimisticRating > 1 && `Vous avez mis ${optimisticRating} chocolats.`}
             <button
               onClick={handleRemoveRating}
               disabled={isPending}
