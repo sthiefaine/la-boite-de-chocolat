@@ -11,7 +11,8 @@
     "prisma:migrate": "npx prisma migrate dev",
     "prisma:studio": "npx prisma studio",
     "better-auth:generate": "npx better-auth generate",
-    "vercel-build": "npx prisma generate && next build"
+    "vercel-build": "npx prisma generate && next build",
+    "test:email": "npx tsx src/lib/test-email-validation.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.11.1",

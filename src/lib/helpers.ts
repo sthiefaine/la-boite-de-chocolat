@@ -126,3 +126,49 @@ export const AGE_RATING_COLORS = {
   [AGE_RATINGS.SIXTEEN_PLUS]: '#f97316',
   [AGE_RATINGS.EIGHTEEN_PLUS]: '#ef4444'
 } as const;
+
+/**
+ * Utilitaires pour la validation d'emails Gmail
+ */
+
+/**
+ * Normalise un email Gmail en supprimant les alias avec "+" et les points
+ * @param email - L'email à normaliser
+ * @returns L'email normalisé
+ */
+export function normalizeGmailEmail(email: string): string {
+  const [localPart, domain] = email.toLowerCase().split('@');
+  
+  // Si c'est un email Gmail, normaliser la partie locale
+  if (domain === 'gmail.com') {
+    // Supprimer tout ce qui suit le "+" dans la partie locale
+    const normalizedLocal = localPart.split('+')[0];
+    // Supprimer les points (Gmail ignore les points)
+    const withoutDots = normalizedLocal.replace(/\./g, '');
+    return `${withoutDots}@gmail.com`;
+  }
+  
+  return email.toLowerCase();
+}
+
+/**
+ * Vérifie si deux emails Gmail sont équivalents
+ * @param email1 - Premier email
+ * @param email2 - Deuxième email
+ * @returns true si les emails sont équivalents
+ */
+export function areGmailEquivalent(email1: string, email2: string): boolean {
+  const normalized1 = normalizeGmailEmail(email1);
+  const normalized2 = normalizeGmailEmail(email2);
+  return normalized1 === normalized2;
+}
+
+/**
+ * Exemples d'utilisation de la normalisation Gmail
+ * 
+ * normalizeGmailEmail("test@gmail.com") → "test@gmail.com"
+ * normalizeGmailEmail("test+alias@gmail.com") → "test@gmail.com"
+ * normalizeGmailEmail("t.e.s.t@gmail.com") → "test@gmail.com"
+ * normalizeGmailEmail("test+alias+other@gmail.com") → "test@gmail.com"
+ * normalizeGmailEmail("user@outlook.com") → "user@outlook.com" (pas de changement)
+ */

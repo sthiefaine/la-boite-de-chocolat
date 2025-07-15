@@ -1,11 +1,145 @@
 "use server";
 
-import { auth } from "@/lib/auth/auth";
+import { auth, normalizeGmail, checkNormalizedEmailExists } from "@/lib/auth/auth";
+
+// Codes d'erreur officiels de Better Auth
+const BETTER_AUTH_ERROR_CODES = {
+  USER_NOT_FOUND: "User not found",
+  FAILED_TO_CREATE_USER: "Failed to create user",
+  FAILED_TO_CREATE_SESSION: "Failed to create session",
+  FAILED_TO_UPDATE_USER: "Failed to update user",
+  FAILED_TO_GET_SESSION: "Failed to get session",
+  INVALID_PASSWORD: "Invalid password",
+  INVALID_EMAIL: "Invalid email",
+  INVALID_EMAIL_OR_PASSWORD: "Invalid email or password",
+  SOCIAL_ACCOUNT_ALREADY_LINKED: "Social account already linked",
+  PROVIDER_NOT_FOUND: "Provider not found",
+  INVALID_TOKEN: "invalid token",
+  ID_TOKEN_NOT_SUPPORTED: "id_token not supported",
+  FAILED_TO_GET_USER_INFO: "Failed to get user info",
+  USER_EMAIL_NOT_FOUND: "User email not found",
+  EMAIL_NOT_VERIFIED: "Email not verified",
+  PASSWORD_TOO_SHORT: "Password too short",
+  PASSWORD_TOO_LONG: "Password too long",
+  USER_ALREADY_EXISTS: "User already exists",
+  EMAIL_CAN_NOT_BE_UPDATED: "Email can not be updated",
+  CREDENTIAL_ACCOUNT_NOT_FOUND: "Credential account not found",
+  SESSION_EXPIRED: "Session expired. Re-authenticate to perform this action.",
+  FAILED_TO_UNLINK_LAST_ACCOUNT: "You can't unlink your last account",
+  ACCOUNT_NOT_FOUND: "Account not found",
+  USER_ALREADY_HAS_PASSWORD: "User already has a password. Provide that to delete the account."
+} as const;
 
 type SignUpState = {
   error: string | null;
   success: boolean;
 };
+
+/**
+ * Traite les erreurs Better Auth et retourne un message utilisateur approprié
+ */
+function handleBetterAuthError(error: any): string {
+  if (!error || typeof error !== 'object') {
+    return "Une erreur inattendue s'est produite";
+  }
+
+  // Vérifier si c'est une erreur avec un code spécifique
+  if ('code' in error && typeof error.code === 'string') {
+    switch (error.code) {
+      case BETTER_AUTH_ERROR_CODES.USER_ALREADY_EXISTS:
+        return "Un compte avec cet email existe déjà";
+      
+      case BETTER_AUTH_ERROR_CODES.INVALID_EMAIL:
+        return "Format d'email invalide";
+      
+      case BETTER_AUTH_ERROR_CODES.PASSWORD_TOO_SHORT:
+        return "Le mot de passe doit contenir au moins 8 caractères";
+      
+      case BETTER_AUTH_ERROR_CODES.PASSWORD_TOO_LONG:
+        return "Le mot de passe est trop long";
+      
+      case BETTER_AUTH_ERROR_CODES.EMAIL_NOT_VERIFIED:
+        return "Veuillez vérifier votre email avant de vous connecter";
+      
+      case BETTER_AUTH_ERROR_CODES.FAILED_TO_CREATE_USER:
+        return "Impossible de créer le compte. Veuillez réessayer";
+      
+      case BETTER_AUTH_ERROR_CODES.FAILED_TO_CREATE_SESSION:
+        return "Erreur lors de la création de la session";
+      
+      case BETTER_AUTH_ERROR_CODES.INVALID_EMAIL_OR_PASSWORD:
+        return "Email ou mot de passe incorrect";
+      
+      case BETTER_AUTH_ERROR_CODES.USER_NOT_FOUND:
+        return "Aucun compte trouvé avec cet email";
+      
+      case BETTER_AUTH_ERROR_CODES.CREDENTIAL_ACCOUNT_NOT_FOUND:
+        return "Aucun compte trouvé avec ces identifiants";
+      
+      case BETTER_AUTH_ERROR_CODES.SESSION_EXPIRED:
+        return "Votre session a expiré. Veuillez vous reconnecter";
+      
+      default:
+        return "Une erreur s'est produite lors de l'authentification";
+    }
+  }
+
+  // Vérifier si c'est une erreur avec un message spécifique
+  if ('message' in error && typeof error.message === 'string') {
+    const message = error.message;
+    
+    // Gestion des erreurs personnalisées de notre validation
+    if (message.includes("Un compte avec cet email existe déjà")) {
+      return message;
+    }
+    
+    // Gestion des erreurs Better Auth par message
+    if (message.includes(BETTER_AUTH_ERROR_CODES.USER_ALREADY_EXISTS)) {
+      return "Un compte avec cet email existe déjà";
+    }
+    
+    if (message.includes(BETTER_AUTH_ERROR_CODES.INVALID_EMAIL)) {
+      return "Format d'email invalide";
+    }
+    
+    if (message.includes(BETTER_AUTH_ERROR_CODES.PASSWORD_TOO_SHORT)) {
+      return "Le mot de passe doit contenir au moins 8 caractères";
+    }
+    
+    if (message.includes(BETTER_AUTH_ERROR_CODES.INVALID_EMAIL_OR_PASSWORD)) {
+      return "Email ou mot de passe incorrect";
+    }
+    
+    if (message.includes(BETTER_AUTH_ERROR_CODES.EMAIL_NOT_VERIFIED)) {
+      return "Veuillez vérifier votre email avant de vous connecter";
+    }
+  }
+
+  // Vérifier les erreurs de statut HTTP
+  if ('status' in error && typeof error.status === 'string') {
+    switch (error.status) {
+      case "UNAUTHORIZED":
+        return "Email ou mot de passe incorrect";
+      
+      case "FORBIDDEN":
+        return "Votre compte a été suspendu. Contactez le support.";
+      
+      case "TOO_MANY_REQUESTS":
+        return "Trop de tentatives. Veuillez réessayer plus tard.";
+      
+      case "BAD_REQUEST":
+        return "Données invalides. Veuillez vérifier vos informations.";
+      
+      case "CONFLICT":
+        return "Un compte avec cet email existe déjà";
+      
+      default:
+        return "Une erreur s'est produite lors de l'authentification";
+    }
+  }
+
+  return "Une erreur inattendue s'est produite";
+}
 
 export async function signUpAction(
   prevState: SignUpState,
@@ -16,6 +150,7 @@ export async function signUpAction(
   const confirmPassword = formData.get("confirmPassword") as string;
   const captcha = formData.get("captcha") as string;
 
+  // Validation du captcha
   if (captcha) {
     return {
       error: "Erreur de validation",
@@ -23,6 +158,7 @@ export async function signUpAction(
     };
   }
 
+  // Validation des champs requis
   if (!email || !password || !confirmPassword) {
     return {
       error: "Tous les champs sont requis",
@@ -30,6 +166,7 @@ export async function signUpAction(
     };
   }
 
+  // Validation de la correspondance des mots de passe
   if (password !== confirmPassword) {
     return {
       error: "Les mots de passe ne correspondent pas",
@@ -37,6 +174,7 @@ export async function signUpAction(
     };
   }
 
+  // Validation de la longueur du mot de passe
   if (password.length < 8) {
     return {
       error: "Le mot de passe doit contenir au moins 8 caractères",
@@ -44,6 +182,30 @@ export async function signUpAction(
     };
   }
 
+  if (password.length > 128) {
+    return {
+      error: "Le mot de passe est trop long (maximum 128 caractères)",
+      success: false,
+    };
+  }
+
+  // Vérification de l'email normalisé (empêche les alias Gmail)
+  try {
+    const exists = await checkNormalizedEmailExists(email);
+    if (exists) {
+      return {
+        error: "Un compte avec cet email existe déjà",
+        success: false,
+      };
+    }
+  } catch (error) {
+    return {
+      error: "Erreur lors de la vérification de l'email",
+      success: false,
+    };
+  }
+
+  // Création de l'utilisateur
   try {
     const result = await auth.api.createUser({
       body: {
@@ -61,60 +223,13 @@ export async function signUpAction(
     }
 
     return {
-      error: "Erreur d'inscription",
+      error: "Erreur lors de la création du compte",
       success: false,
     };
-  } catch (err) {
-    if (err instanceof Error) {
-      if (
-        err.message.includes("User already exists") ||
-        err.message.includes("Email already exists")
-      ) {
-        return {
-          error: "Un compte avec cet email existe déjà",
-          success: false,
-        };
-      }
-
-      if (err.message.includes("Invalid email")) {
-        return {
-          error: "Format d'email invalide",
-          success: false,
-        };
-      }
-
-      if (
-        err.message.includes("Password too weak") ||
-        err.message.includes("password")
-      ) {
-        return {
-          error: "Le mot de passe ne respecte pas les critères de sécurité",
-          success: false,
-        };
-      }
-
-      if (err.message.includes("Too many attempts")) {
-        return {
-          error:
-            "Trop de tentatives d'inscription. Veuillez réessayer plus tard.",
-          success: false,
-        };
-      }
-
-      if (
-        err.message.includes("compte") ||
-        err.message.includes("email") ||
-        err.message.includes("mot de passe")
-      ) {
-        return {
-          error: err.message,
-          success: false,
-        };
-      }
-    }
-
+  } catch (error) {
+    const errorMessage = handleBetterAuthError(error);
     return {
-      error: "Une erreur inattendue s'est produite",
+      error: errorMessage,
       success: false,
     };
   }
@@ -128,6 +243,7 @@ export async function signInAction(
   const password = formData.get("password") as string;
   const captcha = formData.get("captcha") as string;
 
+  // Validation du captcha
   if (captcha) {
     return {
       error: "Erreur de validation",
@@ -135,6 +251,15 @@ export async function signInAction(
     };
   }
 
+  // Validation des champs requis
+  if (!email || !password) {
+    return {
+      error: "Email et mot de passe requis",
+      success: false,
+    };
+  }
+
+  // Connexion
   try {
     const result = await auth.api.signInEmail({
       body: {
@@ -151,48 +276,13 @@ export async function signInAction(
     }
 
     return {
-      error: "Erreur de connexion",
+      error: "Erreur lors de la connexion",
       success: false,
     };
-  } catch (err) {
-    if (err instanceof Error) {
-      if ("status" in err && typeof err.status === "string") {
-        switch (err.status) {
-          case "UNAUTHORIZED":
-            return {
-              error: "Email ou mot de passe incorrect",
-              success: false,
-            };
-
-          case "FORBIDDEN":
-            return {
-              error: "Votre compte a été suspendu. Contactez le support.",
-              success: false,
-            };
-
-          case "TOO_MANY_REQUESTS":
-            return {
-              error:
-                "Trop de tentatives de connexion. Veuillez réessayer plus tard.",
-              success: false,
-            };
-
-          default:
-            if (
-              err.message.includes("Votre compte") ||
-              err.message.includes("Contactez le support")
-            ) {
-              return {
-                error: err.message,
-                success: false,
-              };
-            }
-        }
-      }
-    }
-
+  } catch (error) {
+    const errorMessage = handleBetterAuthError(error);
     return {
-      error: "Une erreur inattendue s'est produite",
+      error: errorMessage,
       success: false,
     };
   }

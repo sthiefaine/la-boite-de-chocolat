@@ -2,7 +2,6 @@
 import { SITE_URL } from "@/lib/config";
 import { getMaskedImageUrl } from "@/app/actions/image";
 
-
 export interface Episode {
   id: string;
   title: string;
@@ -42,18 +41,24 @@ interface JsonLdProps {
   canonicalUrl: string;
 }
 
-export async function PodcastJsonLd({
-  episode,
-  canonicalUrl,
-}: JsonLdProps) {
+export async function PodcastJsonLd({ episode, canonicalUrl }: JsonLdProps) {
   const mainFilm = episode.links[0]?.film;
   const isAdult = mainFilm?.age === "18+" || mainFilm?.age === "adult";
+
+  let description = "";
+  if (!description && mainFilm) {
+    description = `Découvrez notre analyse du film ${mainFilm.title}`;
+    if (mainFilm.director) description += ` de ${mainFilm.director}`;
+    if (mainFilm.year) description += ` (${mainFilm.year})`;
+    description += " dans ce nouvel épisode de La Boîte de Chocolat.";
+  }
+  description = description || episode.description?.slice(0, 120) + "...";
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "PodcastEpisode",
     name: episode.title,
-    description: episode.description || "Podcast de critique cinématographique de La Boîte de Chocolat",
+    description: description,
     url: canonicalUrl,
     datePublished: episode.pubDate.toISOString(),
     dateModified: episode.updatedAt?.toISOString(),
@@ -81,7 +86,12 @@ export async function PodcastJsonLd({
           dateCreated: mainFilm.year?.toString(),
           contentRating: isAdult ? "18+" : "General",
           genre: "Film",
-          image: mainFilm.imgFileName ? await getMaskedImageUrl(mainFilm.imgFileName, mainFilm.age || null) : undefined,
+          image: mainFilm.imgFileName
+            ? await getMaskedImageUrl(
+                mainFilm.imgFileName,
+                mainFilm.age || null
+              )
+            : undefined,
         }
       : undefined,
     creator: {
@@ -150,21 +160,3 @@ export async function PodcastJsonLd({
     />
   );
 }
-
-// Utilisation dans votre page :
-// import { PodcastJsonLd } from "./json-ld";
-//
-// export default function PodcastPage() {
-//   return (
-//     <>
-//       <PodcastJsonLd
-//         episode={episode}
-//         mainFilm={mainFilm}
-//         canonicalUrl={canonicalUrl}
-//       />
-//       <main>
-//         {/* Votre contenu */}
-//       </main>
-//     </>
-//   );
-// }
