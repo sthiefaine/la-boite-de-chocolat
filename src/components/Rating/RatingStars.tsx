@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useOptimistic, useTransition } from "react";
 import {
   rateEpisode,
   getEpisodeRatingStats,
@@ -28,6 +28,7 @@ export default function RatingStars({
   stats: initialStats,
 }: RatingStarsProps) {
   const { data: session } = useSession();
+  const [isPending, startTransition] = useTransition();
   const [userRating, setUserRating] = useState<number | null>(
     initialUserRating || null
   );
@@ -37,7 +38,11 @@ export default function RatingStars({
     totalRatings: number;
     ratingDistribution: { [key: number]: number };
   } | null>(initialStats || null);
-  const [isLoading, setIsLoading] = useState(false);
+
+  const [optimisticRating, addOptimisticRating] = useOptimistic(
+    userRating,
+    (state, newRating: number | null) => newRating
+  );
 
   useEffect(() => {
     const loadUserRating = async () => {
@@ -58,22 +63,25 @@ export default function RatingStars({
   }, [session?.user, episodeId, initialUserRating]);
 
   const handleStarClick = async (rating: number) => {
-    if (isLoading) return;
+    if (isPending) return;
 
-    setIsLoading(true);
-    try {
-      const result = await rateEpisode(episodeId, rating, session?.user?.id);
+    startTransition(async () => {
+      addOptimisticRating(rating);
 
-      if (result.success) {
-        setUserRating(rating);
-        const newStats = await getEpisodeRatingStats(episodeId);
-        setStats(newStats);
-      } else {
+      try {
+        const result = await rateEpisode(episodeId, rating, session?.user?.id);
+
+        if (result.success) {
+          setUserRating(rating);
+          const newStats = await getEpisodeRatingStats(episodeId);
+          setStats(newStats);
+        } else {
+          addOptimisticRating(userRating);
+        }
+      } catch (error) {
+        addOptimisticRating(userRating);
       }
-    } catch (error) {
-    } finally {
-      setIsLoading(false);
-    }
+    });
   };
 
   const handleStarHover = (rating: number) => {
@@ -85,27 +93,30 @@ export default function RatingStars({
   };
 
   const handleRemoveRating = async () => {
-    if (isLoading) return;
+    if (isPending) return;
 
-    setIsLoading(true);
-    try {
-      const result = await deleteUserRating(episodeId, session?.user?.id);
+    startTransition(async () => {
+      // Optimistic update inside transition
+      addOptimisticRating(null);
 
-      if (result.success) {
-        setUserRating(null);
+      try {
+        const result = await deleteUserRating(episodeId, session?.user?.id);
 
-        const newStats = await getEpisodeRatingStats(episodeId);
-        setStats(newStats);
-      } else {
+        if (result.success) {
+          setUserRating(null);
+          const newStats = await getEpisodeRatingStats(episodeId);
+          setStats(newStats);
+        } else {
+          addOptimisticRating(userRating);
+        }
+      } catch (error) {
+        addOptimisticRating(userRating);
       }
-    } catch (error) {
-    } finally {
-      setIsLoading(false);
-    }
+    });
   };
 
   const getStarClass = (starNumber: number) => {
-    const currentRating = hoverRating || userRating;
+    const currentRating = hoverRating || optimisticRating;
 
     if (currentRating && starNumber <= currentRating) {
       return `${styles.starButton} ${styles.filled}`;
@@ -152,7 +163,7 @@ export default function RatingStars({
             onClick={() => handleStarClick(star)}
             onMouseEnter={() => handleStarHover(star)}
             onMouseLeave={handleStarLeave}
-            disabled={isLoading || !session?.user}
+            disabled={isPending || !session?.user}
             title={
               session?.user
                 ? `${star} étoile${star > 1 ? "s" : ""} - ${getRatingText(
@@ -174,12 +185,12 @@ export default function RatingStars({
       <div className={styles.ratingInfo}>
         {!session?.user ? (
           <span className={styles.infoText}>Connectez-vous pour noter</span>
-        ) : userRating ? (
+        ) : optimisticRating ? (
           <span className={styles.infoText}>
-            Vous avez mis {userRating}/5
+            Vous avez mis {optimisticRating}/5
             <button
               onClick={handleRemoveRating}
-              disabled={isLoading}
+              disabled={isPending}
               className={styles.removeButtonInline}
               title="Supprimer votre note"
               aria-label="Supprimer votre note"
