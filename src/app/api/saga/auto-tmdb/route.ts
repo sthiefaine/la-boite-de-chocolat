@@ -160,7 +160,7 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const user = await getUser();
-    if (!user || user.role !== "admin") {
+    if (!user || !isAdminRole(user.role)) {
       return NextResponse.json(
         { error: "Accès non autorisé" },
         { status: 401 }

@@ -9,6 +9,8 @@ import {
   getEpisodeBySlugCached,
 } from "@/app/actions/episode";
 import { getSagaWithFilmsAndEpisodes } from "@/app/actions/saga";
+import { getEpisodeRatingStats } from "@/app/actions/rating";
+import { getSession } from "@/lib/auth/auth-server";
 import { PodcastJsonLd } from "./json-ld";
 import { SITE_URL } from "@/lib/config";
 import EpisodeHeader from "@/components/Episode/EpisodeHeader/EpisodeHeader";
@@ -38,10 +40,11 @@ export async function generateStaticParams() {
 export default async function EpisodePage({ params }: EpisodePageProps) {
   const { slug } = await params;
 
-  const [episodeResult, finalNavigationResult] =
+  const [episodeResult, finalNavigationResult, session] =
     await Promise.all([
       getEpisodeBySlugCached(slug),
       getEpisodeNavigation(slug),
+      getSession(),
     ]);
 
   if (!episodeResult) {
@@ -52,6 +55,9 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
   const mainFilm = episode.links[0]?.film;
   const saga = mainFilm?.saga || null;
   const isAdultContent = mainFilm?.age === "18+" || mainFilm?.age === "adult";
+
+  const ratingStats = await getEpisodeRatingStats(episode.id);
+  const userRating = null;
 
   const sagaResult = saga ? await getSagaWithFilmsAndEpisodes(saga.id) : null;
 
@@ -75,6 +81,8 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
           episode={episode}
           mainFilmImageUrl={mainFilmImageUrl}
           isAdultContent={isAdultContent}
+          userRating={userRating}
+          ratingStats={ratingStats}
         />
 
         <EpisodeNavigation

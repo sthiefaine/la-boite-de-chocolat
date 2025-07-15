@@ -9,6 +9,8 @@ import { EpisodePlayerButton } from "@/components/Episode/EpisodePlayerButton/Ep
 import { AddToQueueButton } from "@/components/Queue/AddToQueueButton";
 import { ShareButton } from "@/components/ShareButton/ShareButton";
 import ButtonSkeleton from "@/components/Button/ButtonSkeleton";
+import RatingStars from "@/components/Rating/RatingStars";
+import RatingStarsSkeleton from "@/components/Rating/RatingStarsSkeleton";
 import styles from "./EpisodeHeader.module.css";
 
 interface EpisodeHeaderProps {
@@ -33,12 +35,20 @@ interface EpisodeHeaderProps {
   };
   mainFilmImageUrl: string;
   isAdultContent: boolean;
+  userRating?: number | null;
+  ratingStats?: {
+    averageRating: number;
+    totalRatings: number;
+    ratingDistribution: { [key: number]: number };
+  } | null;
 }
 
 export default async function EpisodeHeader({
   episode,
   mainFilmImageUrl,
   isAdultContent,
+  userRating,
+  ratingStats,
 }: EpisodeHeaderProps) {
   const mainFilm = episode.links[0]?.film;
 
@@ -171,6 +181,18 @@ export default async function EpisodeHeader({
               month: "long",
               year: "numeric",
             })}
+          </div>
+
+          {/* Rating System */}
+          <div className={styles.ratingSection}>
+            <Suspense fallback={<RatingStarsSkeleton />}>
+              <RatingStars 
+                episodeId={episode.id} 
+                episodeSlug={episode.slug ?? ""} 
+                userRating={userRating}
+                stats={ratingStats}
+              />
+            </Suspense>
           </div>
 
           {/* Description */}

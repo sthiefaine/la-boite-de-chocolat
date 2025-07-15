@@ -1,0 +1,142 @@
+.ratingSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: var(--glass-bg-medium);
+  border: var(--glass-border-medium);
+  border-radius: 8px;
+  backdrop-filter: var(--glass-blur-medium);
+  box-shadow: var(--glass-shadow-medium);
+}
+
+.headerSkeleton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.titleSkeleton {
+  width: 120px;
+  height: 1rem;
+  background: linear-gradient(
+    90deg,
+    var(--chocolate-light) 25%,
+    var(--chocolate-secondary) 50%,
+    var(--chocolate-light) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.starsSkeleton {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.starSkeleton {
+  width: 1.3rem;
+  height: 1.3rem;
+  background: linear-gradient(
+    90deg,
+    var(--chocolate-light) 25%,
+    var(--chocolate-secondary) 50%,
+    var(--chocolate-light) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 50%;
+}
+
+.infoSkeleton {
+  width: 100px;
+  height: 0.8rem;
+  background: linear-gradient(
+    90deg,
+    var(--chocolate-light) 25%,
+    var(--chocolate-secondary) 50%,
+    var(--chocolate-light) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+  margin-top: 0.25rem;
+  align-self: center;
+}
+
+.statsSkeleton {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.averageSkeleton {
+  width: 60px;
+  height: 1rem;
+  background: linear-gradient(
+    90deg,
+    var(--chocolate-light) 25%,
+    var(--chocolate-secondary) 50%,
+    var(--chocolate-light) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.totalSkeleton {
+  width: 80px;
+  height: 1rem;
+  background: linear-gradient(
+    90deg,
+    var(--chocolate-light) 25%,
+    var(--chocolate-secondary) 50%,
+    var(--chocolate-light) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .ratingSkeleton {
+    padding: 0.6rem;
+  }
+  
+  .headerSkeleton {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+  
+  .titleSkeleton {
+    width: 100px;
+    height: 0.9rem;
+  }
+  
+  .statsSkeleton {
+    gap: 0.2rem;
+  }
+  
+  .starSkeleton {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+  
+  .infoSkeleton {
+    width: 80px;
+    height: 0.75rem;
+  }
+}

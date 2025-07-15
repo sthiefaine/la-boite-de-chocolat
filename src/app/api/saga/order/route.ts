@@ -189,9 +189,9 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const sagaId = searchParams.get("sagaId");
+    const slug = searchParams.get("slug");
 
-    if (!sagaId) {
+    if (!slug) {
       return NextResponse.json(
         { error: "ID de la saga requis" },
         { status: 400 }
@@ -199,7 +199,7 @@ export async function GET(request: NextRequest) {
     }
 
     const saga = await prisma.saga.findUnique({
-      where: { id: sagaId },
+      where: { slug: slug },
       include: {
         films: {
           orderBy: {
