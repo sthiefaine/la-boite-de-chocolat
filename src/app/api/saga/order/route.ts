@@ -14,9 +14,9 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { sagaId, useReleaseDate = true } = body;
+    const { slug, useReleaseDate = true } = body;
 
-    if (!sagaId) {
+    if (!slug) {
       return NextResponse.json(
         { error: "ID de la saga requis" },
         { status: 400 }
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     }
 
     const existingSaga = await prisma.saga.findUnique({
-      where: { id: sagaId },
+      where: { slug: slug },
       include: {
         films: {
           orderBy: {
@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
       }
 
       const updatedSaga = await prisma.saga.update({
-        where: { id: sagaId },
+        where: { slug: slug },
         data: {
           filmsOrder: filmsOrder,
           updatedAt: new Date(),
@@ -155,7 +155,7 @@ export async function POST(request: NextRequest) {
         .map((film) => film.id);
 
       const updatedSaga = await prisma.saga.update({
-        where: { id: sagaId },
+        where: { slug: slug },
         data: {
           filmsOrder: filmsOrderByYear,
           updatedAt: new Date(),
