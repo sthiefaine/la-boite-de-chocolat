@@ -105,6 +105,7 @@ export default function EpisodeCard({
         href={`/episodes/${episodeSlug}`}
         className={styles.cardLink}
         prefetch={true}
+        scroll={true}
       >
         <div className={`${styles.cardImageContainer} ${effectClass}`}>
           {displayImage ? (

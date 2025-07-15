@@ -281,8 +281,6 @@ export default function EpisodeGrid({
 
   return (
     <div className={styles.container}>
-      <PreserveScroll />
-
       {/* Section Header */}
       <div className={styles.sectionHeader}>
         <div className={styles.titleSection}>
