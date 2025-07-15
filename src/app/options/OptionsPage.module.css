@@ -1,47 +1,28 @@
 .container {
   min-height: 100vh;
-  background: linear-gradient(
-    135deg,
-    var(--chocolate-cream) 0%,
-    var(--white) 100%
-  );
-  padding: 2rem 1rem;
+  background: var(--gradient-hero);
+  padding: 1.5rem 1rem;
 }
 
 .content {
-  max-width: 800px;
+  max-width: 500px;
   margin: 0 auto;
 }
 
 .header {
-  margin-bottom: 3rem;
-  text-align: center;
-}
-
-.backButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: rgba(107, 62, 38, 0.1);
-  border: 1px solid rgba(107, 62, 38, 0.2);
-  border-radius: 12px;
-  color: var(--chocolate-primary);
-  text-decoration: none;
-  font-weight: 500;
-  transition: all 0.2s ease;
   margin-bottom: 2rem;
-}
-
-.backButton:hover {
-  background: rgba(107, 62, 38, 0.15);
-  border-color: rgba(107, 62, 38, 0.3);
-  transform: translateY(-1px);
+  text-align: center;
 }
 
 .headerContent {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.titleRow {
+  display: flex;
   align-items: center;
   gap: 1rem;
 }
@@ -49,21 +30,20 @@
 .title {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  font-size: 2.5rem;
+  gap: 0.75rem;
+  font-size: 2rem;
   font-weight: 800;
-  color: var(--chocolate-primary);
+  color: var(--text-primary);
   margin: 0;
-  text-shadow: 0 2px 4px rgba(107, 62, 38, 0.1);
 }
 
 .titleIcon {
-  color: var(--chocolate-secondary);
+  color: var(--accent-red);
 }
 
 .subtitle {
-  font-size: 1.125rem;
-  color: var(--chocolate-secondary);
+  font-size: 1rem;
+  color: var(--text-secondary);
   margin: 0;
   font-weight: 500;
 }
@@ -71,43 +51,40 @@
 .optionsSection {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 .optionCard {
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(107, 62, 38, 0.15);
-  border-radius: 20px;
-  padding: 2rem;
-  box-shadow: 0 8px 32px rgba(139, 69, 19, 0.12);
-  backdrop-filter: blur(20px);
-  transition: all 0.3s ease;
+  background: var(--glass-bg-light);
+  border: var(--glass-border-light);
+  border-radius: 12px;
+  padding: 1.5rem;
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow-light);
+  transition: all var(--transition-normal);
 }
 
 .optionCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(139, 69, 19, 0.15);
+  box-shadow: var(--glass-shadow-medium);
+  border-color: var(--accent-red);
 }
 
 .optionHeader {
   display: flex;
   align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .optionIcon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(
-    135deg,
-    var(--chocolate-primary),
-    var(--chocolate-secondary)
-  );
-  border-radius: 12px;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--accent-red), var(--accent-gold));
+  border-radius: 10px;
   color: white;
   flex-shrink: 0;
 }
@@ -117,31 +94,37 @@
 }
 
 .optionTitle {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 700;
-  color: var(--chocolate-primary);
-  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+  margin: 0 0 0.25rem 0;
 }
 
 .optionDescription {
   font-size: 0.875rem;
-  color: var(--chocolate-secondary);
+  color: var(--text-secondary);
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 .optionControls {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
+}
+
+.switchRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .switch {
   position: relative;
   display: inline-block;
-  width: 60px;
-  height: 34px;
-  align-self: flex-start;
+  width: 50px;
+  height: 28px;
+  flex-shrink: 0;
 }
 
 .switch input {
@@ -157,55 +140,36 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
-  transition: 0.3s;
-  border-radius: 34px;
+  background-color: var(--text-light);
+  transition: var(--transition-normal);
+  border-radius: 28px;
 }
 
 .slider:before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
+  height: 20px;
+  width: 20px;
   left: 4px;
   bottom: 4px;
   background-color: white;
-  transition: 0.3s;
+  transition: var(--transition-normal);
   border-radius: 50%;
+  box-shadow: var(--shadow-light);
 }
 
 input:checked + .slider {
-  background: linear-gradient(
-    135deg,
-    var(--chocolate-primary),
-    var(--chocolate-secondary)
-  );
+  background: linear-gradient(135deg, var(--accent-red), var(--accent-gold));
 }
 
 input:checked + .slider:before {
-  transform: translateX(26px);
-}
-
-.timeInfo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem 1.5rem;
-  background: linear-gradient(
-    135deg,
-    rgba(107, 62, 38, 0.08),
-    rgba(139, 69, 19, 0.05)
-  );
-  border-radius: 12px;
-  border: 1px solid rgba(107, 62, 38, 0.15);
-  box-shadow: inset 0 1px 3px rgba(107, 62, 38, 0.1);
+  transform: translateX(22px);
 }
 
 .timeLabel {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--chocolate-primary);
-  text-align: center;
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -216,62 +180,27 @@ input:checked + .slider:before {
   font-size: 1rem;
 }
 
-.infoCard {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(107, 62, 38, 0.12);
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 16px rgba(139, 69, 19, 0.08);
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-}
-
-.infoCard:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(139, 69, 19, 0.1);
-}
-
-.infoTitle {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--chocolate-primary);
-  margin: 0 0 0.75rem 0;
-}
-
-.infoText {
-  font-size: 0.875rem;
-  color: var(--chocolate-secondary);
-  margin: 0;
-  line-height: 1.6;
-}
-
-.resetSection {
-  display: flex;
-  justify-content: center;
-  margin-top: 2rem;
-}
-
 .resetButton {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.875rem 1.75rem;
-  background: rgba(220, 38, 38, 0.08);
-  border: 1px solid rgba(220, 38, 38, 0.15);
-  border-radius: 14px;
-  color: #dc2626;
+  padding: 0.5rem 1rem;
+  background: var(--glass-bg-light);
+  border: var(--glass-border-light);
+  border-radius: 10px;
+  color: var(--accent-red);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--transition-normal);
+  backdrop-filter: var(--glass-blur);
   font-size: 0.875rem;
-  backdrop-filter: blur(10px);
 }
 
 .resetButton:hover {
-  background: rgba(220, 38, 38, 0.12);
-  border-color: rgba(220, 38, 38, 0.25);
+  background: var(--glass-bg-medium);
+  border-color: var(--accent-red);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+  box-shadow: var(--glass-shadow-medium);
 }
 
 @media (max-width: 768px) {
@@ -279,12 +208,17 @@ input:checked + .slider:before {
     padding: 1rem;
   }
 
+  .titleRow {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
   .title {
-    font-size: 2rem;
+    font-size: 1.75rem;
   }
 
   .optionCard {
-    padding: 1.5rem;
+    padding: 1.25rem;
   }
 
   .optionHeader {
