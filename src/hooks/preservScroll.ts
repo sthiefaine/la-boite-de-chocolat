@@ -5,7 +5,9 @@ export const PreserveScroll = () => {
 
   const handleScroll = () => {
     const position = window.scrollY;
-    if (position !== 0) {
+    if (position < 100) {
+      setScrollPosition(0);
+    } else {
       setScrollPosition(position);
     }
   };
@@ -26,8 +28,12 @@ export const PreserveScroll = () => {
   useEffect(() => {
     const savedScrollPosition = localStorage.getItem("scrollPosition");
     if (savedScrollPosition !== null) {
-      setScrollPosition(parseInt(savedScrollPosition));
-      window.scrollTo(0, parseInt(savedScrollPosition));
+      if (parseInt(savedScrollPosition) < 200) {
+        setScrollPosition(0);
+      } else {
+        setScrollPosition(parseInt(savedScrollPosition));
+        window.scrollTo(0, parseInt(savedScrollPosition));
+      }
     }
   }, []);
 
