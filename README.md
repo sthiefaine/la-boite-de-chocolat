@@ -84,6 +84,10 @@ BLOB_READ_WRITE_TOKEN="votre-token-vercel-blob"
 
 # TMDB (optionnel)
 TMDB_API_KEY="votre-clé-api-tmdb"
+
+# Google OAuth (optionnel)
+GOOGLE_CLIENT_ID="votre-client-id-google"
+GOOGLE_CLIENT_SECRET="votre-client-secret-google"
 ```
 
 ### 4. Configuration de la base de données
@@ -182,6 +186,8 @@ pnpm lint             # Vérifier le code
 | `AUTH_URL` | URL de base de l'application | ✅ |
 | `BLOB_READ_WRITE_TOKEN` | Token Vercel Blob | ❌ |
 | `TMDB_API_KEY` | Clé API The Movie Database | ❌ |
+| `GOOGLE_CLIENT_ID` | Client ID Google OAuth | ❌ |
+| `GOOGLE_CLIENT_SECRET` | Client Secret Google OAuth | ❌ |
 
 ### Options du Lecteur
 Les utilisateurs peuvent configurer :

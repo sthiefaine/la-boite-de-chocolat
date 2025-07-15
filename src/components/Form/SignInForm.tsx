@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import styles from "./SignInForm.module.css";
 import { signInAction } from "@/app/actions/form";
 import PasswordInput from "./Input/PasswordInput";
+import GoogleButton from "./GoogleButton";
 
 type SignInState = {
   error: string | null;
@@ -64,86 +65,94 @@ export default function SignInForm() {
           <p className={styles.successMessage}>Redirection en cours...</p>
         </div>
       ) : (
-        <form action={formAction} className={styles.form}>
-          <div className={styles.inputGroup}>
-            <label htmlFor="email" className={styles.label}>
-              Email<span className={styles.required}>*</span>
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="votre@email.com"
-              required
-              className={styles.input}
-              autoComplete="email"
-              disabled={isPending}
-              value={formData.email}
-              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-            />
+        <>
+          <GoogleButton disabled={isPending} />
+
+          <div className={styles.divider}>
+            <span className={styles.dividerText}>ou</span>
           </div>
 
-          <div className={styles.inputGroup}>
-            <label htmlFor="password" className={styles.label}>
-              Mot de passe<span className={styles.required}>*</span>
-            </label>
-            <PasswordInput
-              id="password"
-              name="password"
-              placeholder="Votre mot de passe"
-              required
-              disabled={isPending}
-              value={formData.password}
-              onChange={(value) => setFormData(prev => ({ ...prev, password: value }))}
-            />
-          </div>
-
-          <div
-            className={styles.inputGroup}
-            style={{
-              position: "absolute",
-              left: "-9999px",
-              visibility: "hidden",
-              opacity: 0,
-              pointerEvents: "none",
-            }}
-          >
-            <label htmlFor="captcha" className={styles.label}>
-              Captcha
-            </label>
-            <span className={styles.captcha}>3+3 = ?</span>
-            <input
-              id="captcha"
-              name="captcha"
-              type="number"
-              placeholder="3+3 = ?"
-              className={styles.input}
-              tabIndex={-1}
-              autoComplete="off"
-            />
-          </div>
-
-          {state.error && (
-            <div className={styles.error} role="alert">
-              {state.error}
+          <form action={formAction} className={styles.form}>
+            <div className={styles.inputGroup}>
+              <label htmlFor="email" className={styles.label}>
+                Email<span className={styles.required}>*</span>
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="votre@email.com"
+                required
+                className={styles.input}
+                autoComplete="email"
+                disabled={isPending}
+                value={formData.email}
+                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+              />
             </div>
-          )}
 
-          <button
-            type="submit"
-            disabled={isPending}
-            className={styles.button}
-            aria-describedby={state.error ? "error-message" : undefined}
-          >
-            {isPending ? (
-              <>
-                <span className="animate-pulse">Connexion en cours...</span>
-              </>
-            ) : (
-              "Se connecter"
+            <div className={styles.inputGroup}>
+              <label htmlFor="password" className={styles.label}>
+                Mot de passe<span className={styles.required}>*</span>
+              </label>
+              <PasswordInput
+                id="password"
+                name="password"
+                placeholder="Votre mot de passe"
+                required
+                disabled={isPending}
+                value={formData.password}
+                onChange={(value) => setFormData(prev => ({ ...prev, password: value }))}
+              />
+            </div>
+
+            <div
+              className={styles.inputGroup}
+              style={{
+                position: "absolute",
+                left: "-9999px",
+                visibility: "hidden",
+                opacity: 0,
+                pointerEvents: "none",
+              }}
+            >
+              <label htmlFor="captcha" className={styles.label}>
+                Captcha
+              </label>
+              <span className={styles.captcha}>3+3 = ?</span>
+              <input
+                id="captcha"
+                name="captcha"
+                type="number"
+                placeholder="3+3 = ?"
+                className={styles.input}
+                tabIndex={-1}
+                autoComplete="off"
+              />
+            </div>
+
+            {state.error && (
+              <div className={styles.error} role="alert">
+                {state.error}
+              </div>
             )}
-          </button>
-        </form>
+
+            <button
+              type="submit"
+              disabled={isPending}
+              className={styles.button}
+              aria-describedby={state.error ? "error-message" : undefined}
+            >
+              {isPending ? (
+                <>
+                  <span className="animate-pulse">Connexion en cours...</span>
+                </>
+              ) : (
+                "Se connecter"
+              )}
+            </button>
+          </form>
+        </>
       )}
     </>
   );

@@ -157,6 +157,36 @@
   margin-bottom: 0.25rem;
 }
 
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.divider::before {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--chocolate-light);
+  opacity: 0.5;
+}
+
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--chocolate-light);
+  opacity: 0.5;
+}
+
+.dividerText {
+  padding: 0 1rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  background: var(--bg-primary);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .form {

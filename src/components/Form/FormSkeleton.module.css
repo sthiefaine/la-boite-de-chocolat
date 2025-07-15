@@ -38,6 +38,45 @@
   animation: shimmer 2s infinite;
 }
 
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.divider::before {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--chocolate-light);
+  opacity: 0.3;
+}
+
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--chocolate-light);
+  opacity: 0.3;
+}
+
+.dividerText {
+  padding: 0 1rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  background: var(--bg-primary);
+  opacity: 0.7;
+}
+
+.googleButton {
+  height: 3rem;
+  background: var(--glass-bg-light);
+  border: 1px solid var(--chocolate-light);
+  border-radius: 0.5rem;
+  animation: shimmer 2s infinite;
+}
+
 @keyframes shimmer {
   0% {
     opacity: 0.6;

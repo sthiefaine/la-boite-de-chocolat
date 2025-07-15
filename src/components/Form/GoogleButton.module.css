@@ -1,0 +1,62 @@
+.googleButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--chocolate-light);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.googleButton:hover:not(:disabled) {
+  background: var(--chocolate-cream);
+  border-color: var(--chocolate-secondary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+}
+
+.googleButton:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-light);
+}
+
+.googleButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.googleIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.googleText {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .googleButton {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .googleIcon svg {
+    width: 18px;
+    height: 18px;
+  }
+}

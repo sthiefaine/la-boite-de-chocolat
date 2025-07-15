@@ -11,7 +11,6 @@ export async function signUpAction(
   prevState: SignUpState,
   formData: FormData
 ): Promise<SignUpState> {
-  const accessKey = formData.get("accessKey") as string;
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const confirmPassword = formData.get("confirmPassword") as string;
@@ -22,31 +21,6 @@ export async function signUpAction(
       error: "Erreur de validation",
       success: false,
     };
-  }
-
-  if (!accessKey) {
-    return {
-      error: "Clé d'accès requise",
-      success: false,
-    };
-  }
-
-  if (accessKey) {
-    const validKey = process.env.PASS_KEY;
-
-    if (!validKey) {
-      return {
-        error: "Configuration manquante",
-        success: false,
-      };
-    }
-
-    if (accessKey !== validKey) {
-      return {
-        error: "Clé d'accès incorrecte",
-        success: false,
-      };
-    }
   }
 
   if (!email || !password || !confirmPassword) {

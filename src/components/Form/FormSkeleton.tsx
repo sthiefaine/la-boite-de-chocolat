@@ -11,15 +11,23 @@ export default function FormSkeleton({
   showButton = true,
 }: FormSkeletonProps) {
   return (
-    <div className={styles.form}>
-      {Array.from({ length: fields }).map((_, index) => (
-        <div key={index} className={styles.inputGroup}>
-          <div className={styles.label}></div>
-          <div className={styles.input}></div>
-        </div>
-      ))}
+    <>
+      <div className={styles.googleButton}></div>
 
-      {showButton && <div className={styles.button}></div>}
-    </div>
+      <div className={styles.divider}>
+        <span className={styles.dividerText}>ou</span>
+      </div>
+
+      <div className={styles.form}>
+        {Array.from({ length: fields }).map((_, index) => (
+          <div key={index} className={styles.inputGroup}>
+            <div className={styles.label}></div>
+            <div className={styles.input}></div>
+          </div>
+        ))}
+
+        {showButton && <div className={styles.button}></div>}
+      </div>
+    </>
   );
 }
