@@ -152,6 +152,22 @@
   font-weight: 600;
 }
 
+.cardStats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.statItem {
+  font-size: 0.75rem;
+  color: var(--chocolate-light);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .cardSaga {
@@ -178,5 +194,13 @@
 
   .episodeDate {
     font-size: 0.68rem;
+  }
+
+  .cardStats {
+    gap: 0.2rem;
+  }
+
+  .statItem {
+    font-size: 0.65rem;
   }
 }

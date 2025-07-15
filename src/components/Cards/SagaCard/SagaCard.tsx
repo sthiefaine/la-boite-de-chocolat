@@ -13,8 +13,10 @@ interface SagaCardProps {
   saga: {
     id: string;
     name: string;
+    slug: string;
     description?: string | null;
     imgFileName?: string | null;
+    episodeCount?: number;
     films: Array<{
       id: string;
       title: string;
@@ -29,8 +31,8 @@ export default function SagaCard({ saga, variant = "default" }: SagaCardProps) {
   const isCompact = variant === "compact";
 
   return (
-    <article className={`${styles.cardSaga} ${isCompact ? styles.cardSagaCompact : ""}`}>
-      <>
+    <Link href={`/sagas/${saga.slug}`} className={styles.cardLink}>
+      <article className={`${styles.cardSaga} ${isCompact ? styles.cardSagaCompact : ""}`}>
         <span className={styles.cardImageContainer}>
           {saga.imgFileName ? (
             <Image
@@ -53,12 +55,19 @@ export default function SagaCard({ saga, variant = "default" }: SagaCardProps) {
             <span className={styles.cardOptions}></span>
           </div>
           <div className={styles.cardBottom}>
-            <span className={styles.episodeDate}>
-              {saga.films.length} film{saga.films.length > 1 ? "s" : ""}
-            </span>
+            <div className={styles.cardStats}>
+              <span className={styles.statItem}>
+                🎬 {saga.films.length} film{saga.films.length > 1 ? "s" : ""}
+              </span>
+              {saga.episodeCount !== undefined && (
+                <span className={styles.statItem}>
+                  🎧 {saga.episodeCount} épisode{saga.episodeCount > 1 ? "s" : ""}
+                </span>
+              )}
+            </div>
           </div>
         </div>
-      </>
-    </article>
+      </article>
+    </Link>
   );
 }

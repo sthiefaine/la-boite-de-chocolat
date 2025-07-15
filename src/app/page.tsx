@@ -27,6 +27,7 @@ export interface Episode {
       saga: {
         name: string;
         id: string;
+        slug: string;
       } | null;
     };
   }>;

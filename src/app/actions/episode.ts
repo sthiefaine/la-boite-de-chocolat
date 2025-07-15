@@ -110,6 +110,7 @@ export const getEpisodeBySlugCached = cache(async (slug: string) => {
                     name: true,
                     description: true,
                     imgFileName: true,
+                    slug: true,
                     films: {
                       select: {
                         id: true,
@@ -345,6 +346,8 @@ export async function getEpisodesWithFilms() {
                   select: {
                     id: true,
                     name: true,
+                    imgFileName: true,
+                    slug: true,
                   },
                 },
               },

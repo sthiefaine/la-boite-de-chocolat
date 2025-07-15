@@ -1,0 +1,388 @@
+.main {
+  min-height: 100dvh;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  padding: 2rem 0;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.header {
+  margin-bottom: 2rem;
+  border-radius: 16px;
+  color: var(--text-primary);
+  box-shadow: var(--shadow-medium);
+  position: relative;
+  overflow: hidden;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, 
+    rgba(107, 62, 38, 0.25) 0%, 
+    rgba(166, 124, 82, 0.03) 50%, 
+    rgba(61, 43, 31, 0.08) 100%);
+  backdrop-filter: var(--glass-blur);
+  border: var(--glass-border-light);
+}
+
+.headerImageContainer {
+  flex-shrink: 0;
+  margin: 1rem;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow-medium);
+}
+
+.headerImage {
+  width: 120px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.headerContent {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 120px;
+}
+
+.headerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.headerTopRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.sagaBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 25px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all var(--transition-fast);
+}
+
+.sagaBadge:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.sagaBadgeIcon {
+  font-size: 1.1rem;
+}
+
+.yearRange {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--text-white);
+}
+
+.tmdbLink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(1, 210, 119, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(1, 210, 119, 0.4);
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #01d277;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.tmdbLink:hover {
+  background: rgba(1, 210, 119, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(1, 210, 119, 0.3);
+}
+
+.tmdbIcon {
+  font-size: 1rem;
+}
+
+.tmdbText {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+
+
+
+
+.title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+
+
+.description {
+  font-size: 0.95rem;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+.stats {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.statCard {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(107, 62, 38, 0.1);
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(107, 62, 38, 0.2);
+  transition: all var(--transition-fast);
+  min-width: 80px;
+}
+
+.statCard:hover {
+  background: rgba(107, 62, 38, 0.15);
+  transform: translateY(-1px);
+}
+
+.statIcon {
+  font-size: 1rem;
+}
+
+.statContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.statNumber {
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--chocolate-primary);
+}
+
+.statLabel {
+  font-size: 0.7rem;
+  font-weight: 500;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main {
+    padding: 1rem 0;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
+  .header {
+    margin-bottom: 1.5rem;
+    min-height: 100px;
+  }
+
+  .headerContent {
+    padding: 1rem;
+  }
+
+  .headerImageContainer {
+    margin: 0.75rem;
+  }
+
+  .headerImage {
+    width: 80px;
+    height: 120px;
+  }
+
+  .headerTop {
+    margin-bottom: 1.5rem;
+    justify-content: center;
+  }
+
+  .headerTopRight {
+    gap: 0.75rem;
+  }
+
+  .tmdbLink {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .description {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .stats {
+    gap: 1rem;
+  }
+
+  .statCard {
+    padding: 1rem 1.5rem;
+    min-width: 120px;
+  }
+
+  .statIcon {
+    font-size: 1.5rem;
+  }
+
+  .statNumber {
+    font-size: 1.5rem;
+  }
+
+  .statLabel {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    min-height: 80px;
+  }
+
+  .headerContent {
+    padding: 0.75rem;
+  }
+
+  .headerImageContainer {
+    margin: 0.5rem;
+  }
+
+  .headerImage {
+    width: 60px;
+    height: 90px;
+  }
+
+  .headerTopRight {
+    gap: 0.5rem;
+  }
+
+  .tmdbLink {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  .title {
+    font-size: 1.3rem;
+  }
+
+  .description {
+    font-size: 0.8rem;
+  }
+
+  .stats {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .statCard {
+    justify-content: center;
+    padding: 1rem;
+    min-width: 100px;
+  }
+
+  .statIcon {
+    font-size: 1.2rem;
+  }
+
+  .statNumber {
+    font-size: 1.2rem;
+  }
+
+  .statLabel {
+    font-size: 0.75rem;
+  }
+}
+
+/* Section Saga */
+.sagaSection {
+  margin-top: 2rem;
+}
+
+.sagaContainer {
+  background: var(--glass-bg-light);
+  backdrop-filter: var(--glass-blur);
+  border: var(--glass-border-light);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: var(--glass-shadow-light);
+}
+
+.sagaFilmsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+
+.sagaFilmCard {
+  transition: transform var(--transition-normal);
+}
+
+.sagaFilmCard:hover {
+  transform: translateY(-4px);
+}
+
+/* Responsive pour la section saga */
+@media (max-width: 768px) {
+  .sagaContainer {
+    padding: 1.5rem;
+  }
+
+  .sagaFilmsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .sagaCardWrapper {
+    max-width: 100%;
+  }
+}

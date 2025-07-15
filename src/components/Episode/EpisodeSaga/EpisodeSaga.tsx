@@ -18,6 +18,7 @@ interface Saga {
   id: string;
   name: string;
   films: (Film | undefined)[];
+  slug: string;
 }
 
 interface EpisodeSagaProps {

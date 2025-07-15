@@ -187,6 +187,7 @@ export async function getOrCreateSagaFromTMDB(
       saga = await prisma.saga.create({
         data: {
           name: collectionName,
+          slug: generateSlug(collectionName),
           ...(tmdbId && { tmdbId: tmdbId }),
           ...(imgFileName && { imgFileName: imgFileName }),
         },
@@ -517,36 +518,6 @@ export async function getSagas() {
       },
     });
 
-    // Si aucune saga n'existe, créer quelques sagas de test
-    if (sagas.length === 0) {
-      console.log("Aucune saga trouvée, création de sagas de test...");
-
-      const testSagas = [
-        { name: "Marvel Cinematic Universe" },
-        { name: "Star Wars" },
-        { name: "Harry Potter" },
-        { name: "Lord of the Rings" },
-        { name: "James Bond" },
-      ];
-
-      for (const sagaData of testSagas) {
-        await prisma.saga.create({
-          data: sagaData,
-        });
-      }
-
-      // Récupérer les sagas créées
-      const createdSagas = await prisma.saga.findMany({
-        orderBy: { name: "asc" },
-        select: {
-          id: true,
-          name: true,
-        },
-      });
-
-      return { success: true, sagas: createdSagas };
-    }
-
     return { success: true, sagas };
   } catch (error) {
     console.error("Erreur récupération sagas:", error);
@@ -568,7 +539,6 @@ export async function createFilmManually(data: {
   try {
     let imgFileName: string | undefined;
 
-    // Upload du poster si fourni
     if (data.posterFile) {
       const timestamp = Date.now();
       const sanitizedTitle = data.title
@@ -582,10 +552,8 @@ export async function createFilmManually(data: {
       }
     }
 
-    // Générer le slug à partir du titre
     const baseSlug = generateSlug(data.title);
 
-    // Vérifier si le slug existe déjà et ajouter un suffixe si nécessaire
     let finalSlug = baseSlug;
     let counter = 1;
 

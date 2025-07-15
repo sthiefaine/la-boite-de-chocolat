@@ -55,6 +55,7 @@ model Film {
 model Saga {
   id          String   @id @default(uuid())
   name        String
+  slug        String   @unique
   description String?
   imgFileName String?
   tmdbId      Int?     @unique // ID TMDB de la saga

@@ -1,0 +1,232 @@
+.main {
+  min-height: 100dvh;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(107, 62, 38, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(166, 124, 82, 0.1) 0%, transparent 50%),
+    linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  padding: 2rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Particules flottantes pour l'effet réseau */
+.main::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, rgba(212, 175, 55, 0.3), transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(107, 62, 38, 0.2), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(166, 124, 82, 0.2), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(212, 175, 55, 0.2), transparent),
+    radial-gradient(2px 2px at 160px 30px, rgba(107, 62, 38, 0.1), transparent);
+  background-repeat: repeat;
+  background-size: 200px 100px;
+  animation: float 20s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  100% {
+    transform: translateY(-100px);
+  }
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.header {
+  margin-bottom: 2rem;
+  padding: 2rem 0;
+  position: relative;
+}
+
+.headerContent {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.titleSection {
+  flex: 1;
+  text-align: left;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--chocolate-primary);
+  margin: 0 0 0.5rem 0;
+  text-shadow: 0 4px 8px rgba(107, 62, 38, 0.2);
+  background: linear-gradient(135deg, var(--chocolate-primary), var(--chocolate-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--chocolate-secondary);
+  margin: 0;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.statsCompact {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1rem 1.5rem;
+  min-width: 300px;
+}
+
+.statCompact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.statDivider {
+  width: 1px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--chocolate-primary);
+  text-shadow: 0 2px 4px rgba(107, 62, 38, 0.2);
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  color: var(--chocolate-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+
+
+.sagasGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 2rem 0;
+}
+
+.sagaCardWrapper {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main {
+    padding: 1rem 0;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
+  .header {
+    margin-bottom: 1.5rem;
+    padding: 1.5rem 0;
+  }
+
+  .titleRow {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .titleSection {
+    text-align: center;
+  }
+
+  .statsCompact {
+    min-width: 250px;
+    padding: 0.75rem 1rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .sagasGrid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .sagasGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0.5rem 0;
+  }
+
+  .titleRow {
+    gap: 0.75rem;
+  }
+
+  .statsCompact {
+    min-width: 200px;
+    padding: 0.5rem 0.75rem;
+    gap: 1rem;
+  }
+
+  .statValue {
+    font-size: 1.25rem;
+  }
+
+  .statLabel {
+    font-size: 0.7rem;
+  }
+} 
