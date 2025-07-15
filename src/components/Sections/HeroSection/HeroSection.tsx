@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ChocolateBox from "../../ChocolateBox/ChocolateBox";
 import NumberFlow from "../../NumberFlow/NumberFlow";
+import PodcastBackground from "./PodcastBackground";
 import styles from "./HeroSection.module.css";
 import { Episode } from "@/app/page";
 
@@ -13,6 +14,7 @@ export default function HeroSection({ episodes }: HeroSectionProps) {
 
   return (
     <section className={styles.hero}>
+      <PodcastBackground />
       <div className={styles.heroContent}>
         <div className={styles.heroText}>
           <h1 className={styles.heroTitle}>

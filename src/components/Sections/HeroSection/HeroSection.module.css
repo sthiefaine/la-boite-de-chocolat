@@ -17,8 +17,14 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--gradient-hero);
+  background: linear-gradient(
+    135deg,
+    rgba(107, 62, 38, 0.9) 0%,
+    rgba(166, 124, 82, 0.8) 50%,
+    rgba(212, 165, 116, 0.7) 100%
+  );
   pointer-events: none;
+  z-index: 1;
 }
 
 .heroContent {
@@ -31,7 +37,7 @@
   justify-content: space-between;
   gap: 4rem;
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 .heroText {
@@ -48,7 +54,7 @@
   line-height: 1.1;
   margin-bottom: 2rem;
   color: var(--text-primary);
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
   position: relative;
   letter-spacing: -0.02em;
 }
@@ -56,14 +62,15 @@
 .heroSubtitle {
   display: block;
   font-size: 1.5rem;
-  font-weight: 400;
+  font-weight: 500;
   margin-top: 1rem;
-  opacity: 0.8;
-  color: var(--text-secondary);
+  opacity: 0.95;
+  color: var(--text-white);
   line-height: 1.4;
   position: relative;
   padding: 0.5rem 0;
   font-style: italic;
+  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .heroSubtitle::first-letter {
