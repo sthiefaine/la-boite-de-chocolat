@@ -116,21 +116,21 @@ export default function RatingStars({
   };
 
   const getRatingVariant = (ratingNumber: number) => {
-    const currentRating = hoverRating || optimisticRating;
+    const currentRating = hoverRating || optimisticRating || userRating;
 
     if (currentRating && ratingNumber <= currentRating) {
       // Note maximale (5) = chocolat doré
       if (ratingNumber === 5 && currentRating === 5) {
-        return 'golden';
+        return "golden";
       }
       // Note minimale (1) = caramel
       if (ratingNumber === 1 && currentRating === 1) {
-        return 'caramel';
+        return "caramel";
       }
-      return 'filled';
+      return "filled";
     }
 
-    return 'empty';
+    return "empty";
   };
 
   const getRatingText = (rating: number) => {
@@ -163,20 +163,22 @@ export default function RatingStars({
         )}
       </div>
 
-      <div className={styles.ratingButtonsContainer}>
+      <div
+        className={styles.ratingButtonsContainer}
+        onMouseLeave={handleRatingLeave}
+      >
         {[1, 2, 3, 4, 5].map((rating) => (
           <button
             key={rating}
             className={styles.ratingButton}
-            onClick={() => handleRatingClick(rating)}
+            onClick={() => session?.user && handleRatingClick(rating)}
             onMouseEnter={() => handleRatingHover(rating)}
-            onMouseLeave={handleRatingLeave}
-            disabled={isPending || !session?.user}
+            disabled={isPending}
             title={
               session?.user
-                ? `${rating} ${rating === 1 ? "caramel" : "chocolat"}${rating > 1 ? "s" : ""} - ${getRatingText(
-                    rating
-                  )}`
+                ? `${rating} ${rating === 1 ? "caramel" : "chocolat"}${
+                    rating > 1 ? "s" : ""
+                  } - ${getRatingText(rating)}`
                 : "Connectez-vous pour noter"
             }
             aria-label={
@@ -192,11 +194,14 @@ export default function RatingStars({
 
       <div className={styles.ratingInfo}>
         {!session?.user ? (
-          <span className={styles.infoText}>Connectez-vous pour noter l'épisode</span>
+          <span className={styles.infoText}>
+            Connectez-vous pour noter l'épisode
+          </span>
         ) : optimisticRating ? (
           <span className={styles.infoText}>
             {optimisticRating === 1 && "Vous avez mis 1 caramel."}
-            {optimisticRating > 1 && `Vous avez mis ${optimisticRating} chocolats.`}
+            {optimisticRating > 1 &&
+              `Vous avez mis ${optimisticRating} chocolats.`}
             <button
               onClick={handleRemoveRating}
               disabled={isPending}
