@@ -40,12 +40,11 @@ export async function generateStaticParams() {
 export default async function EpisodePage({ params }: EpisodePageProps) {
   const { slug } = await params;
 
-  const [episodeResult, finalNavigationResult, session] =
-    await Promise.all([
-      getEpisodeBySlugCached(slug),
-      getEpisodeNavigation(slug),
-      getSession(),
-    ]);
+  const [episodeResult, finalNavigationResult, session] = await Promise.all([
+    getEpisodeBySlugCached(slug),
+    getEpisodeNavigation(slug),
+    getSession(),
+  ]);
 
   if (!episodeResult) {
     notFound();
@@ -72,10 +71,10 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
 
   return (
     <>
-        <PodcastJsonLd
-          episode={episode}
-          canonicalUrl={`${SITE_URL}/podcast/${episode.slug}`}
-        />
+      <PodcastJsonLd
+        episode={episode}
+        canonicalUrl={`${SITE_URL}/podcast/${episode.slug}`}
+      />
       <div className={styles.container}>
         <EpisodeHeader
           episode={episode}
@@ -91,10 +90,7 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
         />
 
         {saga && sagaResult && (
-          <EpisodeSaga
-            saga={saga}
-            sagaResult={sagaResult}
-          />
+          <EpisodeSaga saga={saga} sagaResult={sagaResult} />
         )}
       </div>
     </>

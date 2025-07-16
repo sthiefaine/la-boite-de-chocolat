@@ -33,7 +33,6 @@ export function PodcastBackgroundAnimation({
 
     const shuffledImages = shuffleArray(images);
 
-    // Augmenter le nombre d'images pour couvrir toute la surface
     const repeated = [];
     for (let i = 0; i < 100; i++) {
       repeated.push(shuffledImages[i % shuffledImages.length]);
@@ -61,7 +60,7 @@ export function PodcastBackgroundAnimation({
                   sizes="80px"
                   quality={IMAGE_CONFIG.defaultQuality}
                   placeholder="blur"
-                  priority={index < 10} // Priorité pour les 10 premières images
+                  priority={index < 10}
                   blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;

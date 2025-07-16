@@ -116,7 +116,12 @@ export default function RatingStars({
   };
 
   const getRatingVariant = (ratingNumber: number) => {
-    const currentRating = hoverRating || optimisticRating || userRating;
+    const currentRating =
+      hoverRating ||
+      stats?.averageRating ||
+      optimisticRating ||
+      userRating ||
+      0;
 
     if (currentRating && ratingNumber <= currentRating) {
       // Note maximale (5) = chocolat doré
@@ -167,29 +172,31 @@ export default function RatingStars({
         className={styles.ratingButtonsContainer}
         onMouseLeave={handleRatingLeave}
       >
-        {[1, 2, 3, 4, 5].map((rating) => (
-          <button
-            key={rating}
-            className={styles.ratingButton}
-            onClick={() => session?.user && handleRatingClick(rating)}
-            onMouseEnter={() => handleRatingHover(rating)}
-            disabled={isPending}
-            title={
-              session?.user
-                ? `${rating} ${rating === 1 ? "caramel" : "chocolat"}${
-                    rating > 1 ? "s" : ""
-                  } - ${getRatingText(rating)}`
-                : "Connectez-vous pour noter"
-            }
-            aria-label={
-              session?.user
-                ? `Noter ${rating} chocolat${rating > 1 ? "s" : ""}`
-                : "Connectez-vous pour noter"
-            }
-          >
-            <RatingIcon variant={getRatingVariant(rating)} />
-          </button>
-        ))}
+        {[1, 2, 3, 4, 5].map((rating) => {
+          return (
+            <button
+              key={rating}
+              className={styles.ratingButton}
+              onClick={() => session?.user && handleRatingClick(rating)}
+              onMouseEnter={() => handleRatingHover(rating)}
+              disabled={isPending}
+              title={
+                session?.user
+                  ? `${rating} ${rating === 1 ? "caramel" : "chocolat"}${
+                      rating > 1 ? "s" : ""
+                    } - ${getRatingText(rating)}`
+                  : "Connectez-vous pour noter"
+              }
+              aria-label={
+                session?.user
+                  ? `Noter ${rating} chocolat${rating > 1 ? "s" : ""}`
+                  : "Connectez-vous pour noter"
+              }
+            >
+              <RatingIcon variant={getRatingVariant(rating)} />
+            </button>
+          );
+        })}
       </div>
 
       <div className={styles.ratingInfo}>

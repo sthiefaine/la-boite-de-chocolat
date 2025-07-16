@@ -119,7 +119,6 @@ export const Player = () => {
   );
 
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [hasInteracted, setHasInteracted] = useState(false);
   useMediaSession(episode);
   const [showQueue, setShowQueue] = useState(false);
   const backgroundColor = useBackgroundColor(episode?.img);
@@ -148,18 +147,16 @@ export const Player = () => {
     if (!audioElement) return;
     if (!isPlaying) {
       audioElement.pause();
-    } else if (hasInteracted) {
+    } else {
       audioElement.play().catch(() => {
         setIsPlaying(false);
       });
     }
-  }, [isPlaying, hasInteracted, setIsPlaying]);
+  }, [isPlaying, setIsPlaying]);
 
   const togglePlay = () => {
     const audioElement = audioRef.current;
     if (!audioElement) return;
-
-    setHasInteracted(true);
 
     if (isPlaying) {
       audioElement.pause();
@@ -185,7 +182,6 @@ export const Player = () => {
     if (nextEpisode) {
       setEpisode(nextEpisode);
       setCurrentIndex(currentIndex + 1);
-      setHasInteracted(true);
       setIsPlaying(true);
     }
   };
@@ -195,7 +191,6 @@ export const Player = () => {
     if (previousEpisode) {
       setEpisode(previousEpisode);
       setCurrentIndex(currentIndex - 1);
-      setHasInteracted(true);
       setIsPlaying(true);
     }
   };
@@ -246,7 +241,6 @@ export const Player = () => {
           if (firstEpisode) {
             setEpisode(firstEpisode);
             removeFirstEpisode();
-            setHasInteracted(true);
             setIsPlaying(true);
           }
         }}

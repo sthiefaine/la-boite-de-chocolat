@@ -4,7 +4,10 @@ import Image from "next/image";
 import { Suspense } from "react";
 import { IMAGE_CONFIG } from "@/helpers/imageConfig";
 import { SITE_URL } from "@/helpers/config";
-import { truncateText, formatEpisodeDescription } from "@/helpers/podcastHelpers";
+import {
+  truncateText,
+  formatEpisodeDescription,
+} from "@/helpers/podcastHelpers";
 import { EpisodePlayerButton } from "@/components/Episode/EpisodePlayerButton/EpisodePlayerButton";
 import { AddToQueueButton } from "@/components/Queue/AddToQueueButton";
 import { ShareButton } from "@/components/ShareButton/ShareButton";
@@ -186,9 +189,9 @@ export default async function EpisodeHeader({
           {/* Rating System */}
           <div className={styles.ratingSection}>
             <Suspense fallback={<RatingStarsSkeleton />}>
-              <RatingStars 
-                episodeId={episode.id} 
-                episodeSlug={episode.slug ?? ""} 
+              <RatingStars
+                episodeId={episode.id}
+                episodeSlug={episode.slug ?? ""}
                 userRating={userRating}
                 stats={ratingStats}
               />
