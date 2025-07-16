@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth/auth-client";
 import styles from "./GoogleButton.module.css";
 
@@ -10,6 +11,8 @@ interface GoogleButtonProps {
 
 export default function GoogleButton({ disabled = false }: GoogleButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
 
   const handleGoogleAuth = async () => {
     if (disabled || isLoading) return;
@@ -18,6 +21,7 @@ export default function GoogleButton({ disabled = false }: GoogleButtonProps) {
     try {
       await authClient.signIn.social({
         provider: "google",
+        callbackURL: callbackUrl || "/",
       });
     } catch (error) {
       console.error("Erreur lors de l'authentification Google:", error);

@@ -2,16 +2,17 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import styles from "./Header.module.css";
 import { User } from "@/lib/auth/auth-client";
+import { signOutAction } from "@/app/actions/auth";
 
 interface MobileMenuProps {
   user?: User;
-  onSignOut: () => Promise<void>;
 }
 
-export function MobileMenu({ user, onSignOut }: MobileMenuProps) {
+export function MobileMenu({ user }: MobileMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -81,7 +82,6 @@ export function MobileMenu({ user, onSignOut }: MobileMenuProps) {
             className={styles.mobileNavLink}
             onLinkClick={handleLinkClick}
             user={user}
-            onSignOut={onSignOut}
           />
         </nav>
       )}
@@ -113,16 +113,22 @@ function MobileAuthButton({
   className,
   onLinkClick,
   user,
-  onSignOut,
 }: {
   className: string;
   onLinkClick: () => void;
   user?: User;
-  onSignOut: () => Promise<void>;
 }) {
+  const pathname = usePathname();
+
   if (!user) {
+    // Construire l'URL avec la callbackUrl
+    const signInUrl =
+      pathname === "/"
+        ? "/signin"
+        : `/signin?callbackUrl=${encodeURIComponent(pathname)}`;
+
     return (
-      <Link href="/signin" className={className} onClick={onLinkClick}>
+      <Link href={signInUrl} className={className} onClick={onLinkClick}>
         Connexion
       </Link>
     );
@@ -130,8 +136,13 @@ function MobileAuthButton({
 
   const handleSignOut = async () => {
     try {
-      onLinkClick(); 
-      await onSignOut();
+      onLinkClick();
+      const result = await signOutAction(pathname);
+
+      // Si on doit rafraîchir la page (pages normales)
+      if (result?.shouldRefresh) {
+        window.location.reload();
+      }
     } catch (error) {
       console.error("Erreur lors de la déconnexion:", error);
     }

@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useActionState } from "react";
 import { useEffect, useState } from "react";
 import styles from "./SignUpForm.module.css";
@@ -15,6 +15,8 @@ type SignUpState = {
 
 export default function SignUpForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   const [formData, setFormData] = useState({
     email: "",
@@ -37,10 +39,10 @@ export default function SignUpForm() {
         confirmPassword: "",
       });
       setTimeout(() => {
-        router.push("/");
+        router.push(callbackUrl);
       }, 100);
     }
-  }, [state.success, router]);
+  }, [state.success, router, callbackUrl]);
 
   return (
     <>

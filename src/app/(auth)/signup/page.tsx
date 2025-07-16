@@ -1,9 +1,9 @@
 "use client";
-import Link from "next/link";
 import { Suspense } from "react";
 import styles from "../AuthPage.module.css";
 import SignUpForm from "@/components/Form/SignUpForm";
 import FormSkeleton from "@/components/Form/FormSkeleton";
+import CallbackUrlLink from "@/components/Form/CallbackUrlLink";
 
 export default function SignUpPage() {
   return (
@@ -16,9 +16,9 @@ export default function SignUpPage() {
         </Suspense>
 
         <div className={styles.links}>
-          <Link href="/signin" className={styles.link}>
+          <CallbackUrlLink href="/signin" className={styles.link}>
             Déjà un compte ? Se connecter
-          </Link>
+          </CallbackUrlLink>
         </div>
       </div>
     </div>

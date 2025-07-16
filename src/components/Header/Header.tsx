@@ -3,11 +3,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { Suspense } from "react";
 import { getUser } from "@/lib/auth/auth-server";
-import { auth } from "@/lib/auth/auth";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import { MobileMenu } from "./MobileMenu";
-import { isAdminRole } from "@/lib/auth/auth-helpers";
+import AuthButtonClient from "./AuthButtonClient";
+
 import styles from "./Header.module.css";
 
 
@@ -19,14 +17,6 @@ const ButtonSkeleton = ({ className }: { className: string }) => (
 
 export default async function Header() {
   const user = await getUser();
-
-  async function signOutAction() {
-    "use server";
-    await auth.api.signOut({
-      headers: await headers(),
-    });
-    redirect("/signin");
-  }
 
   return (
     <header className={styles.header}>
@@ -58,11 +48,14 @@ export default async function Header() {
             <ProfileLinkConditional className={styles.navLink} />
           </Suspense>
           <Suspense fallback={<ButtonSkeleton className={styles.navLink} />}>
-            <AuthButton className={styles.navLink} />
+            <AuthButtonClient 
+              className={styles.navLink} 
+              isAuthenticated={!!user}
+            />
           </Suspense>
         </nav>
 
-        <MobileMenu user={user} onSignOut={signOutAction} />
+        <MobileMenu user={user} />
       </div>
     </header>
   );
@@ -86,34 +79,4 @@ export const ProfileLinkConditional = async ({
   );
 };
 
-export const AuthButton = async ({
-  className,
-}: {
-  className?: string;
-}) => {
-  const user = await getUser();
 
-  if (!user) {
-    return (
-      <Link href="/signin" className={className}>
-        Connexion
-      </Link>
-    );
-  }
-
-  async function signOutAction() {
-    "use server";
-    await auth.api.signOut({
-      headers: await headers(),
-    });
-    redirect("/signin");
-  }
-
-  return (
-    <form action={signOutAction}>
-      <button type="submit" className={className}>
-        Déconnexion
-      </button>
-    </form>
-  );
-};
