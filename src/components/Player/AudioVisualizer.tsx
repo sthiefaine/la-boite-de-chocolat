@@ -24,7 +24,6 @@ export const AudioVisualizer = ({
   const [bars, setBars] = useState<WaveformBar[]>([]);
   const animationRef = useRef<number>(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const lastProgressRef = useRef<number>(0);
 
   const generateWaveform = useCallback(() => {
     const barCount = Math.max(

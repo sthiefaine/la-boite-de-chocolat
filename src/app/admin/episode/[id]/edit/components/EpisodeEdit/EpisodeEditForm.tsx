@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { formatEpisodeDescription } from "@/lib/podcastHelpers";
-import { PODCAST_GENRES, AGE_RATINGS, AGE_RATING_LABELS } from "@/lib/helpers";
+import { formatEpisodeDescription } from "@/helpers/podcastHelpers";
+import { PODCAST_GENRES, AGE_RATINGS, AGE_RATING_LABELS } from "@/helpers/helpers";
 import FileUpload from "./FileUpload";
 import styles from "./EpisodeEditForm.module.css";
 

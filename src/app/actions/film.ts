@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { put } from "@vercel/blob";
-import { generateSlug } from "@/lib/podcastHelpers";
+import { generateSlug } from "@/helpers/podcastHelpers";
 
 interface TMDBMovie {
   id: number;

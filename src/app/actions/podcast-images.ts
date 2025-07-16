@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { getVercelBlobUrl } from "@/lib/imageConfig";
+import { getVercelBlobUrl } from "@/helpers/imageConfig";
 
 export interface PodcastImage {
   id: string;

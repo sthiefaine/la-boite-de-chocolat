@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { IMAGE_CONFIG } from "@/lib/imageConfig";
+import { IMAGE_CONFIG } from "@/helpers/imageConfig";
 import styles from "./SagaCard.module.css";
 
 const getStaticImageUrl = (imgFileName: string) => {

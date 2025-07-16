@@ -12,7 +12,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { useShallow } from "zustand/shallow";
-import { IMAGE_CONFIG, getVercelBlobUrl } from "@/lib/imageConfig";
+import { IMAGE_CONFIG, getVercelBlobUrl } from "@/helpers/imageConfig";
 import styles from "./PlayerBar.module.css";
 
 interface PlayerQueueProps {

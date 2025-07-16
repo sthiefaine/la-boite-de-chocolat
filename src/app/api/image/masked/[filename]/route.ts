@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getVercelBlobUrl } from "@/lib/imageConfig";
+import { getVercelBlobUrl } from "@/helpers/imageConfig";
 import sharp from "sharp";
 
 export async function GET(

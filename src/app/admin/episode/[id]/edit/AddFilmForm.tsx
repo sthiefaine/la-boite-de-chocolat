@@ -10,8 +10,8 @@ import {
   getMovieCollection,
   checkFilmExists,
 } from "@/app/actions/film";
-import { getVercelBlobUrl } from "@/lib/imageConfig";
-import { AGE_RATINGS } from "@/lib/helpers";
+import { getVercelBlobUrl } from "@/helpers/imageConfig";
+import { AGE_RATINGS } from "@/helpers/helpers";
 import styles from "./AddFilmForm.module.css";
 
 interface AddFilmFormProps {

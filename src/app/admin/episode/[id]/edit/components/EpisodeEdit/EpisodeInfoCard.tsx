@@ -1,6 +1,6 @@
 "use client";
 
-import { formatDuration } from "@/lib/podcastHelpers";
+import { formatDuration } from "@/helpers/podcastHelpers";
 import styles from "./EpisodeInfoCard.module.css";
 
 interface Film {

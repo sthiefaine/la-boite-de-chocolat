@@ -1,9 +1,9 @@
 "use client";
-import { getAverageRGB } from "@/lib/helpers";
+import { getAverageRGB } from "@/helpers/helpers";
 import { usePlayerStore } from "@/lib/store/player";
 import { useQueueStore } from "@/lib/store/queue";
 import { useOptionsStore } from "@/lib/store/options";
-import { getVercelBlobUrl } from "@/lib/imageConfig";
+import { getVercelBlobUrl } from "@/helpers/imageConfig";
 import {
   CircleX,
   Eye,

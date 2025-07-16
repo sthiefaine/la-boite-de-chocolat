@@ -1,7 +1,7 @@
 import Parser from "rss-parser";
 import { prisma } from "@/lib/prisma";
-import { generateSlug } from "@/lib/podcastHelpers";
-import { allowedHours, shouldRunImport } from "@/lib/timeHelpers";
+import { generateSlug } from "@/helpers/podcastHelpers";
+import { allowedHours, shouldRunImport } from "@/helpers/timeHelpers";
 
 const parser = new Parser();
 

@@ -10,13 +10,13 @@ export default function RatingStarsSkeleton() {
           <div className={styles.totalSkeleton}></div>
         </div>
       </div>
-      
+
       <div className={styles.starsSkeleton}>
         {[1, 2, 3, 4, 5].map((star) => (
           <div key={star} className={styles.starSkeleton}></div>
         ))}
       </div>
-      
+
       <div className={styles.infoSkeleton}></div>
     </div>
   );

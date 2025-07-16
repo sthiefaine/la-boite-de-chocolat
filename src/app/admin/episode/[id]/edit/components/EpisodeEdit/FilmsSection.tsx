@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import styles from "./FilmsSection.module.css";
-import { getVercelBlobUrl } from "@/lib/imageConfig";
+import { getVercelBlobUrl } from "@/helpers/imageConfig";
 
 interface Film {
   id: string;

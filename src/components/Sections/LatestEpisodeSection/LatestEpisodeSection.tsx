@@ -1,11 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
-import { IMAGE_CONFIG, getVercelBlobUrl } from "@/lib/imageConfig";
+import { IMAGE_CONFIG, getVercelBlobUrl } from "@/helpers/imageConfig";
 import {
   formatEpisodeDescription,
   formatDuration,
   truncateToLines,
-} from "@/lib/podcastHelpers";
+} from "@/helpers/podcastHelpers";
 import { EpisodePlayerButton } from "@/components/Episode/EpisodePlayerButton/EpisodePlayerButton";
 import styles from "./LatestEpisodeSection.module.css";
 import { LatestEpisodeData } from "@/app/page";

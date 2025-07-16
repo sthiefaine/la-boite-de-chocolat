@@ -1,5 +1,5 @@
 "use server";
-import { SITE_URL } from "@/lib/config";
+import { SITE_URL } from "@/helpers/config";
 import { getMaskedImageUrl } from "@/app/actions/image";
 
 export interface Episode {

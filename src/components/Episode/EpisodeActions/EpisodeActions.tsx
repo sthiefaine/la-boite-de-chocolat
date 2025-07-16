@@ -4,7 +4,7 @@ import { EpisodePlayerButton } from "@/components/Episode/EpisodePlayerButton/Ep
 import { AddToQueueButton } from "@/components/Queue/AddToQueueButton";
 import { ShareButton } from "@/components/ShareButton/ShareButton";
 import ButtonSkeleton from "@/components/Button/ButtonSkeleton";
-import { SITE_URL } from "@/lib/config";
+import { SITE_URL } from "@/helpers/config";
 import styles from "./EpisodeActions.module.css";
 
 interface EpisodeActionsProps {

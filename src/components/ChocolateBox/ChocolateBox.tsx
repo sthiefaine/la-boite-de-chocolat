@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PODCAST_URLS, SOCIAL_URLS, CONTACT_URLS } from "../../lib/config";
+import { PODCAST_URLS, SOCIAL_URLS, CONTACT_URLS } from "../../helpers/config";
 import styles from "./ChocolateBox.module.css";
 import { usePlayerStore } from "@/lib/store/player";
 import { useShallow } from "zustand/shallow";

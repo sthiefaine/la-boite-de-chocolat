@@ -1,6 +1,6 @@
 "use server";
 
-import { getVercelBlobUrl } from "@/lib/imageConfig";
+import { getVercelBlobUrl } from "@/helpers/imageConfig";
 
 export async function getMaskedImageUrl(
   imgFileName: string | null,

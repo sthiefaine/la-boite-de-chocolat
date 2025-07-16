@@ -8,7 +8,7 @@ import {
   EpisodeContent,
   DefaultTemplate,
 } from "@/components/OGImageLayout/OGImageLayout";
-import { SITE_URL } from "@/lib/config";
+import { SITE_URL } from "@/helpers/config";
 import { EpisodeData } from "@/app/api/episode/[slug]/route";
 
 export const contentType = "image/png";

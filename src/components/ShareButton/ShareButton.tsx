@@ -58,6 +58,7 @@ export function ShareButton({ title, url, className = "" }: ShareButtonProps) {
       onClick={handleShare}
       className={`${styles.shareButton} ${className}`}
       aria-label="Partager cet épisode"
+      title="Double-cliquez pour copier le lien"
     >
       <span className={styles.buttonIcon}>
         {isCopied ? <Check size={16} /> : <Share2 size={16} />}

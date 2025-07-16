@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { uploadPodcastPoster } from "@/app/actions/episode";
-import { getVercelBlobUrl } from "@/lib/imageConfig";
+import { getVercelBlobUrl } from "@/helpers/imageConfig";
 import styles from "./FileUpload.module.css";
 
 interface FileUploadProps {

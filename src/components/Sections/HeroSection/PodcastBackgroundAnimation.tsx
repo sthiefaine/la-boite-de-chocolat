@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { IMAGE_CONFIG } from "@/lib/imageConfig";
+import { IMAGE_CONFIG } from "@/helpers/imageConfig";
 import styles from "./PodcastBackground.module.css";
 import { useEffect, useState } from "react";
 

@@ -1,11 +1,11 @@
 "use server";
 
 import { cache } from "react";
-import { PODCAST_CATEGORIES } from "@/lib/helpers";
+import { PODCAST_CATEGORIES } from "@/helpers/helpers";
 import { prisma } from "@/lib/prisma";
 import { put } from "@vercel/blob";
 import { getMaskedImageUrl } from "@/app/actions/image";
-import { getVercelBlobUrl } from "@/lib/imageConfig";
+import { getVercelBlobUrl } from "@/helpers/imageConfig";
 
 export async function getEpisodeBySlug(slug: string) {
   try {

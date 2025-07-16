@@ -5,7 +5,7 @@ import { getSagaWithFilmsAndEpisodes } from "../../actions/saga";
 import { notFound } from "next/navigation";
 import FilmCard from "@/components/Cards/FilmCard/FilmCard";
 import Image from "next/image";
-import { getVercelBlobUrl } from "@/lib/imageConfig";
+import { getVercelBlobUrl } from "@/helpers/imageConfig";
 import styles from "./SagaDetailPage.module.css";
 
 interface SagaDetailPageProps {

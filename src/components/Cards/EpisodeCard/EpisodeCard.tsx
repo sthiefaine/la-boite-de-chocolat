@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { formatDuration } from "@/lib/podcastHelpers";
-import { IMAGE_CONFIG } from "@/lib/imageConfig";
+import { formatDuration } from "@/helpers/podcastHelpers";
+import { IMAGE_CONFIG } from "@/helpers/imageConfig";
 import styles from "./EpisodeCard.module.css";
 
 interface ImageConfig {

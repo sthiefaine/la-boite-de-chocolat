@@ -1,5 +1,5 @@
 import { Metadata, Viewport } from "next";
-import { SITE_URL } from "@/lib/config";
+import { SITE_URL } from "@/helpers/config";
 import { getEpisodeBySlugCached } from "@/app/actions/episode";
 
 interface PodcastPageProps {

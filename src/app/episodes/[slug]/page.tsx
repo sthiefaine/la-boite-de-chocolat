@@ -12,7 +12,7 @@ import { getSagaWithFilmsAndEpisodes } from "@/app/actions/saga";
 import { getEpisodeRatingStats } from "@/app/actions/rating";
 import { getSession } from "@/lib/auth/auth-server";
 import { PodcastJsonLd } from "./json-ld";
-import { SITE_URL } from "@/lib/config";
+import { SITE_URL } from "@/helpers/config";
 import EpisodeHeader from "@/components/Episode/EpisodeHeader/EpisodeHeader";
 import EpisodeNavigation from "@/components/Episode/EpisodeNavigation/EpisodeNavigation";
 import EpisodeSaga from "@/components/Episode/EpisodeSaga/EpisodeSaga";

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { getVercelBlobUrl } from "@/lib/imageConfig";
+import { getVercelBlobUrl } from "@/helpers/imageConfig";
 import { getAllFilms } from "@/app/actions/film";
 import { linkEpisodeToFilm } from "@/app/actions/episode";
 import styles from "./LinkFilmForm.module.css";

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { IMAGE_CONFIG } from "@/lib/imageConfig";
+import { IMAGE_CONFIG } from "@/helpers/imageConfig";
 
 interface OptimizedImageProps {
   src: string;
