@@ -33,8 +33,9 @@ export function PodcastBackgroundAnimation({
 
     const shuffledImages = shuffleArray(images);
 
+    // Augmenter le nombre d'images pour couvrir toute la surface
     const repeated = [];
-    for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < 100; i++) {
       repeated.push(shuffledImages[i % shuffledImages.length]);
     }
 
@@ -46,7 +47,7 @@ export function PodcastBackgroundAnimation({
       <div className={styles.headerScroll}>
         <div className={styles.gridContainer}>
           {/* Afficher les images non mélangées pendant le chargement */}
-          {Array.from({ length: 200 }, (_, index) => {
+          {Array.from({ length: 60 }, (_, index) => {
             const images =
               podcastImages.length > 0 ? podcastImages : fallbackImages;
             const image = images[index % images.length];
@@ -57,10 +58,10 @@ export function PodcastBackgroundAnimation({
                   alt=""
                   fill
                   className={styles.image33}
-                  sizes="120px"
+                  sizes="80px"
                   quality={IMAGE_CONFIG.defaultQuality}
                   placeholder="blur"
-                  priority
+                  priority={index < 10} // Priorité pour les 10 premières images
                   blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
@@ -86,10 +87,10 @@ export function PodcastBackgroundAnimation({
               alt=""
               fill
               className={styles.image33}
-              sizes="120px"
+              sizes="80px"
               quality={IMAGE_CONFIG.defaultQuality}
               placeholder="blur"
-              priority
+              priority={index < 10} // Priorité pour les 10 premières images
               blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
               onError={(e) => {
                 const target = e.target as HTMLImageElement;

@@ -12,12 +12,11 @@ const fallbackImages = [
 export default async function PodcastBackground() {
   let podcastImages: string[] = [];
 
-  try {
     const episodes = await getPodcastImagesByFeed("la-boite-de-chocolat");
     const imageUrls = await getPodcastImageUrls(episodes);
     podcastImages = imageUrls.length > 0 ? imageUrls : fallbackImages;
-  } catch (error) {
-    console.error("Erreur lors de la récupération des images:", error);
+
+  if (podcastImages.length === 0) {
     podcastImages = fallbackImages;
   }
 
