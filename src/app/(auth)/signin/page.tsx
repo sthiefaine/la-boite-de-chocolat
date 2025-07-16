@@ -1,8 +1,6 @@
-import { Suspense } from "react";
 import styles from "../AuthPage.module.css";
-import SignInForm from "@/components/Form/SignInForm";
-import FormSkeleton from "@/components/Form/FormSkeleton";
-import CallbackUrlLink from "@/components/Form/CallbackUrlLink";
+import SignInFormWrapper from "@/components/Form/SignInFormWrapper";
+import CallbackUrlLinkWrapper from "@/components/Form/CallbackUrlLinkWrapper";
 
 export default function SignInPage() {
   return (
@@ -10,14 +8,12 @@ export default function SignInPage() {
       <div className={styles.formContainer}>
         <h1 className={styles.title}>Connexion</h1>
 
-        <Suspense fallback={<FormSkeleton fields={2} />}>
-          <SignInForm />
-        </Suspense>
+        <SignInFormWrapper />
 
         <div className={styles.links}>
-          <CallbackUrlLink href="/signup" className={styles.link}>
+          <CallbackUrlLinkWrapper href="/signup" className={styles.link}>
             Pas encore de compte ? S'inscrire
-          </CallbackUrlLink>
+          </CallbackUrlLinkWrapper>
         </div>
       </div>
     </div>
