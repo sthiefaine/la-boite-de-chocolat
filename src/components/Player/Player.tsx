@@ -119,6 +119,7 @@ export const Player = () => {
   );
 
   const audioRef = useRef<HTMLAudioElement>(null);
+  const [hasInteracted, setHasInteracted] = useState(false);
   useMediaSession(episode);
   const [showQueue, setShowQueue] = useState(false);
   const backgroundColor = useBackgroundColor(episode?.img);
@@ -128,24 +129,44 @@ export const Player = () => {
 
   useEffect(() => {
     const audioElement = audioRef.current;
+    if (!audioElement) return;
+    const isRefresh = !sessionStorage.getItem("playerInitialized");
+    if (isRefresh) {
+      sessionStorage.setItem("playerInitialized", "true");
+      setIsPlaying(false);
+      audioElement.pause();
+    }
+
+    return () => {
+      sessionStorage.removeItem("playerInitialized");
+    };
+  }, [setIsPlaying]);
+
+  useEffect(() => {
+    const audioElement = audioRef.current;
 
     if (!audioElement) return;
     if (!isPlaying) {
       audioElement.pause();
-    } else {
-      audioElement.play();
+    } else if (hasInteracted) {
+      audioElement.play().catch(() => {
+        setIsPlaying(false);
+      });
     }
-  }, [isPlaying]);
+  }, [isPlaying, hasInteracted, setIsPlaying]);
 
   const togglePlay = () => {
     const audioElement = audioRef.current;
-
     if (!audioElement) return;
+
+    setHasInteracted(true);
 
     if (isPlaying) {
       audioElement.pause();
     } else {
-      audioElement.play();
+      audioElement.play().catch(() => {
+        setIsPlaying(false);
+      });
     }
 
     setIsPlaying(!isPlaying);
@@ -164,6 +185,7 @@ export const Player = () => {
     if (nextEpisode) {
       setEpisode(nextEpisode);
       setCurrentIndex(currentIndex + 1);
+      setHasInteracted(true);
       setIsPlaying(true);
     }
   };
@@ -173,6 +195,7 @@ export const Player = () => {
     if (previousEpisode) {
       setEpisode(previousEpisode);
       setCurrentIndex(currentIndex - 1);
+      setHasInteracted(true);
       setIsPlaying(true);
     }
   };
@@ -223,12 +246,12 @@ export const Player = () => {
           if (firstEpisode) {
             setEpisode(firstEpisode);
             removeFirstEpisode();
+            setHasInteracted(true);
             setIsPlaying(true);
           }
         }}
         ref={audioRef}
         src={episode?.url}
-        autoPlay={true}
         preload="metadata"
         id="audio"
       />
