@@ -54,7 +54,7 @@
   line-height: 1.1;
   margin-bottom: 2rem;
   color: var(--text-primary);
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 4px 12px rgba(215, 215, 215, 0.4), 0 2px 8px rgba(179, 179, 179, 0.3);
   position: relative;
   letter-spacing: -0.02em;
 }
