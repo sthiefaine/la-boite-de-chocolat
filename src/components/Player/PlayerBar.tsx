@@ -1,7 +1,9 @@
 "use client";
-import { useEffect, useState, RefObject } from "react";
+import { useEffect, RefObject } from "react";
+import { useShallow } from "zustand/react/shallow";
 import styles from "./PlayerBar.module.css";
 import { AudioVisualizer } from "./AudioVisualizer";
+import { usePlayerStore } from "@/lib/store/player";
 
 interface PlayerBarProps {
   audioRef: RefObject<HTMLAudioElement | null>;
@@ -9,24 +11,52 @@ interface PlayerBarProps {
 }
 
 export const PlayerBar = ({ audioRef, isPlaying }: PlayerBarProps) => {
-  const [progress, setProgress] = useState(0);
-  const [formattedDuration, setFormattedDuration] = useState("00:00:00");
-  const [formattedDurationTotal, setFormattedDurationTotal] =
-    useState("00:00:00");
-  const [totalDuration, setTotalDuration] = useState(0);
+  const { 
+    setCurrentPlayTime, 
+    setTotalDuration: setStoreTotalDuration, 
+    currentPlayTime, 
+    totalDuration 
+  } = usePlayerStore(
+    useShallow((state) => ({
+      setCurrentPlayTime: state.setCurrentPlayTime,
+      setTotalDuration: state.setTotalDuration,
+      currentPlayTime: state.currentPlayTime,
+      totalDuration: state.totalDuration,
+    }))
+  );
 
+  // Fonction utilitaire pour formater les nombres
+  const padZero = (num: number) => {
+    return num.toString().padStart(2, "0");
+  };
+
+  // Calculer le pourcentage de progression
+  const progress = totalDuration > 0 ? (currentPlayTime / totalDuration) * 100 : 0;
+
+  // Formater les durées
+  const formatTime = (timeInSeconds: number) => {
+    const hours = Math.floor(timeInSeconds / 3600);
+    const minutes = Math.floor((timeInSeconds % 3600) / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+    return `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
+  };
+
+  const formattedDuration = formatTime(currentPlayTime);
+  const formattedDurationTotal = formatTime(totalDuration);
 
   useEffect(() => {
     const audioElement = audioRef.current;
     if (!audioElement) return;
 
+    let lastUpdate = 0;
     const updateProgress = () => {
       const currentTime = audioElement.currentTime;
-      const duration = audioElement.duration;
-
-      if (duration > 0) {
-        const progressPercentage = (currentTime / duration) * 100;
-        setProgress(progressPercentage);
+      const now = Date.now();
+      
+      // Mettre à jour le store seulement toutes les 500ms
+      if (now - lastUpdate >= 500) {
+        setCurrentPlayTime(currentTime);
+        lastUpdate = now;
       }
     };
 
@@ -35,7 +65,9 @@ export const PlayerBar = ({ audioRef, isPlaying }: PlayerBarProps) => {
     return () => {
       audioElement.removeEventListener("timeupdate", updateProgress);
     };
-  }, [audioRef]);
+  }, [audioRef, setCurrentPlayTime]);
+
+
 
   useEffect(() => {
     const audioElement = audioRef.current;
@@ -44,13 +76,7 @@ export const PlayerBar = ({ audioRef, isPlaying }: PlayerBarProps) => {
     const updateDuration = () => {
       const duration = audioElement.duration;
       if (duration > 0) {
-        setTotalDuration(duration);
-        const hours = Math.floor(duration / 3600);
-        const minutes = Math.floor((duration % 3600) / 60);
-        const seconds = Math.floor(duration % 60);
-        setFormattedDurationTotal(
-          `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`
-        );
+        setStoreTotalDuration(duration);
       }
     };
 
@@ -63,34 +89,7 @@ export const PlayerBar = ({ audioRef, isPlaying }: PlayerBarProps) => {
     return () => {
       audioElement.removeEventListener("loadedmetadata", updateDuration);
     };
-  }, [audioRef]);
-
-  useEffect(() => {
-    const audioElement = audioRef.current;
-    if (!audioElement) return;
-
-    const updateCurrentTime = () => {
-      const currentTime = audioElement.currentTime;
-      const hours = Math.floor(currentTime / 3600);
-      const minutes = Math.floor((currentTime % 3600) / 60);
-      const seconds = Math.floor(currentTime % 60);
-      setFormattedDuration(
-        `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`
-      );
-    };
-
-    audioElement.addEventListener("timeupdate", updateCurrentTime);
-
-    return () => {
-      audioElement.removeEventListener("timeupdate", updateCurrentTime);
-    };
-  }, [audioRef]);
-
-
-
-  const padZero = (num: number) => {
-    return num.toString().padStart(2, "0");
-  };
+  }, [audioRef, setStoreTotalDuration]);
 
   const handleProgressBarClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const audioElement = audioRef.current;
@@ -104,6 +103,7 @@ export const PlayerBar = ({ audioRef, isPlaying }: PlayerBarProps) => {
 
     if (!isNaN(newTime) && newTime >= 0) {
       audioElement.currentTime = newTime;
+      setCurrentPlayTime(newTime);
     }
   };
 

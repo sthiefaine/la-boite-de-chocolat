@@ -82,6 +82,8 @@ export const Player = () => {
     setEpisode,
     isMinimized,
     setIsMinimized,
+    currentPlayTime,
+    setCurrentPlayTime,
   } = usePlayerStore(
     useShallow((state) => {
       return {
@@ -92,6 +94,8 @@ export const Player = () => {
         setEpisode: state.setEpisode,
         isMinimized: state.isMinimized,
         setIsMinimized: state.setIsMinimized,
+        currentPlayTime: state.currentPlayTime,
+        setCurrentPlayTime: state.setCurrentPlayTime,
       };
     })
   );
@@ -154,6 +158,32 @@ export const Player = () => {
     }
   }, [isPlaying, setIsPlaying, episode]);
 
+  useEffect(() => {
+    const audioElement = audioRef.current;
+    if (!audioElement || !episode) return;
+    const handleCanPlay = () => {
+      if (currentPlayTime > 0) {
+        audioElement.currentTime = currentPlayTime;
+      } else {
+        audioElement.currentTime = 0;
+      }
+      audioElement.removeEventListener("canplay", handleCanPlay);
+    };
+    if (audioElement.readyState >= 2) {
+      if (currentPlayTime > 0) {
+        audioElement.currentTime = currentPlayTime;
+      } else {
+        audioElement.currentTime = 0;
+      }
+    } else {
+      audioElement.addEventListener("canplay", handleCanPlay);
+    }
+
+    return () => {
+      audioElement.removeEventListener("canplay", handleCanPlay);
+    };
+  }, [episode]);
+
   const togglePlay = () => {
     const audioElement = audioRef.current;
     if (!audioElement) return;
@@ -182,6 +212,13 @@ export const Player = () => {
     if (nextEpisode) {
       setEpisode(nextEpisode);
       setCurrentIndex(currentIndex + 1);
+      setCurrentPlayTime(0);
+
+      const audioElement = audioRef.current;
+      if (audioElement && audioElement.readyState >= 2) {
+        audioElement.currentTime = 0;
+      }
+
       setIsPlaying(true);
     }
   };
@@ -191,6 +228,12 @@ export const Player = () => {
     if (previousEpisode) {
       setEpisode(previousEpisode);
       setCurrentIndex(currentIndex - 1);
+      setCurrentPlayTime(0);
+      const audioElement = audioRef.current;
+      if (audioElement && audioElement.readyState >= 2) {
+        audioElement.currentTime = 0;
+      }
+
       setIsPlaying(true);
     }
   };
@@ -225,7 +268,6 @@ export const Player = () => {
             ? options.introSkipTime * 1000
             : 0;
           if (skipTimeMs > 0 && audioElement.currentTime < skipTimeMs / 1000) {
-            // si le podcast fait moins de 1h, on ne skip pas l'intro
             if (
               audioElement.duration &&
               !isNaN(audioElement.duration) &&

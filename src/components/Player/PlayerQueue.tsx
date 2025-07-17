@@ -31,15 +31,17 @@ export const PlayerQueue = ({ showQueue }: PlayerQueueProps) => {
       }))
     );
 
-  const { setEpisode, setIsPlaying } = usePlayerStore(
+  const { setEpisode, setIsPlaying, setCurrentPlayTime } = usePlayerStore(
     useShallow((state) => ({
       setEpisode: state.setEpisode,
       setIsPlaying: state.setIsPlaying,
+      setCurrentPlayTime: state.setCurrentPlayTime,
     }))
   );
 
   const handlePlayQueueItem = (item: any, index: number) => {
     setEpisode(item);
+    setCurrentPlayTime(0);
     setIsPlaying(true);
     removeFromQueue(index);
   };
