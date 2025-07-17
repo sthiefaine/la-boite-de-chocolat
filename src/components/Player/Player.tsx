@@ -139,7 +139,7 @@ export const Player = () => {
     return () => {
       sessionStorage.removeItem("playerInitialized");
     };
-  }, [setIsPlaying]);
+  }, []);
 
   useEffect(() => {
     const audioElement = audioRef.current;
@@ -152,7 +152,7 @@ export const Player = () => {
         setIsPlaying(false);
       });
     }
-  }, [isPlaying, setIsPlaying]);
+  }, [isPlaying, setIsPlaying, episode]);
 
   const togglePlay = () => {
     const audioElement = audioRef.current;

@@ -52,7 +52,6 @@ export default async function PodcastBackground() {
     podcastImages = fallbackImages;
   }
 
-  // Shuffle côté serveur et créer le tableau répété
   const shuffledImages = shuffleArray(podcastImages);
   const repeatedImages = [];
   for (let i = 0; i < 100; i++) {

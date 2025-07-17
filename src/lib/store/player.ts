@@ -91,6 +91,7 @@ export const usePlayerStore = create(
     {
       name: "la-boite-de-chocolat-player",
       partialize: (state: PlayerStore) => ({
+        isPlaying: false,
         episode: state.episode ? { ...state.episode } : null,
         currentPlayTime: state.currentPlayTime,
         totalDuration: state.totalDuration,
