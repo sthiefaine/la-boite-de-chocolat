@@ -40,7 +40,7 @@ const getStaticImageUrl = (imgFileName: string, age: string | null): string => {
   const isAdult = age === "18+" || age === "adult";
   return isAdult
     ? `/api/image/masked/${imgFileName}`
-    : `https://${IMAGE_CONFIG.domains.uploadServer}/films/${imgFileName}`;
+    : `${IMAGE_CONFIG.domains.uploadReadServer}/films/${imgFileName}`;
 };
 
 const isAdultContent = (age: string | null): boolean => {

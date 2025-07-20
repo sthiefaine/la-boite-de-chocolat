@@ -44,10 +44,9 @@ export const metadata = {
     images: ["/twitter-image"],
   },
   verification: {
-    google: "jrDp0QVGcGDSNDLuJYNCjT9n7upHjSNow3WRqDNGFDc",
+    google: "8EvVJDoD8PdzrO0TgDARL4LStymSPb7Kg0KkBP8JCWk",
   },
 };
-
 export default function RootLayout({
   children,
 }: {
