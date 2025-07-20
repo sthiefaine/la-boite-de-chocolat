@@ -10,7 +10,7 @@ import {
   getMovieCollection,
   checkFilmExists,
 } from "@/app/actions/film";
-import { getVercelBlobUrl } from "@/helpers/imageConfig";
+import { getUploadServerUrl } from "@/helpers/imageConfig";
 import { AGE_RATINGS } from "@/helpers/helpers";
 import styles from "./AddFilmForm.module.css";
 
@@ -329,7 +329,7 @@ export default function AddFilmForm({
                         {filmExists.film.imgFileName && (
                           <div className={styles.existingFilmPoster}>
                             <Image
-                              src={getVercelBlobUrl(
+                              src={getUploadServerUrl(
                                 filmExists.film.imgFileName
                               )}
                               alt={filmExists.film.title}

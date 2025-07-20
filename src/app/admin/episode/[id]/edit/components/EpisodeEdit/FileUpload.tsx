@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { uploadPodcastPoster } from "@/app/actions/episode";
-import { getVercelBlobUrl } from "@/helpers/imageConfig";
+import { getUploadServerUrl } from "@/helpers/imageConfig";
 import styles from "./FileUpload.module.css";
 
 interface FileUploadProps {
@@ -14,7 +14,7 @@ export default function FileUpload({ currentFileName, onFileUploaded }: FileUplo
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(
-    currentFileName ? getVercelBlobUrl(currentFileName, "podcasts/la-boite-de-chocolat/episodes") : null
+    currentFileName ? getUploadServerUrl(currentFileName, "podcasts/la-boite-de-chocolat/episodes") : null
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
 

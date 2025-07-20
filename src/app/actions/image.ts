@@ -1,6 +1,6 @@
 "use server";
 
-import { getVercelBlobUrl } from "@/helpers/imageConfig";
+import { getUploadServerUrl } from "@/helpers/imageConfig";
 
 export async function getMaskedImageUrl(
   imgFileName: string | null,
@@ -15,6 +15,6 @@ export async function getMaskedImageUrl(
   if (isAdult) {
     return `/api/image/masked/${encodeURIComponent(imgFileName)}`;
   } else {
-    return getVercelBlobUrl(imgFileName, "films");
+    return getUploadServerUrl(imgFileName, "films");
   }
 }

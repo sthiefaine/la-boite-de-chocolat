@@ -6,7 +6,7 @@ import { IMAGE_CONFIG } from "@/helpers/imageConfig";
 import styles from "./SagaCard.module.css";
 
 const getStaticImageUrl = (imgFileName: string) => {
-  return `https://cz2cmm85bs9kxtd7.public.blob.vercel-storage.com/sagas/${imgFileName}`;
+  return `https://${IMAGE_CONFIG.domains.uploadServer}/sagas/${imgFileName}`;
 };
 
 interface SagaCardProps {

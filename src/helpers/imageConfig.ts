@@ -33,7 +33,7 @@ export const IMAGE_CONFIG = {
 
   // Configuration des domaines autorisés
   domains: {
-    vercelBlob: "cz2cmm85bs9kxtd7.public.blob.vercel-storage.com",
+    uploadServer: "uploadfiles.clairdev.com/uploads/podcasts/",
     tmdb: "image.tmdb.org",
   },
 
@@ -48,19 +48,22 @@ export const IMAGE_CONFIG = {
   },
 };
 
-// Fonction utilitaire pour construire l'URL Vercel Blob
-export function getVercelBlobUrl(
+// Fonction utilitaire pour construire l'URL du serveur d'upload
+export function getUploadServerUrl(
   imgFileName: string,
   folder: string = "films"
 ): string {
   if (folder.includes("/")) {
     // Pour les chemins complexes comme "podcasts/la-boite-de-chocolat/episodes"
-    return `https://${IMAGE_CONFIG.domains.vercelBlob}/${folder}/${imgFileName}`;
+    return `https://${IMAGE_CONFIG.domains.uploadServer}/${folder}/${imgFileName}`;
   }
 
   const imgFolder = folder.endsWith("s") ? folder : `${folder}s`;
-  return `https://${IMAGE_CONFIG.domains.vercelBlob}/${imgFolder}/${imgFileName}`;
+  return `https://${IMAGE_CONFIG.domains.uploadServer}/${imgFolder}/${imgFileName}`;
 }
+
+// Alias pour la compatibilité avec l'ancien code
+export const getVercelBlobUrl = getUploadServerUrl;
 
 // Fonction utilitaire pour construire l'URL TMDB
 export function getTMDBUrl(posterPath: string, size: string = "w342"): string {

@@ -5,7 +5,7 @@ import { getSagaWithFilmsAndEpisodes } from "../../actions/saga";
 import { notFound } from "next/navigation";
 import FilmCard from "@/components/Cards/FilmCard/FilmCard";
 import Image from "next/image";
-import { getVercelBlobUrl } from "@/helpers/imageConfig";
+import { getUploadServerUrl } from "@/helpers/imageConfig";
 import styles from "./SagaDetailPage.module.css";
 
 interface SagaDetailPageProps {
@@ -41,7 +41,7 @@ export default async function SagaDetailPage({ params }: SagaDetailPageProps) {
           <div className={styles.headerImageContainer}>
             {saga.imgFileName && (
               <Image
-                src={getVercelBlobUrl(saga.imgFileName, "sagas")}
+                src={getUploadServerUrl(saga.imgFileName, "sagas")}
                 alt={`${saga.name} - Saga`}
                 width={120}
                 height={180}

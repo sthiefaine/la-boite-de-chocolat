@@ -12,7 +12,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { useShallow } from "zustand/shallow";
-import { IMAGE_CONFIG, getVercelBlobUrl } from "@/helpers/imageConfig";
+import { IMAGE_CONFIG, getUploadServerUrl } from "@/helpers/imageConfig";
 import styles from "./PlayerBar.module.css";
 
 interface PlayerQueueProps {
@@ -95,7 +95,7 @@ export const PlayerQueue = ({ showQueue }: PlayerQueueProps) => {
                     item.img.startsWith("http")
                       ? item.img
                       : item.img
-                      ? getVercelBlobUrl(item.img)
+                      ? getUploadServerUrl(item.img)
                       : "/images/navet.png"
                   }
                   width={40}

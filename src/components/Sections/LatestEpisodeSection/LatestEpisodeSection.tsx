@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { IMAGE_CONFIG, getVercelBlobUrl } from "@/helpers/imageConfig";
+import { IMAGE_CONFIG, getUploadServerUrl } from "@/helpers/imageConfig";
 import {
   formatEpisodeDescription,
   formatDuration,
@@ -106,7 +106,7 @@ export default async function LatestEpisodeSection({
             {mainFilm?.imgFileName && (
               <div className={styles.filmPoster}>
                 <Image
-                  src={getVercelBlobUrl(mainFilm.imgFileName)}
+                  src={getUploadServerUrl(mainFilm.imgFileName)}
                   alt={`Poster de ${mainFilm.title}`}
                   width={120}
                   height={180}
@@ -131,7 +131,7 @@ export default async function LatestEpisodeSection({
                 audioUrl={episode.audioUrl}
                 imageUrl={
                   mainFilm?.imgFileName
-                    ? getVercelBlobUrl(mainFilm.imgFileName)
+                    ? getUploadServerUrl(mainFilm.imgFileName)
                     : undefined
                 }
                 artist="La Boîte de Chocolat"

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getVercelBlobUrl } from "@/helpers/imageConfig";
+import { getUploadServerUrl } from "@/helpers/imageConfig";
 import sharp from "sharp";
 
 export async function GET(
@@ -13,7 +13,7 @@ export async function GET(
       return new NextResponse("Nom de fichier requis", { status: 400 });
     }
 
-    const originalImageUrl = getVercelBlobUrl(filename, "films");
+    const originalImageUrl = getUploadServerUrl(filename, "films");
 
     const imageResponse = await fetch(originalImageUrl);
     if (!imageResponse.ok) {

@@ -3,7 +3,7 @@ import { getAverageRGB } from "@/helpers/helpers";
 import { usePlayerStore } from "@/lib/store/player";
 import { useQueueStore } from "@/lib/store/queue";
 import { useOptionsStore } from "@/lib/store/options";
-import { getVercelBlobUrl } from "@/helpers/imageConfig";
+import { getUploadServerUrl } from "@/helpers/imageConfig";
 import {
   CircleX,
   Eye,
@@ -27,11 +27,11 @@ const useBackgroundColor = (episodeImg?: string) => {
 
   useEffect(() => {
     if (episodeImg) {
-      const imageUrl = episodeImg.startsWith("http")
-        ? episodeImg
-        : episodeImg
-        ? getVercelBlobUrl(episodeImg)
-        : "/images/navet.png";
+          const imageUrl = episodeImg.startsWith("http")
+      ? episodeImg
+      : episodeImg
+      ? getUploadServerUrl(episodeImg)
+      : "/images/navet.png";
 
       getAverageRGB(imageUrl)
         .then((res: number[]) => {
@@ -55,7 +55,7 @@ const useMediaSession = (episode: any) => {
       const imageUrl = episode.img.startsWith("http")
         ? episode.img
         : episode.img
-        ? getVercelBlobUrl(episode.img)
+        ? getUploadServerUrl(episode.img)
         : "/images/navet.png";
 
       navigator.mediaSession.metadata = new MediaMetadata({

@@ -40,7 +40,7 @@ const getStaticImageUrl = (imgFileName: string, age: string | null): string => {
   const isAdult = age === "18+" || age === "adult";
   return isAdult
     ? `/api/image/masked/${imgFileName}`
-    : `https://${IMAGE_CONFIG.domains.vercelBlob}/films/${imgFileName}`;
+    : `https://${IMAGE_CONFIG.domains.uploadServer}/films/${imgFileName}`;
 };
 
 const isAdultContent = (age: string | null): boolean => {

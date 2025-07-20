@@ -20,9 +20,9 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'cz2cmm85bs9kxtd7.public.blob.vercel-storage.com',
+        hostname: 'uploadfiles.clairdev.com',
         port: '',
-        pathname: '/**',
+        pathname: '/uploads/**',
       },
       {
         protocol: 'https',

@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { getVercelBlobUrl } from "@/helpers/imageConfig";
+import { getUploadServerUrl } from "@/helpers/imageConfig";
 
 export interface PodcastImage {
   id: string;
@@ -157,7 +157,7 @@ export async function getPodcastImageUrls(
           ];
         }
 
-        return [getVercelBlobUrl(mainFilm.imgFileName, "films")];
+        return [getUploadServerUrl(mainFilm.imgFileName, "films")];
       }
 
       if (episode.imgFileName) {
@@ -173,7 +173,7 @@ export async function getPodcastImageUrls(
           return [episode.imgFileName];
         }
 
-        return [getVercelBlobUrl(episode.imgFileName)];
+        return [getUploadServerUrl(episode.imgFileName)];
       }
 
       return [];

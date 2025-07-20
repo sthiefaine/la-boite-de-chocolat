@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import styles from "./FilmsSection.module.css";
-import { getVercelBlobUrl } from "@/helpers/imageConfig";
+import { getUploadServerUrl } from "@/helpers/imageConfig";
 
 interface Film {
   id: string;
@@ -66,7 +66,7 @@ export default function FilmsSection({
               <div className={styles.filmImage}>
                 {link.film.imgFileName ? (
                   <Image
-                    src={getVercelBlobUrl(link.film.imgFileName, "films")}
+                    src={getUploadServerUrl(link.film.imgFileName, "films")}
                     alt={link.film.title}
                     width={80}
                     height={120}

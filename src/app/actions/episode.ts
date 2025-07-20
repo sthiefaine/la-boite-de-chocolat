@@ -3,9 +3,9 @@
 import { cache } from "react";
 import { PODCAST_CATEGORIES } from "@/helpers/helpers";
 import { prisma } from "@/lib/prisma";
-import { put } from "@vercel/blob";
+import { uploadPodcastFile } from "@/helpers/uploadHelpers";
 import { getMaskedImageUrl } from "@/app/actions/image";
-import { getVercelBlobUrl } from "@/helpers/imageConfig";
+import { getUploadServerUrl } from "@/helpers/imageConfig";
 
 export async function getEpisodeBySlug(slug: string) {
   try {
@@ -62,7 +62,7 @@ export async function getEpisodeBySlug(slug: string) {
           mainFilm?.age || null
         )
       : mainFilm?.imgFileName
-      ? getVercelBlobUrl(mainFilm.imgFileName)
+      ? getUploadServerUrl(mainFilm.imgFileName)
       : "/images/navet.png";
 
     /*
@@ -144,7 +144,7 @@ export const getEpisodeBySlugCached = cache(async (slug: string) => {
           mainFilm?.age || null
         )
       : mainFilm?.imgFileName
-      ? getVercelBlobUrl(mainFilm.imgFileName)
+      ? getUploadServerUrl(mainFilm.imgFileName)
       : "/images/navet.png";
 
     /*
@@ -700,22 +700,23 @@ export async function uploadPodcastPoster(formData: FormData) {
     const extension = file.name.split(".").pop();
     const fileName = `episode-${timestamp}.${extension}`;
 
-    // Upload directement vers Vercel Blob
-    const blob = await put(
-      `podcasts/la-boite-de-chocolat/episodes/${fileName}`,
-      file,
-      {
-        access: "public",
-      }
-    );
+    // Upload vers le serveur
+    const result = await uploadPodcastFile(file, fileName);
 
-    return {
-      success: true,
-      data: {
-        fileName: fileName,
-        url: blob.url,
-      },
-    };
+    if (result.success && result.data) {
+      return {
+        success: true,
+        data: {
+          fileName: result.data.fileName,
+          url: result.data.url,
+        },
+      };
+    } else {
+      return {
+        success: false,
+        error: result.error || "Erreur lors de l'upload du poster",
+      };
+    }
   } catch (error) {
     console.error("Erreur lors de l'upload du poster:", error);
     return {

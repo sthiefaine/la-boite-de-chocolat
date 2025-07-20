@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { put } from "@vercel/blob";
+import { uploadToServer, uploadImageFromUrl } from "@/helpers/uploadHelpers";
 import { generateSlug } from "@/helpers/podcastHelpers";
 
 interface TMDBMovie {
@@ -214,12 +214,16 @@ export async function getOrCreateSagaFromTMDB(
 
 export async function uploadImage(file: File, fileName: string) {
   try {
-    const blob = await put(fileName, file, {
-      access: "public",
-      addRandomSuffix: true,
-    });
+    const result = await uploadToServer(file, fileName, "films");
 
-    return { success: true, url: blob.url, filename: blob.pathname };
+    if (result.success) {
+      return { success: true, url: result.url, filename: result.filename };
+    } else {
+      return {
+        success: false,
+        error: result.error || "Erreur d'upload",
+      };
+    }
   } catch (error) {
     console.error("Erreur upload image:", error);
     return {
@@ -236,32 +240,25 @@ export async function uploadPosterFromTMDB(
   try {
     // Télécharger l'image depuis TMDB en qualité HD/Retina
     const imageUrl = `https://image.tmdb.org/t/p/w1280${posterPath}`;
-    const imageResponse = await fetch(imageUrl);
-
-    if (!imageResponse.ok) {
-      throw new Error("Impossible de télécharger l'image depuis TMDB");
-    }
-
-    const imageBuffer = await imageResponse.arrayBuffer();
-    const imageBlob = new Blob([imageBuffer]);
 
     // Générer un nom de fichier unique
     const timestamp = Date.now();
     const sanitizedTitle = filmTitle
       .replace(/[^a-zA-Z0-9]/g, "_")
       .toLowerCase();
-    const filename = `films/poster_${sanitizedTitle}_${timestamp}.jpg`;
+    const filename = `poster_${sanitizedTitle}_${timestamp}.jpg`;
 
-    // Upload vers Vercel Blob avec le SDK
-    const blob = await put(filename, imageBlob, {
-      access: "public",
-      addRandomSuffix: true,
-    });
+    // Upload vers le serveur
+    const result = await uploadImageFromUrl(imageUrl, filename, "films");
 
-
-    const filenameWithoutPrefix = blob.pathname.replace(/^films\//, '');
-
-    return { success: true, filename: filenameWithoutPrefix };
+    if (result.success) {
+      return { success: true, filename: result.filename };
+    } else {
+      return {
+        success: false,
+        error: result.error || "Erreur d'upload",
+      };
+    }
   } catch (error) {
     console.error("Erreur upload poster TMDB:", error);
     return {
@@ -278,32 +275,25 @@ export async function uploadSagaPosterFromTMDB(
   try {
     // Télécharger l'image depuis TMDB en qualité HD/Retina
     const imageUrl = `https://image.tmdb.org/t/p/w1280${posterPath}`;
-    const imageResponse = await fetch(imageUrl);
-
-    if (!imageResponse.ok) {
-      throw new Error("Impossible de télécharger l'image depuis TMDB");
-    }
-
-    const imageBuffer = await imageResponse.arrayBuffer();
-    const imageBlob = new Blob([imageBuffer]);
 
     // Générer un nom de fichier unique
     const timestamp = Date.now();
     const sanitizedName = sagaName
       .replace(/[^a-zA-Z0-9]/g, "_")
       .toLowerCase();
-    const filename = `sagas/poster_${sanitizedName}_${timestamp}.jpg`;
+    const filename = `poster_${sanitizedName}_${timestamp}.jpg`;
 
-    // Upload vers Vercel Blob avec le SDK
-    const blob = await put(filename, imageBlob, {
-      access: "public",
-      addRandomSuffix: true,
-    });
+    // Upload vers le serveur
+    const result = await uploadImageFromUrl(imageUrl, filename, "sagas");
 
-    // Retourner seulement le nom de fichier sans le préfixe sagas/
-    const filenameWithoutPrefix = blob.pathname.replace(/^sagas\//, '');
-
-    return { success: true, filename: filenameWithoutPrefix };
+    if (result.success) {
+      return { success: true, filename: result.filename };
+    } else {
+      return {
+        success: false,
+        error: result.error || "Erreur d'upload",
+      };
+    }
   } catch (error) {
     console.error("Erreur upload poster saga TMDB:", error);
     return {
@@ -320,17 +310,18 @@ export async function uploadSagaImage(file: File, sagaName: string) {
     const sanitizedName = sagaName
       .replace(/[^a-zA-Z0-9]/g, "_")
       .toLowerCase();
-    const filename = `sagas/poster_${sanitizedName}_${timestamp}.jpg`;
+    const filename = `poster_${sanitizedName}_${timestamp}.jpg`;
 
-    const blob = await put(filename, file, {
-      access: "public",
-      addRandomSuffix: true,
-    });
+    const result = await uploadToServer(file, filename, "sagas");
 
-    // Retourner seulement le nom de fichier sans le préfixe sagas/
-    const filenameWithoutPrefix = blob.pathname.replace(/^sagas\//, '');
-
-    return { success: true, url: blob.url, filename: filenameWithoutPrefix };
+    if (result.success) {
+      return { success: true, url: result.url, filename: result.filename };
+    } else {
+      return {
+        success: false,
+        error: result.error || "Erreur d'upload",
+      };
+    }
   } catch (error) {
     console.error("Erreur upload image saga:", error);
     return {
