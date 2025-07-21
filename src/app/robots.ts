@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/helpers/config";
 import { MetadataRoute } from "next";
 
 const AI_BOTS = [
@@ -72,10 +73,6 @@ export default function robots(): MetadataRoute.Robots {
 
   return {
     rules: allRules,
-    sitemap: `${
-      process.env.VERCEL_URL
-        ? process.env.VERCEL_URL + "/sitemap.xml"
-        : process.env.NEXT_PUBLIC_URL + "/sitemap.xml"
-    }`,
+    sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }

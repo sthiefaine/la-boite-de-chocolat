@@ -3,6 +3,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { admin } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
 import { prisma } from "../prisma";
+import { SITE_URL } from "@/helpers/config";
 
 /**
  * Normalise un email Gmail en supprimant les alias avec "+"
@@ -65,8 +66,7 @@ export const auth = betterAuth({
   trustedOrigins: [
     "http://localhost:3000",
     "http://localhost:3001",
-    "https://la-boite-de-chocolat.vercel.app",
-    "https://laboitedechocolat.vercel.app",
+    SITE_URL,
   ],
   plugins: [
     admin({
