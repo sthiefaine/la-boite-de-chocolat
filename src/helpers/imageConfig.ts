@@ -60,7 +60,7 @@ export function getUploadServerUrl(
   }
 
   // Pour les dossiers simples comme "films", "sagas"
-  const baseUrl = "https://uploadfiles.clairdev.com/uploads/podcasts/";
+  const baseUrl = IMAGE_CONFIG.domains.uploadReadServer;
   const imgFolder = folder.endsWith("s") ? folder : `${folder}s`;
   return `${baseUrl}/${imgFolder}/${imgFileName}`;
 }

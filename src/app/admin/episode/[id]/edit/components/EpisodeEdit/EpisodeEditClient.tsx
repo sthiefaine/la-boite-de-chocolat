@@ -9,6 +9,7 @@ import EpisodeEditForm from "./EpisodeEditForm";
 import FilmsSection from "./FilmsSection";
 import LinkFilmForm from "./LinkFilmForm";
 import AddFilmForm from "../../AddFilmForm";
+import TranscriptionUpload from "@/components/TranscriptionUpload/TranscriptionUpload";
 import styles from "./EpisodeEditClient.module.css";
 
 interface Film {
@@ -33,6 +34,14 @@ interface RSSFeed {
   url: string;
 }
 
+interface Transcription {
+  id: string;
+  fileName: string;
+  fileSize: number | null;
+  fileType: string;
+  createdAt: Date;
+}
+
 interface Episode {
   id: string;
   title: string;
@@ -48,6 +57,7 @@ interface Episode {
   age: string | null;
   rssFeed: RSSFeed;
   links: EpisodeLink[];
+  transcription: Transcription | null;
 }
 
 interface EpisodeEditClientProps {
@@ -157,6 +167,8 @@ export default function EpisodeEditClient({
           onSubmit={handleUpdateEpisode}
           loading={loading}
         />
+
+        <TranscriptionUpload episodeId={episode.id} />
       </div>
 
       {showLinkFilmForm && (

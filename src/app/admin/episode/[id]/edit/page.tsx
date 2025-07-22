@@ -51,6 +51,15 @@ async function getEpisode(id: string) {
           },
         },
       },
+      transcription: {
+        select: {
+          id: true,
+          fileName: true,
+          fileSize: true,
+          fileType: true,
+          createdAt: true,
+        },
+      },
     },
   });
   return episode;

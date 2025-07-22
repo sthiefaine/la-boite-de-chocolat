@@ -45,7 +45,7 @@ export default async function Home() {
   return (
     <main>
       <HeroSection episodes={episodes || []} />
-      <LatestEpisodeSection episode={latestEpisode.data || null} />
+      {/*<LatestEpisodeSection episode={latestEpisode.data || null} />*/}
       <EpisodesSection episodes={episodes || []} />
     </main>
   );

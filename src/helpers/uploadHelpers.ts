@@ -183,30 +183,12 @@ export async function uploadImageFromUrl(
     formData.append('folder', 'podcasts/' + folder);
     formData.append('files', imageBlob, fileName);
 
-    console.log('📤 Upload from URL request:', {
-      url: uploadUrl,
-      folder: folder,
-      fileName: fileName,
-      imageUrl: imageUrl,
-      blobSize: imageBlob.size,
-      blobType: imageBlob.type,
-      token: writeToken,
-      formData: formData
-    });
-
     const response = await fetch(uploadUrl, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${writeToken}`
       },
       body: formData
-    });
-
-    console.log('📤 Upload from URL response:', {
-      status: response.status,
-      statusText: response.statusText,
-      ok: response.ok,
-      headers: Object.fromEntries(response.headers.entries())
     });
 
     // Lire d'abord le texte brut
