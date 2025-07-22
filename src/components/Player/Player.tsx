@@ -33,6 +33,8 @@ const useBackgroundColor = (episodeImg?: string) => {
       ? getUploadServerUrl(episodeImg)
       : "/images/navet.png";
 
+      console.log("imageUrl", imageUrl, "toto", getUploadServerUrl(episodeImg));
+
       getAverageRGB(imageUrl)
         .then((res: number[]) => {
           setBackgroundColor(res);

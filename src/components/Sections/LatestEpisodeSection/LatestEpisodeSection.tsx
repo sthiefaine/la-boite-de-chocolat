@@ -14,6 +14,10 @@ interface LatestEpisodeSectionProps {
   episode: LatestEpisodeData | null;
 }
 
+const getImageUrl = (imageFileName: string) => {
+  return getUploadServerUrl(imageFileName);
+};
+
 export default async function LatestEpisodeSection({
   episode,
 }: LatestEpisodeSectionProps) {
@@ -106,15 +110,15 @@ export default async function LatestEpisodeSection({
             {mainFilm?.imgFileName && (
               <div className={styles.filmPoster}>
                 <Image
-                  src={getUploadServerUrl(mainFilm.imgFileName)}
+                  src={getImageUrl(mainFilm.imgFileName)}
                   alt={`Poster de ${mainFilm.title}`}
                   width={120}
                   height={180}
                   className={styles.posterImage}
-                  priority
                   placeholder="blur"
                   blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
                   quality={IMAGE_CONFIG.defaultQuality}
+                  unoptimized={true}
                 />
                 <div className={styles.filmInfo}>
                   <h4 className={styles.filmTitle}>{mainFilm.title}</h4>
@@ -131,7 +135,7 @@ export default async function LatestEpisodeSection({
                 audioUrl={episode.audioUrl}
                 imageUrl={
                   mainFilm?.imgFileName
-                    ? getUploadServerUrl(mainFilm.imgFileName)
+                    ? getImageUrl(mainFilm.imgFileName)
                     : undefined
                 }
                 artist="La Boîte de Chocolat"

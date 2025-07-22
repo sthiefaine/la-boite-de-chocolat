@@ -318,6 +318,38 @@
   font-weight: 600;
 }
 
+
+.episodeCard,
+.filmPoster,
+.posterImage,
+.playButton,
+.visitButton,
+.metaItem {
+  transition: box-shadow var(--transition-normal), transform var(--transition-normal), background var(--transition-normal);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .episodeCard:hover,
+  .metaItem:hover,
+  .filmPoster:hover,
+  .posterImage:hover,
+  .playButton:hover,
+  .visitButton:hover {
+    box-shadow: none !important;
+    transform: none !important;
+    background: inherit !important;
+  }
+  .episodeBadge {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .episodeBadge {
+    animation: none !important;
+  }
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .episodeCard {
