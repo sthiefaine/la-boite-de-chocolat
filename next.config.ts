@@ -26,6 +26,12 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'uploadfiles.clairdev.com',
+        port: '',
+        pathname: '/api/display/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'la-boite-de-chocolat.vercel.app',
         port: '',
         pathname: '/api/image/masked/**',

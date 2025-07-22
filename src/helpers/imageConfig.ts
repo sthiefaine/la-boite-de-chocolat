@@ -34,7 +34,7 @@ export const IMAGE_CONFIG = {
   // Configuration des domaines autorisés
   domains: {
     uploadServer: "https://uploadfiles.clairdev.com/api/upload",
-    uploadReadServer: "https://uploadfiles.clairdev.com/uploads/podcasts/",
+    uploadReadServer: "https://uploadfiles.clairdev.com/api/display/podcasts/",
     tmdb: "image.tmdb.org",
   },
 
@@ -60,7 +60,7 @@ export function getUploadServerUrl(
   }
 
   // Pour les dossiers simples comme "films", "sagas"
-  const baseUrl = IMAGE_CONFIG.domains.uploadReadServer;
+  const baseUrl = `${IMAGE_CONFIG.domains.uploadReadServer}`;
   const imgFolder = folder.endsWith("s") ? folder : `${folder}s`;
   return `${baseUrl}/${imgFolder}/${imgFileName}`;
 }

@@ -14,6 +14,9 @@ import {
   List,
   Minimize2,
   Maximize2,
+  RotateCcw,
+  RotateCw,
+  Gauge,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -23,28 +26,31 @@ import { PlayerQueue } from "./PlayerQueue";
 import styles from "./PlayerBar.module.css";
 
 const useBackgroundColor = (episodeImg?: string) => {
-  const [backgroundColor, setBackgroundColor] = useState<number[]>([0, 0, 0]);
+  const [backgroundColor, setBackgroundColor] = useState<number[]>([
+    139, 69, 19,
+  ]);
 
   useEffect(() => {
-    if (episodeImg) {
-          const imageUrl = episodeImg.startsWith("http")
-      ? episodeImg
-      : episodeImg
-      ? getUploadServerUrl(episodeImg)
-      : "/images/navet.png";
+    const fetchImageUrl = async () => {
+      try {
+        let imageUrl: string;
 
-      console.log("imageUrl", imageUrl, "toto", getUploadServerUrl(episodeImg));
+        if (episodeImg) {
+          imageUrl = episodeImg.startsWith("http")
+            ? episodeImg
+            : getUploadServerUrl(episodeImg);
+        } else {
+          imageUrl = "/images/navet.png";
+        }
 
-      getAverageRGB(imageUrl)
-        .then((res: number[]) => {
-          setBackgroundColor(res);
-        })
-        .catch(() => {
-          setBackgroundColor([139, 69, 19]);
-        });
-    } else {
-      setBackgroundColor([139, 69, 19]);
-    }
+        const res = await getAverageRGB(imageUrl);
+        setBackgroundColor(res);
+      } catch (error) {
+        setBackgroundColor([139, 69, 19]);
+      }
+    };
+
+    fetchImageUrl();
   }, [episodeImg]);
 
   return backgroundColor;
@@ -127,6 +133,8 @@ export const Player = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
   useMediaSession(episode);
   const [showQueue, setShowQueue] = useState(false);
+  const [showSpeedControls, setShowSpeedControls] = useState(false);
+  const [currentSpeed, setCurrentSpeed] = useState(1);
   const backgroundColor = useBackgroundColor(episode?.img);
   const { options } = useOptionsStore(
     useShallow((state) => ({ options: state.options }))
@@ -185,6 +193,24 @@ export const Player = () => {
       audioElement.removeEventListener("canplay", handleCanPlay);
     };
   }, [episode]);
+
+  // Fermer les contrôles de vitesse quand on clique ailleurs
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest(`.${styles.speed_button}`) && !target.closest(`.${styles.speed_controls}`)) {
+        setShowSpeedControls(false);
+      }
+    };
+
+    if (showSpeedControls) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showSpeedControls]);
 
   const togglePlay = () => {
     const audioElement = audioRef.current;
@@ -254,6 +280,41 @@ export const Player = () => {
     setIsMinimized(!isMinimized);
   };
 
+  const toggleSpeedControls = () => {
+    setShowSpeedControls(!showSpeedControls);
+    // Fermer la queue si elle est ouverte
+    if (showQueue) {
+      setShowQueue(false);
+    }
+  };
+
+  const changePlaybackSpeed = (speed: number) => {
+    const audioElement = audioRef.current;
+    if (!audioElement) return;
+    
+    audioElement.playbackRate = speed;
+    setCurrentSpeed(speed);
+    // Optionnel : sauvegarder la vitesse dans les options
+  };
+
+  const handleSkipBackward = () => {
+    const audioElement = audioRef.current;
+    if (!audioElement) return;
+    
+    const newTime = Math.max(0, audioElement.currentTime - 10);
+    audioElement.currentTime = newTime;
+    setCurrentPlayTime(newTime);
+  };
+
+  const handleSkipForward = () => {
+    const audioElement = audioRef.current;
+    if (!audioElement) return;
+    
+    const newTime = Math.min(audioElement.duration || 0, audioElement.currentTime + 10);
+    audioElement.currentTime = newTime;
+    setCurrentPlayTime(newTime);
+  };
+
   if (!episode?.url) {
     return null;
   }
@@ -313,8 +374,24 @@ export const Player = () => {
             >
               <SkipBack />
             </button>
+            <button
+              className={styles.skip_button}
+              onClick={handleSkipBackward}
+              title="-10 secondes"
+            >
+              <RotateCcw />
+              <span>-10s</span>
+            </button>
             <button className={styles.player_button} onClick={togglePlay}>
               {isPlaying ? <PauseIcon /> : <PlayIcon />}
+            </button>
+            <button
+              className={styles.skip_button}
+              onClick={handleSkipForward}
+              title="+10 secondes"
+            >
+              <RotateCw />
+              <span>+10s</span>
             </button>
             <button
               className={styles.nav_button}
@@ -344,6 +421,28 @@ export const Player = () => {
             >
               <List />
             </button>
+            <div style={{ position: "relative" }}>
+              <button
+                className={`${styles.speed_button} ${showSpeedControls ? styles.active : ""}`}
+                onClick={toggleSpeedControls}
+                title={`Vitesse de lecture (${currentSpeed}x)`}
+              >
+                <Gauge />
+              </button>
+              {showSpeedControls && (
+                <div className={styles.speed_controls}>
+                  {[0.5, 0.75, 1, 1.25, 1.5, 2].map((speed) => (
+                    <button
+                      key={speed}
+                      className={`${styles.speed_option} ${currentSpeed === speed ? styles.active : ""}`}
+                      onClick={() => changePlaybackSpeed(speed)}
+                    >
+                      {speed}x
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             <Link
               href={`/episodes/${episode.slug}`}
               title="afficher la page"
@@ -370,8 +469,24 @@ export const Player = () => {
           >
             <SkipBack />
           </button>
+          <button
+            className={styles.skip_button}
+            onClick={handleSkipBackward}
+            title="-10 secondes"
+          >
+            <RotateCcw />
+            <span>-10s</span>
+          </button>
           <button className={styles.player_button} onClick={togglePlay}>
             {isPlaying ? <PauseIcon /> : <PlayIcon />}
+          </button>
+          <button
+            className={styles.skip_button}
+            onClick={handleSkipForward}
+            title="+10 secondes"
+          >
+            <RotateCw />
+            <span>+10s</span>
           </button>
           <button
             className={styles.nav_button}
@@ -390,6 +505,28 @@ export const Player = () => {
           >
             <List />
           </button>
+          <div style={{ position: "relative" }}>
+            <button
+              className={`${styles.speed_button} ${showSpeedControls ? styles.active : ""}`}
+              onClick={toggleSpeedControls}
+              title={`Vitesse de lecture (${currentSpeed}x)`}
+            >
+              <Gauge />
+            </button>
+            {showSpeedControls && (
+              <div className={styles.speed_controls}>
+                {[0.5, 0.75, 1, 1.25, 1.5, 2].map((speed) => (
+                  <button
+                    key={speed}
+                    className={`${styles.speed_option} ${currentSpeed === speed ? styles.active : ""}`}
+                    onClick={() => changePlaybackSpeed(speed)}
+                  >
+                    {speed}x
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <Link
             href={`/episodes/${episode.slug}`}
             className={`${styles.button} ${styles.externalButton}`}
