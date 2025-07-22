@@ -9,8 +9,6 @@
   animation-fill-mode: both;
 }
 
-
-
 .coffret {
   background: linear-gradient(145deg, var(--box-red), #8b2635);
   padding: 6px;
@@ -52,17 +50,15 @@
   }
 }
 
-
-
 .coffret:hover {
-  transform: perspective(800px) rotateX(5deg) rotateY(1deg);
+  transform: translateY(-4px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 6px 16px rgba(0, 0, 0, 0.4),
     inset 0 0 0 2px rgba(255, 255, 255, 0.2),
     inset 0 2px 4px rgba(255, 255, 255, 0.15);
 }
 
 .coffret:hover .box3D {
-  transform: perspective(1000px) rotateX(8deg) rotateY(2deg) translateZ(10px);
+  transform: translateY(-2px);
 }
 
 .box3D {
@@ -124,13 +120,12 @@
 }
 
 .box3D:hover {
-  transform: perspective(1000px) rotateX(8deg) rotateY(2deg);
+  transform: translateY(-2px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 6px 16px rgba(0, 0, 0, 0.4),
     inset 0 2px 4px rgba(255, 255, 255, 0.15),
     inset 0 -2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Optimisations mobile pour box3D */
 @media (max-width: 768px) {
   .box3D:hover {
     transform: translateY(-2px);
@@ -171,7 +166,6 @@
     0 3px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* Optimisations mobile pour les trous */
 @media (max-width: 768px) {
   .hole:hover {
     box-shadow: 
@@ -183,7 +177,7 @@
 
 .holeDouble {
   grid-column: span 2;
-  width: 206px; /* 2 * 95px + 16px gap */
+  width: 206px;
 }
 
 .hole::before {
@@ -234,7 +228,7 @@
 }
 
 .choco:hover {
-  transform: translateY(-6px) scale(1.04);
+  transform: translateY(-4px) scale(1.02);
   box-shadow: inset -2px -2px 4px rgba(0, 0, 0, 0.3),
     inset 2px 2px 4px var(--box-shadow-light), 0 6px 20px rgba(0, 0, 0, 0.4);
 }
@@ -357,14 +351,11 @@
   will-change: transform;
 }
 
-
-
 .randomEpisode:hover {
-  transform: translateY(-8px) scale(1.08) !important;
+  transform: translateY(-6px) scale(1.05) !important;
   box-shadow: inset -2px -2px 4px rgba(0, 0, 0, 0.3),
     inset 2px 2px 4px var(--box-shadow-light),
     0 8px 25px rgba(184, 134, 11, 0.6), 0 0 20px rgba(218, 165, 32, 0.4) !important;
-  animation: pulse-glow-fast 0.5s ease-in-out infinite;
 }
 
 .randomEpisode:disabled {
@@ -373,8 +364,6 @@
   transform: none !important;
   animation: none !important;
 }
-
-
 
 .randomEpisode:disabled:hover {
   transform: none !important;
@@ -427,20 +416,6 @@
   }
 }
 
-@keyframes pulse-glow-fast {
-  0%,
-  100% {
-    box-shadow: inset -2px -2px 4px rgba(0, 0, 0, 0.3),
-      inset 2px 2px 4px var(--box-shadow-light),
-      0 8px 25px rgba(184, 134, 11, 0.6), 0 0 20px rgba(218, 165, 32, 0.4);
-  }
-  50% {
-    box-shadow: inset -2px -2px 4px rgba(0, 0, 0, 0.3),
-      inset 2px 2px 4px var(--box-shadow-light),
-      0 8px 25px rgba(184, 134, 11, 0.8), 0 0 25px rgba(218, 165, 32, 0.6);
-  }
-}
-
 @keyframes shimmer {
   0% {
     transform: translateX(-100%);
@@ -465,8 +440,6 @@
     transform: translateY(-1px);
   }
 }
-
-
 
 .boxCaption {
   text-align: center;
@@ -500,7 +473,6 @@
 @media (max-width: 768px) {
   .coffret {
     padding: 6px;
-    /* Désactiver les effets 3D lourds sur mobile */
     transform-style: flat;
   }
 
@@ -509,7 +481,6 @@
     height: 280px;
     padding: 16px;
     gap: 12px;
-    /* Optimisations pour mobile */
     transform-style: flat;
     backface-visibility: hidden;
   }
@@ -518,7 +489,6 @@
     width: 75px;
     height: 75px;
     padding: 6px;
-    /* Réduire les ombres sur mobile */
     box-shadow: 
       inset -3px -3px 6px var(--box-shadow-light),
       inset 3px 3px 6px rgba(0, 0, 0, 0.3), 
@@ -531,7 +501,6 @@
 
   .choco {
     padding: 8px;
-    /* Simplifier les transitions sur mobile */
     transition: all 0.2s ease;
   }
 
