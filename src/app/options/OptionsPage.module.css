@@ -176,8 +176,84 @@ input:checked + .slider:before {
 }
 
 .timeLabel::before {
-  content: "⏱️";
-  font-size: 1rem;
+  content: "⏱️ ";
+  margin-right: 0.25rem;
+}
+
+/* Styles pour la gestion du localStorage */
+.storageInfo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}
+
+.storageDetails {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.storageSize {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.storageBreakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.storageItem {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+  padding: 0.25rem 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  border-left: 3px solid var(--accent-gold);
+}
+
+.clearButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, var(--accent-red), #d63031);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.clearButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #e74c3c, var(--accent-red));
+}
+
+.clearButton:disabled {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .resetButton {
@@ -205,7 +281,7 @@ input:checked + .slider:before {
 
 @media (max-width: 768px) {
   .container {
-    padding: 1rem;
+    padding: 1rem 0.5rem;
   }
 
   .titleRow {
@@ -214,19 +290,52 @@ input:checked + .slider:before {
   }
 
   .title {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
 
   .optionCard {
-    padding: 1.25rem;
+    padding: 1rem;
   }
 
   .optionHeader {
     flex-direction: column;
-    text-align: center;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
 
   .optionIcon {
-    align-self: center;
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Styles responsive pour la gestion du localStorage */
+  .storageInfo {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .storageDetails {
+    gap: 0.375rem;
+  }
+
+  .storageSize {
+    text-align: center;
+    font-size: 0.8rem;
+  }
+
+  .storageBreakdown {
+    gap: 0.125rem;
+    padding: 0.375rem;
+  }
+
+  .storageItem {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.375rem;
+  }
+
+  .clearButton {
+    justify-content: center;
+    padding: 0.75rem 1rem;
   }
 }
