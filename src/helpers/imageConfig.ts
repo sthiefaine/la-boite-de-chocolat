@@ -34,7 +34,7 @@ export const IMAGE_CONFIG = {
   // Configuration des domaines autorisés
   domains: {
     uploadServer: "https://uploadfiles.clairdev.com/api/upload",
-    uploadReadServer: "https://uploadfiles.clairdev.com/api/display/podcasts",
+    uploadReadServer: "https://uploadfiles.clairdev.com/uploads/podcasts",
     tmdb: "image.tmdb.org",
   },
 
