@@ -12,9 +12,17 @@ export const metadata = {
   title: "La Boîte de Chocolat - Podcast Cinéma",
   description:
     "Podcast cinéma avec Thomas, Charlie et Thomas. Du cinéma, de la mauvaise foi, un soupçon de beauferie et le tour est joué !",
-  icons: {
-    icon: "/images/icons/favicon.ico",
-  },
+      icons: {
+      icon: [
+        { url: "/images/icons/favicon.ico", sizes: "32x32 48x48", type: "image/x-icon" },
+        { url: "/images/icons/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+        { url: "/images/icons/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+        { url: "/images/icons/android-icon-192x192.png", sizes: "192x192", type: "image/png" },
+        { url: "/images/icons/web-app-manifest-192x192.png", sizes: "192x192", type: "image/png" },
+        { url: "/images/icons/web-app-manifest-512x512.png", sizes: "512x512", type: "image/png" },
+      ],
+      apple: "/images/icons/apple-icon.png",
+    },
   robots: {
     index: true,
     follow: true,

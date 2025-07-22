@@ -66,8 +66,8 @@ export default async function EpisodeHeader({
             alt="Poster navet - contenu 18+"
             className={styles.backgroundImage}
             sizes={IMAGE_CONFIG.sizes.background}
-            quality={100}
-            priority={true}
+            quality={75}
+            loading="lazy"
             style={{ objectFit: "cover" }}
           />
           <div className={styles.backgroundOverlay}></div>
@@ -84,9 +84,9 @@ export default async function EpisodeHeader({
               className={styles.backgroundImage}
               sizes={IMAGE_CONFIG.sizes.background}
               quality={100}
-              priority={true}
-              style={{ objectFit: "cover" }}
               loading="eager"
+              fetchPriority="high"
+              style={{ objectFit: "cover" }}
             />
             <div className={styles.backgroundOverlay}></div>
           </div>

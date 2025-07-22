@@ -10,12 +10,12 @@ import {
 } from "@/app/actions/episode";
 import { getSagaWithFilmsAndEpisodes } from "@/app/actions/saga";
 import { getEpisodeRatingStats } from "@/app/actions/rating";
-import { getSession } from "@/lib/auth/auth-server";
 import { PodcastJsonLd } from "./json-ld";
 import { SITE_URL } from "@/helpers/config";
 import EpisodeHeader from "@/components/Episode/EpisodeHeader/EpisodeHeader";
 import EpisodeNavigation from "@/components/Episode/EpisodeNavigation/EpisodeNavigation";
 import EpisodeSaga from "@/components/Episode/EpisodeSaga/EpisodeSaga";
+import TranscriptionButton from "@/components/TranscriptionButton/TranscriptionButton";
 
 interface EpisodePageProps {
   params: Promise<{
@@ -40,10 +40,9 @@ export async function generateStaticParams() {
 export default async function EpisodePage({ params }: EpisodePageProps) {
   const { slug } = await params;
 
-  const [episodeResult, finalNavigationResult, session] = await Promise.all([
+  const [episodeResult, finalNavigationResult] = await Promise.all([
     getEpisodeBySlugCached(slug),
     getEpisodeNavigation(slug),
-    getSession(),
   ]);
 
   if (!episodeResult) {
@@ -88,6 +87,15 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
           previousEpisode={previousEpisode || null}
           nextEpisode={nextEpisode || null}
         />
+
+        {episode.transcription && (
+          <div className={styles.transcriptionSection}>
+            <TranscriptionButton
+              episodeId={episode.id}
+              transcription={episode.transcription}
+            />
+          </div>
+        )}
 
         {saga && sagaResult && (
           <EpisodeSaga saga={saga} sagaResult={sagaResult} />

@@ -24,7 +24,7 @@ export default async function Header() {
         <Link href="/" className={styles.logo}>
           <span className={styles.logoIcon}>
             <Image
-              src="/images/icon.png"
+              src="/images/icons/icon1.png"
               alt="Logo"
               width={32}
               height={32}

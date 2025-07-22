@@ -178,3 +178,52 @@ export async function getTranscription(episodeId: string) {
     return { success: false, error: "Erreur lors de la récupération" };
   }
 }
+
+/**
+ * Télécharge le contenu d'une transcription
+ */
+export async function downloadTranscriptionContent(episodeId: string) {
+  try {
+    const transcription = await prisma.transcription.findUnique({
+      where: { episodeId },
+      include: {
+        episode: {
+          select: {
+            title: true,
+            slug: true,
+          },
+        },
+      },
+    });
+
+    if (!transcription) {
+      return { success: false, error: "Transcription non trouvée" };
+    }
+
+    // Construire l'URL du fichier
+    const fileUrl = `${TRANSCRIPTION_CONFIG.readServer}${transcription.fileName}`;
+
+    // Récupérer le contenu du fichier
+    const response = await fetch(fileUrl);
+    
+    if (!response.ok) {
+      return { 
+        success: false, 
+        error: `Erreur lors de la récupération du fichier: ${response.status}` 
+      };
+    }
+
+    const content = await response.text();
+
+    return {
+      success: true,
+      transcription: {
+        ...transcription,
+        content,
+      },
+    };
+  } catch (error) {
+    console.error("Erreur lors du téléchargement de la transcription:", error);
+    return { success: false, error: "Erreur lors du téléchargement" };
+  }
+}

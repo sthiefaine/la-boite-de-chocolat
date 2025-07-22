@@ -12,8 +12,33 @@ export default function manifest(): MetadataRoute.Manifest {
     icons: [
       {
         src: "/images/icons/favicon.ico",
-        sizes: "192x192",
+        sizes: "32x32 48x48",
         type: "image/x-icon",
+      },
+      {
+        src: "/images/icons/favicon-16x16.png",
+        sizes: "16x16",
+        type: "image/png",
+      },
+      {
+        src: "/images/icons/favicon-32x32.png",
+        sizes: "32x32",
+        type: "image/png",
+      },
+      {
+        src: "/images/icons/android-icon-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+      },
+      {
+        src: "/images/icons/web-app-manifest-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+      },
+      {
+        src: "/images/icons/web-app-manifest-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
       },
     ],
   };

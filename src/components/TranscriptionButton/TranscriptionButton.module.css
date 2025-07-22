@@ -1,0 +1,79 @@
+.transcriptionButton {
+  background: var(--glass-bg-light);
+  border: var(--glass-border-light);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow-light);
+  transition: all var(--transition-normal);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.transcriptionButton:hover {
+  background: var(--glass-bg-medium);
+  border-color: var(--chocolate-light);
+  box-shadow: var(--glass-shadow-medium);
+  transform: translateY(-2px);
+}
+
+.transcriptionButton:active {
+  transform: translateY(0);
+}
+
+.icon {
+  font-size: 1.125rem;
+  flex-shrink: 0;
+}
+
+.text {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.fileType {
+  background: var(--chocolate-primary);
+  color: var(--text-white);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .transcriptionButton {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .icon {
+    font-size: 1rem;
+  }
+  
+  .fileType {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .transcriptionButton {
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.75rem 0.5rem;
+    text-align: center;
+  }
+  
+  .text {
+    font-size: 0.75rem;
+  }
+} 

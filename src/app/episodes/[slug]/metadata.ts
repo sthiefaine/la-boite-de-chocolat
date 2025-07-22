@@ -27,7 +27,7 @@ export async function generateMetadata({
   const baseUrl =
     process.env.NODE_ENV === "production"
       ? SITE_URL
-      : process.env.NEXT_PUBLIC_DEV_URL || "http://localhost:3000";
+      : SITE_URL || "http://localhost:3000";
 
   const { episode, mainFilm, isAdultContent } = episodeData;
   const title = mainFilm?.title || episode.title;
@@ -176,36 +176,6 @@ export async function generateMetadata({
 
     // Métadonnées pour les applications
     applicationName: "La Boîte de Chocolat",
-
-    // Métadonnées pour les favicons et manifestes
-    icons: {
-      icon: [
-        {
-          url: "/images/icons/favicon-16x16.png",
-          sizes: "16x16",
-          type: "image/png",
-        },
-        {
-          url: "/images/icons/favicon-32x32.png",
-          sizes: "32x32",
-          type: "image/png",
-        },
-      ],
-      apple: [
-        {
-          url: "/images/icons/apple-icon.png",
-          sizes: "180x180",
-          type: "image/png",
-        },
-      ],
-      other: [
-        {
-          url: "/images/icons/android-icon-192x192.png",
-          sizes: "192x192",
-          type: "image/png",
-        },
-      ],
-    },
   };
 }
 

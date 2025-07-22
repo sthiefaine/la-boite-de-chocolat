@@ -532,3 +532,16 @@
     height: 200px;
   }
 }
+
+.transcriptionSection {
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  background: var(--bg-primary);
+}
+
+@media (max-width: 768px) {
+  .transcriptionSection {
+    padding: 1rem;
+  }
+}

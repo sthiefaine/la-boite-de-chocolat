@@ -128,6 +128,15 @@ export const getEpisodeBySlugCached = cache(async (slug: string) => {
             },
           },
         },
+        transcription: {
+          select: {
+            id: true,
+            fileName: true,
+            fileSize: true,
+            fileType: true,
+            createdAt: true,
+          },
+        },
       },
     });
 
