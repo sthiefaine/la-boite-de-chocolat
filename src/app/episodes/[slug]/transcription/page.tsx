@@ -3,7 +3,7 @@
 import { notFound } from "next/navigation";
 import { getEpisodeBySlugCached } from "@/app/actions/episode";
 import { downloadTranscriptionContent } from "@/app/actions/transcription";
-import { parseSRT, searchInTranscription, formatFileSize, parseWithTimeMarkers } from "@/helpers/transcriptionHelpers";
+import { parseSRT, searchInTranscription, formatFileSize, parseWithTimeMarkers, srtTimeToSeconds } from "@/helpers/transcriptionHelpers";
 import TranscriptionPage from "./TranscriptionPage";
 import { generateMetadata } from "./metadata";
 
@@ -25,6 +25,7 @@ export default async function TranscriptionPageServer({ params }: TranscriptionP
   }
 
   const episode = episodeResult.episode;
+  const mainFilmImageUrl = decodeURIComponent(episodeResult.mainFilmImageUrl);
 
   if (!episode.transcription) {
     notFound();
@@ -46,6 +47,15 @@ export default async function TranscriptionPageServer({ params }: TranscriptionP
   
   // Si pas d'entrées, utiliser le parser avec repères temporels
   const timeMarkedSections = parsedEntries.length === 0 ? parseWithTimeMarkers(content) : null;
+  
+  // Si on a des entrées parsées, les convertir en sections pour l'affichage
+  const entriesAsSections = parsedEntries.length > 0 ? parsedEntries.map((entry, index) => ({
+    id: index + 1,
+    timeMarker: entry.startTime.split(',')[0], // Prendre juste HH:MM:SS
+    content: entry.text,
+    startSeconds: srtTimeToSeconds(entry.startTime),
+    endSeconds: srtTimeToSeconds(entry.endTime)
+  })) : null;
 
   return (
     <TranscriptionPage
@@ -54,7 +64,8 @@ export default async function TranscriptionPageServer({ params }: TranscriptionP
       content={content}
       entries={parsedEntries}
       detectedFormat={detectedFormat}
-      timeMarkedSections={timeMarkedSections}
+      timeMarkedSections={timeMarkedSections || entriesAsSections}
+      mainFilmImageUrl={mainFilmImageUrl}
     />
   );
 } 
