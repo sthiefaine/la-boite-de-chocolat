@@ -1,45 +1,24 @@
-// Configuration pour les transcriptions
-
 export const TRANSCRIPTION_CONFIG = {
-  // Serveur d'upload
   uploadServer: "https://uploadfiles.clairdev.com/api/upload",
-
-  // Serveur de lecture
   readServer:
     "https://uploadfiles.clairdev.com/api/display/podcasts/laboitedechocolat/episodes/",
-
-  // Types de fichiers supportés
   allowedTypes: [".srt", ".txt", ".vtt"],
-
-  // Taille maximale (5MB)
   maxSize: 5 * 1024 * 1024,
 };
 
-/**
- * Construit l'URL de lecture d'une transcription
- */
 export function getTranscriptionUrl(fileName: string): string {
   return `${TRANSCRIPTION_CONFIG.readServer}${fileName}`;
 }
 
-/**
- * Construit l'URL de téléchargement d'une transcription
- */
 export function getTranscriptionDownloadUrl(fileName: string): string {
   return `${TRANSCRIPTION_CONFIG.readServer}${fileName}`;
 }
 
-/**
- * Vérifie si un type de fichier est supporté
- */
 export function isSupportedFileType(fileName: string): boolean {
   const extension = fileName.toLowerCase().substring(fileName.lastIndexOf("."));
   return TRANSCRIPTION_CONFIG.allowedTypes.includes(extension);
 }
 
-/**
- * Formate la taille d'un fichier
- */
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return "0 Bytes";
   const k = 1024;
@@ -48,9 +27,6 @@ export function formatFileSize(bytes: number): string {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 }
 
-/**
- * Parse un fichier SRT et retourne un tableau d'entrées
- */
 export interface SubtitleEntry {
   id: number;
   startTime: string;
@@ -93,9 +69,6 @@ export function parseSRT(content: string): SubtitleEntry[] {
   return entries;
 }
 
-/**
- * Parse un fichier VTT (format WebVTT)
- */
 function parseVTT(content: string): SubtitleEntry[] {
   const entries: SubtitleEntry[] = [];
   const lines = content.split("\n");
@@ -104,13 +77,10 @@ function parseVTT(content: string): SubtitleEntry[] {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
 
-    // Ignorer les lignes vides et les métadonnées VTT
     if (!line || line.startsWith("WEBVTT") || line.startsWith("NOTE")) {
       continue;
     }
 
-    // Chercher une ligne avec timestamp + texte sur la même ligne
-    // Format: [00:00:00.480 --> 00:00:04.880]   Maman disait toujours...
     let timeMatch = line.match(
       /\[(\d{2}:\d{2}:\d{2}[.,]\d{3})\s*-->\s*(\d{2}:\d{2}:\d{2}[.,]\d{3})\]\s*(.*)$/
     );
@@ -153,9 +123,6 @@ function parseVTT(content: string): SubtitleEntry[] {
   return entries;
 }
 
-/**
- * Convertit un temps SRT en secondes
- */
 export function srtTimeToSeconds(time: string): number {
   const match = time.match(/(\d{2}):(\d{2}):(\d{2}),(\d{3})/);
   if (!match) return 0;
@@ -168,9 +135,6 @@ export function srtTimeToSeconds(time: string): number {
   return hours * 3600 + minutes * 60 + seconds + milliseconds / 1000;
 }
 
-/**
- * Recherche dans le texte des sous-titres
- */
 export function searchInTranscription(
   entries: SubtitleEntry[],
   query: string
@@ -181,9 +145,6 @@ export function searchInTranscription(
   );
 }
 
-/**
- * Obtient les sous-titres pour une plage de temps donnée
- */
 export function getSubtitlesForTimeRange(
   entries: SubtitleEntry[],
   startSeconds: number,
@@ -201,9 +162,6 @@ export function getSubtitlesForTimeRange(
   });
 }
 
-/**
- * Parse le contenu et crée des sections avec repères temporels toutes les 5 minutes
- */
 export function parseWithTimeMarkers(content: string): Array<{
   id: number;
   timeMarker: string;
@@ -220,13 +178,12 @@ export function parseWithTimeMarkers(content: string): Array<{
   const timeMatches = content.match(/(\d{2}:\d{2}:\d{2}[.,]\d{3})/g) || [];
 
   if (timeMatches.length === 0) {
-    // Aucun timestamp trouvé, créer des sections basées sur la longueur
     const words = content.split(/\s+/);
-    const wordsPerSection = Math.ceil(words.length / 12); // ~12 sections de 5 min
+    const wordsPerSection = Math.ceil(words.length / 12);
 
     for (let i = 0; i < words.length; i += wordsPerSection) {
       const sectionWords = words.slice(i, i + wordsPerSection);
-      const minutes = Math.floor((i / words.length) * 60); // Estimation basée sur la position
+      const minutes = Math.floor((i / words.length) * 60);
       const timeMarker = formatTimeMarker(minutes * 60);
 
       sections.push({
@@ -240,7 +197,6 @@ export function parseWithTimeMarkers(content: string): Array<{
     return sections;
   }
 
-  // Extraire les timestamps et leur contenu associé
   const lines = content.split("\n");
   let currentSection: {
     id: number;
@@ -257,11 +213,9 @@ export function parseWithTimeMarkers(content: string): Array<{
       const seconds = timeToSeconds(timestamp);
       const minutes = Math.floor(seconds / 60);
 
-      // Créer une nouvelle section toutes les 5 minutes
       const sectionMinutes = Math.floor(minutes / 5) * 5;
       const timeMarker = formatTimeMarker(sectionMinutes * 60);
 
-      // Si c'est une nouvelle section de 5 minutes
       if (!currentSection || currentSection.timeMarker !== timeMarker) {
         if (currentSection) {
           sections.push(currentSection);
@@ -275,7 +229,6 @@ export function parseWithTimeMarkers(content: string): Array<{
         };
       }
 
-      // Ajouter le contenu de cette ligne
       const textContent = line
         .replace(
           /\d{2}:\d{2}:\d{2}[.,]\d{3}\s*-->\s*\d{2}:\d{2}:\d{2}[.,]\d{3}/,
@@ -287,24 +240,18 @@ export function parseWithTimeMarkers(content: string): Array<{
           (currentSection.content ? "\n" : "") + textContent;
       }
     } else if (currentSection && line.trim()) {
-      // Ligne de texte sans timestamp
       currentSection.content +=
         (currentSection.content ? "\n" : "") + line.trim();
     }
   }
 
-  // Ajouter la dernière section
   if (currentSection) {
     sections.push(currentSection);
   }
 
-  console.log("✅ Sections créées:", sections.length);
   return sections;
 }
 
-/**
- * Convertit des secondes en format HH:MM:SS
- */
 function formatTimeMarker(seconds: number): string {
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
@@ -315,11 +262,49 @@ function formatTimeMarker(seconds: number): string {
     .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
 }
 
-/**
- * Convertit un timestamp en secondes
- */
 function timeToSeconds(time: string): number {
   const cleanTime = time.replace(",", ".").replace(/[\[\]]/g, "");
   const [hours, minutes, seconds] = cleanTime.split(":").map(Number);
   return hours * 3600 + minutes * 60 + parseFloat(seconds.toString());
+}
+
+export function extractTimeAndText(line: string): {
+  startTime: string | null;
+  endTime: string | null;
+  text: string;
+} {
+  const vttMatchWithBrackets = line.match(
+    /^\s*\[(\d{2}:\d{2}:\d{2}[.,]\d{3})\s*-->\s*(\d{2}:\d{2}:\d{2}[.,]\d{3})\]\s*(.*)$/
+  );
+  if (vttMatchWithBrackets) {
+    const startTime = vttMatchWithBrackets[1].replace(".", ",");
+    const endTime = vttMatchWithBrackets[2].replace(".", ",");
+    return { startTime, endTime, text: vttMatchWithBrackets[3] };
+  }
+
+  const vttMatchWithoutBrackets = line.match(
+    /^\s*(\d{2}:\d{2}:\d{2}[.,]\d{3})\s*-->\s*(\d{2}:\d{2}:\d{2}[.,]\d{3})\s*(.*)$/
+  );
+  if (vttMatchWithoutBrackets) {
+    const startTime = vttMatchWithoutBrackets[1].replace(".", ",");
+    const endTime = vttMatchWithoutBrackets[2].replace(".", ",");
+    return { startTime, endTime, text: vttMatchWithoutBrackets[3] };
+  }
+
+  const simpleMatch = line.match(
+    /^\s*(\[)?(\d{2}:\d{2}:\d{2}[.,]\d{3})?(\])?\s*(.*)$/
+  );
+  if (simpleMatch && simpleMatch[2]) {
+    const time = simpleMatch[2].replace(".", ",");
+    return { startTime: time, endTime: null, text: simpleMatch[4] };
+  }
+
+  const emptyBracketsMatch = line.match(/^\s*\[\]\s*(.*)$/);
+  if (emptyBracketsMatch) {
+    return { startTime: null, endTime: null, text: emptyBracketsMatch[1] };
+  }
+
+  if (line.trim() === "[]")
+    return { startTime: null, endTime: null, text: "" };
+  return { startTime: null, endTime: null, text: line };
 }

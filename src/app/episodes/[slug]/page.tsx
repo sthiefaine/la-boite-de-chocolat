@@ -15,7 +15,6 @@ import { SITE_URL } from "@/helpers/config";
 import EpisodeHeader from "@/components/Episode/EpisodeHeader/EpisodeHeader";
 import EpisodeNavigation from "@/components/Episode/EpisodeNavigation/EpisodeNavigation";
 import EpisodeSaga from "@/components/Episode/EpisodeSaga/EpisodeSaga";
-import TranscriptionButton from "@/components/TranscriptionButton/TranscriptionButton";
 
 interface EpisodePageProps {
   params: Promise<{

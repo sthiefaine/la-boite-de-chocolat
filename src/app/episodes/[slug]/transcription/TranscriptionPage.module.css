@@ -16,7 +16,7 @@
   min-height: 48px;
   display: flex;
   align-items: center;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .headerContent {
@@ -35,13 +35,29 @@
 }
 
 .backLink {
-  color: #64748b;
+  color: var(--chocolate-primary);
   text-decoration: none;
   font-weight: 500;
   font-size: 0.9rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  transition: all var(--transition-fast);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--chocolate-light);
+}
+
+.backLink:hover {
+  background: var(--chocolate-primary);
+  color: var(--text-white);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-light);
+}
+
+.backLink:active {
+  transform: translateY(0);
 }
 
 .episodeTitle {
@@ -89,6 +105,8 @@
 .playIcon {
   font-size: 1.1em;
 }
+
+
 
 .controls {
   position: sticky;
@@ -152,7 +170,8 @@
   max-width: 900px;
   margin: 0 auto;
   overflow-y: auto;
-  padding: 1.5rem 1rem 2rem 1rem;
+  padding: 1rem;
+  margin-bottom: 8vh;
   background: var(--glass-bg-light);
   border: var(--glass-border-medium);
   border-radius: 16px;
@@ -177,7 +196,7 @@
 .timeMarker {
   color: #64748b;
   font-size: 0.95rem;
-  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", monospace;
   font-weight: 500;
   margin-bottom: 0.2rem;
   margin-left: 0.1rem;
@@ -200,7 +219,7 @@
   border-radius: 8px;
   box-shadow: var(--glass-shadow-medium);
   border: 1px solid var(--chocolate-light);
-  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", monospace;
 }
 
 .sectionDivider {
@@ -266,7 +285,7 @@
   border: var(--glass-border-medium);
   border-radius: 10px;
   color: var(--text-primary);
-  font-size: 0.98rem;
+  font-size: 0.85rem;
   font-weight: 600;
   padding: 0.45em 1em;
   display: flex;
@@ -292,7 +311,8 @@
   color: #b91c1c;
 }
 
-.syncButton:active, .syncButton:focus {
+.syncButton:active,
+.syncButton:focus {
   border: var(--glass-border-dark);
 }
 
@@ -310,22 +330,59 @@
 }
 
 .lyricActive {
-  background: var(--glass-bg-medium);
-  border-left: 4px solid var(--accent-gold);
-  color: var(--chocolate-primary);
-  font-weight: 700;
-  box-shadow: 0 2px 8px rgba(212, 165, 116, 0.08);
-  border-radius: 8px;
-  padding-left: 1.2rem;
-  transition: none;
+  background: rgba(34, 197, 94, 0.1);
+  border-left: 3px solid #22c55e;
+  color: #000000;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.15);
+  border-radius: 4px;
+  padding: 0.1rem 0.2rem;
+  transition: all var(--transition-fast);
 }
 
 @media (max-width: 768px) {
-  .headerContent, .controls, .lyricsScroller {
+  .headerContent,
+  .controls,
+  .lyricsScroller {
     max-width: 100vw;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
   }
+
+  .controls {
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--chocolate-light);
+    padding: 0.75rem 0.5rem;
+  }
+
+  .searchInput {
+    background: var(--bg-secondary);
+    border: 1px solid var(--chocolate-light);
+    box-shadow: var(--shadow-light);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .searchInput:focus {
+    background: var(--bg-secondary);
+    border: 2px solid var(--chocolate-primary);
+    box-shadow: var(--shadow-medium);
+  }
+
+
+
+  .headerActions {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+
+  .playButton,
+  .syncButton {
+    width: 100%;
+    justify-content: center;
+  }
+
   .lyricsScroller {
     padding: 1rem 0.5rem 1.5rem 0.5rem;
   }
@@ -339,4 +396,4 @@
     font-size: 0.92rem;
     padding: 0.4em 0.7em;
   }
-} 
+}
