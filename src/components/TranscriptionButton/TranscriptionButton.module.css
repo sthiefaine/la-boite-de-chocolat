@@ -1,41 +1,82 @@
 .transcriptionButton {
-  background: var(--glass-bg-light);
-  border: var(--glass-border-light);
+  background: var(--glass-bg-medium);
+  border: var(--glass-border-medium);
   border-radius: 12px;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 1rem;
+  min-height: 40px;
+  height: 40px;
   backdrop-filter: var(--glass-blur);
-  box-shadow: var(--glass-shadow-light);
+  box-shadow: var(--glass-shadow-medium);
   transition: all var(--transition-normal);
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   color: var(--text-primary);
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 0.98rem;
+  font-weight: 600;
   min-width: 0;
   flex-shrink: 0;
+  position: relative;
+  overflow: visible;
+  text-decoration: none;
+}
+
+.betaBadge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ffb347;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 0.08em 0.5em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  display: inline-block;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.transcriptionButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.transcriptionButton:hover::before {
+  left: 100%;
 }
 
 .transcriptionButton:hover {
-  background: var(--glass-bg-medium);
-  border-color: var(--chocolate-light);
-  box-shadow: var(--glass-shadow-medium);
-  transform: translateY(-2px);
+  background: var(--glass-bg-dark);
+  border-color: var(--chocolate-primary);
+  box-shadow: var(--glass-shadow-dark);
+  transform: translateY(-3px);
+  text-decoration: none;
+  color: var(--text-primary);
 }
 
 .transcriptionButton:active {
-  transform: translateY(0);
+  transform: translateY(-1px);
 }
 
 .icon {
-  font-size: 1.125rem;
+  font-size: 1.05rem;
   flex-shrink: 0;
 }
 
 .text {
   font-weight: 600;
   white-space: nowrap;
+  font-size: 0.98rem;
 }
 
 .fileType {
@@ -51,8 +92,8 @@
 
 @media (max-width: 768px) {
   .transcriptionButton {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.8rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
   }
   
   .icon {
@@ -68,12 +109,12 @@
 @media (max-width: 480px) {
   .transcriptionButton {
     flex-direction: column;
-    gap: 0.25rem;
-    padding: 0.75rem 0.5rem;
+    gap: 0.5rem;
+    padding: 1rem 0.75rem;
     text-align: center;
   }
   
   .text {
-    font-size: 0.75rem;
+    font-size: 0.9rem;
   }
 } 

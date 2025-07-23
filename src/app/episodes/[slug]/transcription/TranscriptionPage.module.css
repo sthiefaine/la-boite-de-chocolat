@@ -1,0 +1,198 @@
+.container {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+.header {
+  background: #fff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.75rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.headerContent {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.breadcrumb {
+  flex-shrink: 0;
+}
+
+.backLink {
+  color: #64748b;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.episodeTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.controls {
+  position: sticky;
+  top: 48px;
+  z-index: 15;
+  background: transparent;
+  border: none;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0.5rem 0;
+  display: flex;
+}
+
+.searchContainer {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: var(--glass-border-medium);
+  border-radius: 12px;
+  background: var(--glass-bg-light);
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 400;
+  backdrop-filter: var(--glass-blur-light);
+  -webkit-backdrop-filter: var(--glass-blur-light);
+  box-shadow: var(--glass-shadow-light);
+}
+
+.searchInput:focus {
+  outline: none;
+  border: var(--glass-border-dark);
+  background: var(--glass-bg-medium);
+}
+
+.searchInput::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+.main {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  overflow: hidden;
+}
+
+.lyricsScroller {
+  flex: 1 1 0;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  overflow-y: auto;
+  padding: 1.5rem 1rem 2rem 1rem;
+  background: var(--glass-bg-light);
+  border: var(--glass-border-medium);
+  border-radius: 16px;
+  box-shadow: var(--glass-shadow-medium);
+  backdrop-filter: var(--glass-blur-medium);
+  -webkit-backdrop-filter: var(--glass-blur-medium);
+  color: var(--text-primary);
+}
+
+.timeMarkedSections {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.timeMarkedSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.timeMarker {
+  color: #64748b;
+  font-size: 0.95rem;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+  margin-left: 0.1rem;
+}
+
+.sectionContent {
+  color: #1e293b;
+  font-size: 1.08rem;
+  line-height: 1.7;
+  white-space: pre-line;
+  font-weight: 400;
+  padding-left: 0.5rem;
+}
+
+.lyricLine {
+  font-size: 1.08rem;
+  line-height: 1.7;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+  padding-left: 0.5rem;
+  font-weight: 400;
+  white-space: pre-line;
+}
+
+.lyricLine:last-child {
+  margin-bottom: 0;
+}
+
+/* Supprimer tout effet hover/transition sur les boutons de la page transcription */
+.timeMarkedSection button,
+.lyricsScroller button,
+.controls button {
+  transition: none !important;
+  background: inherit;
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .headerContent, .controls, .lyricsScroller {
+    max-width: 100vw;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  .lyricsScroller {
+    padding: 1rem 0.5rem 1.5rem 0.5rem;
+  }
+  .timeMarkedSections {
+    gap: 1.5rem;
+  }
+  .sectionContent {
+    font-size: 1rem;
+  }
+} 

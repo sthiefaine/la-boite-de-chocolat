@@ -1,5 +1,3 @@
-/* EpisodeHeader.module.css */
-
 .header {
   position: relative;
   min-height: 500px;
@@ -261,6 +259,29 @@
   background: rgba(255, 255, 255, 0.6);
 }
 
+.transcriptionButton {
+  position: relative;
+}
+
+.betaBadge {
+  position: absolute;
+  top: 2px;
+  right: 6px;
+  background: #ffb347;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 0.08em 0.5em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  display: inline-block;
+  z-index: 2;
+  pointer-events: none;
+  line-height: 1.1;
+}
+
 @media (max-width: 768px) {
   .headerInfo {
     padding: 1rem;
@@ -317,10 +338,6 @@
   /* Deuxième ligne : Télécharger et Partager */
   .downloadButton {
     grid-column: 1;
-  }
-
-  .shareButton {
-    grid-column: 2;
   }
 
   /* Troisième ligne : TMDB (centré) */

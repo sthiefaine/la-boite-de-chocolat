@@ -82,20 +82,10 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
           userRating={userRating}
           ratingStats={ratingStats}
         />
-
         <EpisodeNavigation
           previousEpisode={previousEpisode || null}
           nextEpisode={nextEpisode || null}
         />
-
-        {episode.transcription && (
-          <div className={styles.transcriptionSection}>
-            <TranscriptionButton
-              episodeId={episode.id}
-              transcription={episode.transcription}
-            />
-          </div>
-        )}
 
         {saga && sagaResult && (
           <EpisodeSaga saga={saga} sagaResult={sagaResult} />

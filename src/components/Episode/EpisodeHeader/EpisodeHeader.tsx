@@ -15,6 +15,7 @@ import ButtonSkeleton from "@/components/Button/ButtonSkeleton";
 import RatingStars from "@/components/Rating/RatingStars";
 import RatingStarsSkeleton from "@/components/Rating/RatingStarsSkeleton";
 import styles from "./EpisodeHeader.module.css";
+import TranscriptionButton from '@/components/TranscriptionButton/TranscriptionButton';
 
 interface EpisodeHeaderProps {
   episode: {
@@ -35,6 +36,13 @@ interface EpisodeHeaderProps {
         tmdbId?: number | null;
       } | null;
     }>;
+    transcription?: {
+      id: string;
+      fileName: string;
+      fileSize: number | null;
+      fileType: string;
+      createdAt: Date;
+    } | null;
   };
   mainFilmImageUrl: string;
   isAdultContent: boolean;
@@ -148,6 +156,19 @@ export default async function EpisodeHeader({
               <span className={styles.buttonIcon}>⬇️</span>
               Télécharger
             </a>
+
+            {episode.transcription && (
+              <TranscriptionButton
+                episodeId={episode.id}
+                transcription={episode.transcription}
+                episodeSlug={episode.slug || ''}
+                className={`${styles.button} ${styles.transcriptionButton}`}
+              >
+                <span className={styles.buttonIcon}>📝</span>
+                <span>Transcription</span>
+                <span className={styles.betaBadge}>beta</span>
+              </TranscriptionButton>
+            )}
 
             <Suspense fallback={<ButtonSkeleton />}>
               <ShareButton

@@ -4,56 +4,56 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: 1rem;
-  animation: fadeIn 0.3s ease-out;
+  animation: fadeIn 0.2s ease-out;
 }
 
 .modalContent {
-  background: var(--glass-bg-medium);
-  border: var(--glass-border-medium);
-  border-radius: 16px;
-  backdrop-filter: var(--glass-blur);
-  box-shadow: var(--glass-shadow-dark);
-  max-width: 90vw;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  max-width: 95vw;
   max-height: 90vh;
-  width: 800px;
+  width: 1000px;
   display: flex;
   flex-direction: column;
-  animation: slideIn 0.3s ease-out;
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .modalHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid var(--chocolate-light);
-  background: rgba(255, 255, 255, 0.05);
+  padding: 2rem 2.5rem 1.5rem 2.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  background: #ffffff;
 }
 
 .modalTitle {
-  color: var(--text-primary);
-  font-size: 1.5rem;
-  font-weight: 600;
+  color: #1e293b;
+  font-size: 1.75rem;
+  font-weight: 700;
   margin: 0;
+  letter-spacing: -0.025em;
 }
 
 .closeButton {
-  background: none;
+  background: #f8fafc;
   border: none;
-  color: var(--text-secondary);
-  font-size: 1.5rem;
+  color: #64748b;
+  font-size: 1.25rem;
   cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 50%;
-  transition: all var(--transition-fast);
+  padding: 0.75rem;
+  border-radius: 12px;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -62,23 +62,22 @@
 }
 
 .closeButton:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-primary);
-  transform: scale(1.1);
+  background: #e2e8f0;
+  color: #475569;
+  transform: scale(1.05);
 }
 
 .modalBody {
-  padding: 1.5rem;
+  padding: 2rem 2.5rem;
   overflow-y: auto;
   flex: 1;
+  background: #ffffff;
 }
 
 .stats {
   display: flex;
   gap: 1rem;
-  margin-bottom: 1.5rem;
-  font-size: 0.875rem;
-  color: var(--text-secondary);
+  margin-bottom: 2rem;
   flex-wrap: wrap;
 }
 
@@ -86,140 +85,170 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 0.5rem 0.75rem;
-  border-radius: 8px;
-  border: 1px solid var(--chocolate-light);
+  background: #f8fafc;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  color: #475569;
+  font-weight: 500;
+  font-size: 0.875rem;
+  border: 1px solid #e2e8f0;
 }
 
 .actions {
   display: flex;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   align-items: center;
-  flex-wrap: wrap;
 }
 
 .searchContainer {
   flex: 1;
-  min-width: 200px;
+  min-width: 300px;
 }
 
 .searchInput {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid var(--chocolate-light);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-primary);
+  padding: 1rem 1.25rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #1e293b;
   font-size: 1rem;
-  transition: all var(--transition-fast);
+  transition: all 0.2s ease;
+  font-weight: 400;
 }
 
 .searchInput:focus {
   outline: none;
-  border-color: var(--chocolate-primary);
-  box-shadow: 0 0 0 2px rgba(107, 62, 38, 0.2);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .searchInput::placeholder {
-  color: var(--text-secondary);
-}
-
-.downloadButton {
-  background: var(--chocolate-primary);
-  color: var(--text-white);
-  border: none;
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  white-space: nowrap;
-}
-
-.downloadButton:hover {
-  background: var(--chocolate-secondary);
-  transform: translateY(-2px);
+  color: #94a3b8;
 }
 
 .subtitlesContainer {
-  max-height: 400px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #ffffff;
+  padding: 1.5rem;
+  min-height: 400px;
+  max-height: 500px;
   overflow-y: auto;
-  border: 1px solid var(--chocolate-light);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
 }
 
-.subtitleEntry {
-  padding: 1rem;
-  border-bottom: 1px solid rgba(107, 62, 38, 0.1);
-  transition: all var(--transition-fast);
+.txtContent {
+  padding: 0;
+  font-size: 1.125rem;
+  color: #1e293b;
+  line-height: 1.7;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-.subtitleEntry:hover {
-  background: rgba(255, 255, 255, 0.1);
+.txtParagraph {
+  margin-bottom: 1.5rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: #334155;
+  white-space: pre-line;
 }
 
-.subtitleEntry.highlighted {
-  background: rgba(212, 175, 55, 0.2);
-  border-left: 3px solid var(--accent-gold);
-}
-
-.subtitleHeader {
+.srtList {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.subtitleId {
-  color: var(--chocolate-secondary);
-  font-weight: 600;
+.srtBlock {
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.srtBlock:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.srtTime {
+  color: #64748b;
   font-size: 0.875rem;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+  font-weight: 500;
+  background: #e2e8f0;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  display: inline-block;
+  width: fit-content;
 }
 
-.subtitleTime {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  font-family: monospace;
-}
-
-.subtitleText {
-  color: var(--text-primary);
-  line-height: 1.5;
-  white-space: pre-wrap;
+.srtText {
+  color: #1e293b;
+  font-size: 1.125rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  white-space: pre-line;
+  font-weight: 400;
 }
 
 .noResults {
-  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
   text-align: center;
-  color: var(--text-secondary);
+  color: #64748b;
+  min-height: 300px;
+}
+
+.noResults > div:first-child {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #475569;
+}
+
+.noResults > div:last-child {
+  font-size: 0.875rem;
+  opacity: 0.8;
 }
 
 .loading {
-  padding: 2rem;
-  text-align: center;
-  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  color: #64748b;
+  font-weight: 500;
+  min-height: 300px;
 }
 
 .error {
-  color: var(--accent-red);
-  background: rgba(139, 38, 53, 0.1);
-  border: 1px solid var(--accent-red);
-  border-radius: 8px;
-  padding: 1rem;
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 1.5rem;
   margin-top: 1rem;
+  font-weight: 500;
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slideIn {
@@ -237,18 +266,19 @@
   .modalContent {
     width: 95vw;
     max-height: 95vh;
+    border-radius: 20px;
   }
   
   .modalHeader {
-    padding: 1rem;
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
   }
   
   .modalBody {
-    padding: 1rem;
+    padding: 1.5rem;
   }
   
   .modalTitle {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
   }
   
   .actions {
@@ -261,19 +291,24 @@
   }
   
   .subtitlesContainer {
-    max-height: 300px;
+    min-height: 300px;
+    max-height: 400px;
   }
   
-  .subtitleEntry {
-    padding: 0.75rem;
+  .srtList {
+    gap: 0.75rem;
   }
   
-  .stats {
-    gap: 0.5rem;
+  .srtBlock {
+    padding: 1rem;
   }
   
-  .stat {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
+  .srtText {
+    font-size: 1rem;
+  }
+  
+  .txtParagraph {
+    padding: 1.25rem;
+    font-size: 1rem;
   }
 } 

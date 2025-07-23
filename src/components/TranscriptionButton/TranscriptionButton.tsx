@@ -1,8 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import TranscriptionModal from '../TranscriptionModal/TranscriptionModal';
-import styles from './TranscriptionButton.module.css';
+import Link from 'next/link';
 
 interface Transcription {
   id: string;
@@ -15,37 +13,21 @@ interface Transcription {
 interface TranscriptionButtonProps {
   episodeId: string;
   transcription: Transcription;
+  episodeSlug: string;
+  className?: string;
+  children?: React.ReactNode;
 }
 
-export default function TranscriptionButton({ episodeId, transcription }: TranscriptionButtonProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
+export default function TranscriptionButton({ episodeSlug, className, children }: TranscriptionButtonProps) {
   return (
-    <>
-      <button 
-        className={styles.transcriptionButton}
-        onClick={handleOpenModal}
-        title="Voir la transcription"
-      >
-        <span className={styles.icon}>📝</span>
-        <span className={styles.text}>Transcription</span>
-        <span className={styles.fileType}>{transcription.fileType.toUpperCase()}</span>
-      </button>
-
-      <TranscriptionModal
-        episodeId={episodeId}
-        transcription={transcription}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-      />
-    </>
+    <Link
+      href={`/episodes/${episodeSlug}/transcription`}
+      className={className}
+      title="Voir la transcription"
+      tabIndex={0}
+      role="button"
+    >
+      {children}
+    </Link>
   );
 } 
