@@ -49,21 +49,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     where: {
       slug: { not: null },
     },
-    select: {
-      slug: true,
-      updatedAt: true,
+    include: {
+      links: {
+        include: {
+          film: {
+            select: {
+              age: true,
+            },
+          },
+        },
+      },
     },
     orderBy: {
       pubDate: "desc",
     },
   });
 
-  const episodePages = episodes.map((episode) => ({
-    url: `${baseUrl}/episodes/${episode.slug}`,
-    lastModified: episode.updatedAt,
-    changeFrequency: "weekly" as const,
-    priority: 0.8,
-  }));
+  const episodePages = episodes
+    .filter((episode) => {
+      // Filtrer les épisodes avec contenu adulte
+      const mainFilm = episode.links[0]?.film;
+      const isAdult = mainFilm?.age === "18+" || mainFilm?.age === "adult";
+      return !isAdult; // Ne pas inclure les épisodes adultes dans le sitemap
+    })
+    .map((episode) => ({
+      url: `${baseUrl}/episodes/${episode.slug}`,
+      lastModified: episode.updatedAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    }));
 
   // Récupérer les sagas
   const sagas = await prisma.saga.findMany({

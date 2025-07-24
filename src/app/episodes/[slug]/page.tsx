@@ -11,6 +11,7 @@ import {
 import { getSagaWithFilmsAndEpisodes } from "@/app/actions/saga";
 import { getEpisodeRatingStats } from "@/app/actions/rating";
 import { PodcastJsonLd } from "./json-ld";
+import { BreadcrumbJsonLd } from "./breadcrumb-json-ld";
 import { SITE_URL } from "@/helpers/config";
 import EpisodeHeader from "@/components/Episode/EpisodeHeader/EpisodeHeader";
 import EpisodeNavigation from "@/components/Episode/EpisodeNavigation/EpisodeNavigation";
@@ -71,7 +72,12 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
     <>
       <PodcastJsonLd
         episode={episode}
-        canonicalUrl={`${SITE_URL}/podcast/${episode.slug}`}
+        canonicalUrl={`${SITE_URL}/episodes/${episode.slug}`}
+      />
+      <BreadcrumbJsonLd
+        episodeTitle={episode.title}
+        episodeSlug={episode.slug || ""}
+        filmTitle={mainFilm?.title}
       />
       <div className={styles.container}>
         <EpisodeHeader

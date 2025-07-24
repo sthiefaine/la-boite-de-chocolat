@@ -20,7 +20,17 @@ export async function generateMetadata({
       title: "Épisode non trouvé - La Boîte de Chocolat",
       description:
         "Cet épisode de podcast n'existe pas ou n'est plus disponible.",
-      robots: "noindex, nofollow",
+      robots: {
+        index: false,
+        follow: false,
+        googleBot: {
+          index: false,
+          follow: false,
+        },
+      },
+      alternates: {
+        canonical: `${SITE_URL}/episodes/${slug}`,
+      },
     };
   }
 
@@ -55,7 +65,7 @@ export async function generateMetadata({
     : "/twitter-image";
 
   // URL canonique
-  const canonicalUrl = `${SITE_URL}/podcast/${slug}`;
+  const canonicalUrl = `${SITE_URL}/episodes/${slug}`;
 
   // Mots-clés basés sur le contenu
   const keywords = [
@@ -93,6 +103,8 @@ export async function generateMetadata({
         "max-video-preview": -1,
         "max-image-preview": "large",
         "max-snippet": -1,
+        noarchive: isAdult,
+        nosnippet: isAdult,
       },
     },
 
@@ -172,10 +184,42 @@ export async function generateMetadata({
       // Métadonnées de contenu
       "content-language": "fr-FR",
       "content-type": "audio/podcast",
+
+      // Métadonnées pour l'indexation
+      googlebot: "index, follow",
+      bingbot: "index, follow",
+      slurp: "index, follow",
+
+      // Métadonnées pour les réseaux sociaux
+      "twitter:card": "summary_large_image",
+      "twitter:site": "@LaBoiteDeChocolat",
+      "twitter:creator": "@LaBoiteDeChocolat",
+
+      "og:site_name": "La Boîte de Chocolat",
+      "og:locale": "fr_FR",
+      "og:type": "article",
     },
 
     // Métadonnées pour les applications
     applicationName: "La Boîte de Chocolat",
+
+    // Métadonnées supplémentaires pour l'indexation
+    verification: {
+      google: process.env.GOOGLE_SITE_VERIFICATION,
+    },
+
+    // Métadonnées pour les réseaux sociaux
+    category: "entertainment",
+    classification: "podcast",
+
+    // Métadonnées pour les moteurs de recherche
+    referrer: "origin-when-cross-origin",
+    formatDetection: {
+      telephone: false,
+      date: false,
+      address: false,
+      email: false,
+    },
   };
 }
 

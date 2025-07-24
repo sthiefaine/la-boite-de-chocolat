@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: GenerateMetadataProps): Promi
 
   const episode = episodeResult.episode;
   const mainFilm = episode.links[0]?.film;
-  const transcription = episode.transcription!; // On sait qu'elle existe car on a vérifié plus haut
+  const transcription = episode.transcription!;
 
   const title = mainFilm?.title || episode.title;
   const year = mainFilm?.year;
@@ -51,4 +51,4 @@ export async function generateMetadata({ params }: GenerateMetadataProps): Promi
       follow: true,
     },
   };
-} 
+}

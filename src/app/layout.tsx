@@ -52,7 +52,7 @@ export const metadata = {
     images: ["/twitter-image"],
   },
   verification: {
-    google: "8EvVJDoD8PdzrO0TgDARL4LStymSPb7Kg0KkBP8JCWk",
+    google: process.env.GOOGLE_SITE_VERIFICATION,
   },
 };
 export default function RootLayout({

@@ -69,7 +69,7 @@ export async function PodcastJsonLd({ episode, canonicalUrl }: JsonLdProps) {
       "@type": "PodcastSeries",
       name: "La Boîte de Chocolat",
       description: "Podcast de critique cinématographique",
-      url: `${SITE_URL}/podcast`,
+      url: `${SITE_URL}/episodes`,
       genre: "Arts",
       inLanguage: "fr-FR",
       creator: {
