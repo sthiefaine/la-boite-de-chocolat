@@ -21,16 +21,20 @@ interface RssItemWithItunes {
   };
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const force = searchParams.get('force') === 'true';
+    
     const shouldRun = await shouldRunImport();
-    if (!shouldRun) {
+    if (!shouldRun && !force) {
       return Response.json({
         message: `Import ignoré - pas l'heure de l'import ${allowedHours
           .map((hour) => `${hour}h`)
-          .join(", ")}`,
+          .join(", ")}. Utilisez ?force=true pour forcer l'import.`,
         currentTime: new Date().toISOString(),
         shouldRun: false,
+        force: false,
       });
     }
 
@@ -139,11 +143,12 @@ export async function GET() {
       }
     }
     return Response.json({
-      message: `Import terminé`,
+      message: `Import terminé${force ? ' (forcé)' : ''}`,
       imported,
       updated,
       currentTime: new Date().toISOString(),
       shouldRun: true,
+      force: force,
     });
   } catch (e: unknown) {
     if (e instanceof Error) {
