@@ -240,6 +240,7 @@ export async function uploadPosterFromTMDB(
   try {
     // Télécharger l'image depuis TMDB en qualité HD/Retina
     const imageUrl = `https://image.tmdb.org/t/p/w1280${posterPath}`;
+    console.log("imageUrl", imageUrl);
 
     // Générer un nom de fichier unique
     const timestamp = Date.now();
