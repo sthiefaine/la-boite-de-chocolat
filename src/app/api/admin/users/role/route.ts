@@ -9,6 +9,9 @@ import {
   UserRole,
 } from "@/lib/auth/auth-helpers";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function PUT(request: NextRequest) {
   try {
     const user = await getUser();

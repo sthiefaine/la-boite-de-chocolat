@@ -3,6 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { getUser } from "@/lib/auth/auth-server";
 import { isAdminRole } from "@/lib/auth/auth-helpers";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function GET(request: NextRequest) {
   try {
     const user = await getUser();

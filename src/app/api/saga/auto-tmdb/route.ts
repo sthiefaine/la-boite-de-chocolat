@@ -4,6 +4,8 @@ import { getUser } from "@/lib/auth/auth-server";
 import { searchCollection } from "@/app/actions/saga";
 import { isAdminRole } from "@/lib/auth/auth-helpers";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: NextRequest) {
   try {
     const user = await getUser();
