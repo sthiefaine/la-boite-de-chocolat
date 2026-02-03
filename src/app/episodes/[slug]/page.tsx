@@ -16,6 +16,8 @@ import { SITE_URL } from "@/helpers/config";
 import EpisodeHeader from "@/components/Episode/EpisodeHeader/EpisodeHeader";
 import EpisodeNavigation from "@/components/Episode/EpisodeNavigation/EpisodeNavigation";
 import EpisodeSaga from "@/components/Episode/EpisodeSaga/EpisodeSaga";
+import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
+import RecommendationsSection from "@/components/Recommendations/RecommendationsSection";
 
 interface EpisodePageProps {
   params: Promise<{
@@ -80,6 +82,14 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
         filmTitle={mainFilm?.title}
       />
       <div className={styles.container}>
+        <Breadcrumbs
+          variant="light"
+          items={[
+            { label: "Accueil", href: "/" },
+            { label: "Épisodes", href: "/episodes" },
+            { label: mainFilm?.title || episode.title },
+          ]}
+        />
         <EpisodeHeader
           episode={episode}
           mainFilmImageUrl={mainFilmImageUrl}
@@ -95,6 +105,8 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
         {saga && sagaResult && (
           <EpisodeSaga saga={saga} sagaResult={sagaResult} />
         )}
+
+        <RecommendationsSection episodeId={episode.id} />
       </div>
     </>
   );

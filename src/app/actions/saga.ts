@@ -183,6 +183,7 @@ export async function getAllSagasWithStats() {
             title: true,
             year: true,
             slug: true,
+            imgFileName: true,
           },
         },
       },
@@ -256,6 +257,7 @@ export async function getSagaBySlug(slug: string) {
         description: true,
         imgFileName: true,
         tmdbId: true,
+        filmsOrder: true,
         films: {
           select: {
             id: true,
@@ -274,6 +276,13 @@ export async function getSagaBySlug(slug: string) {
       return { success: false, error: "Saga non trouvée" };
     }
 
+    // Trier les films selon l'ordre défini
+    const sortedFilms = saga.filmsOrder && saga.filmsOrder.length > 0
+      ? saga.filmsOrder
+          .map((filmId) => saga.films.find((film) => film.id === filmId))
+          .filter((f): f is NonNullable<typeof f> => f !== undefined)
+      : saga.films;
+
     // Récupérer le nombre d'épisodes pour cette saga
     const episodeLinks = await prisma.podcastFilmLink.findMany({
       where: {
@@ -289,8 +298,10 @@ export async function getSagaBySlug(slug: string) {
     const uniqueEpisodeIds = new Set(episodeLinks.map(link => link.podcastId));
     const episodeCount = uniqueEpisodeIds.size;
 
+    const { filmsOrder: _filmsOrder, films: _films, ...sagaRest } = saga;
     const sagaWithStats = {
-      ...saga,
+      ...sagaRest,
+      films: sortedFilms,
       episodeCount,
     };
 

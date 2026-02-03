@@ -33,8 +33,10 @@ model PodcastEpisode {
   age           String?
   rssFeed       RssFeed           @relation(fields: [rssFeedId], references: [id])
   links         PodcastFilmLink[]
-  ratings       Rating[]
-  transcription Transcription?
+  ratings          Rating[]
+  favorites        Favorite[]
+  listenedEpisodes ListenedEpisode[]
+  transcription    Transcription?
 }
 
 model Film {
@@ -50,6 +52,8 @@ model Film {
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
   age         String?
+  budget      BigInt?
+  revenue     BigInt?
   saga        Saga?             @relation(fields: [sagaId], references: [id])
   links       PodcastFilmLink[]
 }
@@ -89,6 +93,30 @@ model Rating {
   @@map("rating")
 }
 
+model Favorite {
+  id        String         @id @default(uuid())
+  userId    String
+  episodeId String
+  createdAt DateTime       @default(now())
+  episode   PodcastEpisode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, episodeId])
+  @@map("favorite")
+}
+
+model ListenedEpisode {
+  id        String         @id @default(uuid())
+  userId    String
+  episodeId String
+  createdAt DateTime       @default(now())
+  episode   PodcastEpisode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, episodeId])
+  @@map("listened_episode")
+}
+
 model User {
   id            String    @id
   name          String
@@ -101,9 +129,11 @@ model User {
   banExpires    DateTime?
   banReason     String?
   banned        Boolean?
-  accounts      Account[]
-  ratings       Rating[]
-  sessions      Session[]
+  accounts         Account[]
+  ratings          Rating[]
+  favorites        Favorite[]
+  listenedEpisodes ListenedEpisode[]
+  sessions         Session[]
 
   @@map("user")
 }

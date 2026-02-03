@@ -1,6 +1,7 @@
 import { Metadata, Viewport } from "next";
 import { SITE_URL } from "@/helpers/config";
 import { getEpisodeBySlugCached } from "@/app/actions/episode";
+import { truncateText } from "@/helpers/podcastHelpers";
 
 interface PodcastPageProps {
   params: Promise<{
@@ -17,7 +18,7 @@ export async function generateMetadata({
 
   if (!episodeData) {
     return {
-      title: "Épisode non trouvé - La Boîte de Chocolat",
+      title: "Épisode non trouvé",
       description:
         "Cet épisode de podcast n'existe pas ou n'est plus disponible.",
       robots: {
@@ -34,40 +35,40 @@ export async function generateMetadata({
     };
   }
 
-  const baseUrl =
-    process.env.NODE_ENV === "production"
-      ? SITE_URL
-      : SITE_URL || "http://localhost:3000";
-
   const { episode, mainFilm, isAdultContent } = episodeData;
   const title = mainFilm?.title || episode.title;
   const season = episode.season || null;
   const episodeNumber = episode.episode || null;
   const episodeNumberText = episodeNumber ? `E${episodeNumber}` : "";
-  const fullTitle = `S${season} ${episodeNumberText} - ${title} - La Boîte de Chocolat`;
+  const fullTitle = `S${season} ${episodeNumberText} - ${title}`;
 
-  // Description enrichie
+  // Description enrichie : combine film info + description épisode
   let description = "";
-  if (!description && mainFilm) {
-    description = `Découvrez notre analyse du film ${mainFilm.title}`;
+  if (mainFilm) {
+    description = `Critique du film ${mainFilm.title}`;
     if (mainFilm.director) description += ` de ${mainFilm.director}`;
     if (mainFilm.year) description += ` (${mainFilm.year})`;
-    description += " dans ce nouvel épisode de La Boîte de Chocolat.";
+    description += ".";
   }
-  description = description || `Écoutez l'épisode sur ${title}`;
+
+  // Ajouter la description de l'épisode si disponible pour enrichir
+  if (episode.description) {
+    const cleanDesc = episode.description.replace(/<[^>]*>/g, "").trim();
+    if (cleanDesc) {
+      const remaining = 155 - description.length - 1;
+      if (remaining > 30) {
+        description += " " + truncateText(cleanDesc, remaining);
+      }
+    }
+  }
+
+  description = description || `Écoutez l'épisode sur ${title} - La Boîte de Chocolat`;
   const isAdult = isAdultContent;
 
-  const ogImageUrl = slug
-    ? `/episodes/${slug}/opengraph-image`
-    : "/opengraph-image";
-  const twitterImageUrl = slug
-    ? `/episodes/${slug}/twitter-image`
-    : "/twitter-image";
-
-  // URL canonique
+  const ogImageUrl = `/episodes/${slug}/opengraph-image`;
+  const twitterImageUrl = `/episodes/${slug}/twitter-image`;
   const canonicalUrl = `${SITE_URL}/episodes/${slug}`;
 
-  // Mots-clés basés sur le contenu
   const keywords = [
     "podcast",
     "cinéma",
@@ -80,7 +81,7 @@ export async function generateMetadata({
   ].filter(Boolean);
 
   return {
-    metadataBase: new URL(baseUrl),
+    metadataBase: new URL(SITE_URL),
     title: fullTitle,
     description,
     keywords: keywords.join(", "),
@@ -88,14 +89,12 @@ export async function generateMetadata({
     creator: "La Boîte de Chocolat",
     publisher: "La Boîte de Chocolat",
 
-    // Canonical URL
     alternates: {
       canonical: canonicalUrl,
     },
 
-    // Métadonnées pour les robots
     robots: {
-      index: !isAdult, // Ne pas indexer le contenu adulte
+      index: !isAdult,
       follow: true,
       googleBot: {
         index: !isAdult,
@@ -108,7 +107,6 @@ export async function generateMetadata({
       },
     },
 
-    // Open Graph enrichi
     openGraph: {
       title: fullTitle,
       description,
@@ -116,7 +114,7 @@ export async function generateMetadata({
       publishedTime: episode.pubDate.toISOString(),
       modifiedTime: episode.updatedAt?.toISOString(),
       authors: ["La Boîte de Chocolat"],
-      section: "Podcast",
+      section: "Podcast Cinéma",
       tags: keywords.filter(Boolean) as string[],
       locale: "fr_FR",
       siteName: "La Boîte de Chocolat",
@@ -128,23 +126,12 @@ export async function generateMetadata({
           height: 630,
           alt: isAdult
             ? "Poster flouté - contenu 18+"
-            : `Poster de ${mainFilm?.title}`,
+            : `Poster du film ${mainFilm?.title || title}`,
           type: "image/png",
         },
       ],
     },
 
-    /*     // Twitter Card enrichi
-    twitter: {
-      card: "summary_large_image",
-      site: "@VotreCompteTwitter",
-      creator: "@VotreCompteTwitter",
-      title: fullTitle,
-      description,
-      images: ogImageUrl ? [ogImageUrl] : [`${SITE_URL}/images/navet.png`],
-    }, */
-
-    // Twitter Card enrichi
     twitter: {
       card: "summary_large_image",
       title: fullTitle,
@@ -152,23 +139,20 @@ export async function generateMetadata({
       images: [twitterImageUrl],
     },
 
-    // Métadonnées pour les podcasts
+    // Metadata complémentaire (sans doublons OG/Twitter/robots)
     other: {
-      // Données structurées pour les podcasts
       "podcast:author": "La Boîte de Chocolat",
       "podcast:season": season?.toString() || "",
       "podcast:episode": episodeNumber?.toString() || "0",
       "podcast:duration": episode.duration?.toString() || "",
       "podcast:explicit": isAdult ? "true" : "false",
 
-      // Métadonnées additionnelles
       "article:published_time": episode.pubDate.toISOString(),
-      "article:modified_time": episode.updatedAt?.toISOString(),
+      "article:modified_time": episode.updatedAt?.toISOString() || "",
       "article:author": "La Boîte de Chocolat",
       "article:section": "Podcast",
       "article:tag": keywords.join(","),
 
-      // Dublin Core
       "DC.title": fullTitle,
       "DC.creator": "La Boîte de Chocolat",
       "DC.description": description,
@@ -176,43 +160,11 @@ export async function generateMetadata({
       "DC.language": "fr-FR",
       "DC.type": "Audio",
       "DC.format": "audio/mpeg",
-
-      // Métadonnées pour le référencement local (si applicable)
-      "geo.region": "FR",
-      "geo.placename": "France",
-
-      // Métadonnées de contenu
-      "content-language": "fr-FR",
-      "content-type": "audio/podcast",
-
-      // Métadonnées pour l'indexation
-      googlebot: "index, follow",
-      bingbot: "index, follow",
-      slurp: "index, follow",
-
-      // Métadonnées pour les réseaux sociaux
-      "twitter:card": "summary_large_image",
-      "twitter:site": "@LaBoiteDeChocolat",
-      "twitter:creator": "@LaBoiteDeChocolat",
-
-      "og:site_name": "La Boîte de Chocolat",
-      "og:locale": "fr_FR",
-      "og:type": "article",
     },
 
-    // Métadonnées pour les applications
     applicationName: "La Boîte de Chocolat",
-
-    // Métadonnées supplémentaires pour l'indexation
-    verification: {
-      google: process.env.GOOGLE_SITE_VERIFICATION,
-    },
-
-    // Métadonnées pour les réseaux sociaux
     category: "entertainment",
     classification: "podcast",
-
-    // Métadonnées pour les moteurs de recherche
     referrer: "origin-when-cross-origin",
     formatDetection: {
       telephone: false,

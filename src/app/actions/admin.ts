@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { prisma } from '@/lib/prisma';
 
 export async function getAdminStats() {
@@ -84,11 +85,19 @@ export async function deleteEpisode(episodeId: string) {
     });
 
     // Puis supprimer l'épisode
-    await prisma.podcastEpisode.delete({
+    const deleted = await prisma.podcastEpisode.delete({
       where: {
         id: episodeId
-      }
+      },
+      select: { slug: true },
     });
+
+    revalidatePath(`/episodes/${deleted.slug}`);
+    revalidatePath("/episodes");
+    revalidatePath("/episodes/budget");
+    revalidatePath("/episodes/sagas");
+    revalidatePath("/admin");
+    revalidatePath("/");
 
     return { success: true };
   } catch (error) {

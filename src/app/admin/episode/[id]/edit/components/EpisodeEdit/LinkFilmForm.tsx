@@ -18,10 +18,15 @@ interface Film {
   } | null;
 }
 
+interface EpisodeLink {
+  id: string;
+  film: Film;
+}
+
 interface LinkFilmFormProps {
   episodeId: string;
   onClose: () => void;
-  onFilmAdded: () => void;
+  onFilmAdded: (newLink?: EpisodeLink) => void;
 }
 
 export default function LinkFilmForm({
@@ -67,7 +72,10 @@ export default function LinkFilmForm({
     try {
       const result = await linkEpisodeToFilm(episodeId, selectedFilm.id);
 
-      if (result.success) {
+      if (result.success && result.link) {
+        onFilmAdded(result.link as EpisodeLink);
+        onClose();
+      } else if (result.success) {
         onFilmAdded();
         onClose();
       } else {

@@ -87,7 +87,8 @@ export const PODCAST_CATEGORIES = {
       'Captain America - Saga',
       'Thor - Saga',
       'Spider-Man (Avengers) - Saga',
-      'Les Gardiens de la Galaxie - Saga'
+      'Les Gardiens de la Galaxie - Saga',
+      'Black Panther - Saga'
     ]
   },
 } as const;

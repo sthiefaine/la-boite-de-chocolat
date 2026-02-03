@@ -1,0 +1,61 @@
+.section {
+  background: #1a1a1a;
+  padding: 1.5rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.title {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: inline-block;
+  margin: 0 0 1rem 0;
+}
+
+.scrollContainer {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  padding-bottom: 0.5rem;
+}
+
+.scrollContainer::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scrollContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollContainer::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.grid {
+  display: flex;
+  gap: 0.5rem;
+  min-width: min-content;
+}
+
+.card {
+  flex: 0 0 220px;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 1.5rem 1rem;
+  }
+
+  .card {
+    flex: 0 0 160px;
+  }
+}

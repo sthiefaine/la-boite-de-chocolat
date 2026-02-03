@@ -144,39 +144,49 @@ export async function getPodcastImagesByFeed(
 export async function getPodcastImageUrls(
   episodes: PodcastImage[]
 ): Promise<string[]> {
+  const seen = new Set<string>();
+
   return episodes
     .flatMap((episode) => {
-      const mainFilm = episode.links[0]?.film;
-      if (mainFilm?.imgFileName) {
-        const isAdult = mainFilm.age === "18+" || mainFilm.age === "adult";
-        if (isAdult) {
-          return [
-            `${
-              process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-            }/api/image/masked/${mainFilm.imgFileName}`,
-          ];
-        }
+      const urls: string[] = [];
 
-        return [getUploadServerUrl(mainFilm.imgFileName, "films")];
+      // Collecter les images de TOUS les films lies (pas seulement le premier)
+      for (const link of episode.links) {
+        const film = link.film;
+        if (film?.imgFileName && !seen.has(film.imgFileName)) {
+          seen.add(film.imgFileName);
+          const isAdult = film.age === "18+" || film.age === "adult";
+          if (isAdult) {
+            urls.push(
+              `${
+                process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+              }/api/image/masked/${film.imgFileName}`
+            );
+          } else {
+            urls.push(getUploadServerUrl(film.imgFileName, "films"));
+          }
+        }
       }
 
-      if (episode.imgFileName) {
-        if (episode.imgFileName.startsWith("/")) {
-          return [
-            `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}${
-              episode.imgFileName
-            }`,
-          ];
+      // Fallback : image de l'episode si aucun film n'a d'image
+      if (urls.length === 0 && episode.imgFileName) {
+        if (!seen.has(episode.imgFileName)) {
+          seen.add(episode.imgFileName);
+          if (episode.imgFileName.startsWith("/")) {
+            urls.push(
+              `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}${
+                episode.imgFileName
+              }`
+            );
+          } else if (episode.imgFileName.startsWith("http")) {
+            urls.push(episode.imgFileName);
+          } else {
+            urls.push(getUploadServerUrl(episode.imgFileName));
+          }
         }
-
-        if (episode.imgFileName.startsWith("http")) {
-          return [episode.imgFileName];
-        }
-
-        return [getUploadServerUrl(episode.imgFileName)];
       }
 
-      return [];
+      return urls;
     })
     .filter(Boolean);
 }

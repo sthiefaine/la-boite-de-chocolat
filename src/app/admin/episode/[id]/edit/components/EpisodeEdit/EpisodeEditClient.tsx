@@ -104,8 +104,10 @@ export default function EpisodeEditClient({
     }
   };
 
-  const handleFilmAdded = () => {
-    console.log("Film added");
+  const handleFilmAdded = (newLink?: EpisodeLink) => {
+    if (newLink) {
+      setCurrentEpisodeLinks((prev) => [...prev, newLink]);
+    }
     router.refresh();
   };
 
@@ -184,16 +186,14 @@ export default function EpisodeEditClient({
           episodeId={episode.id}
           podcastName={episode.title}
           onFilmCreated={(filmId) => {
-            linkEpisodeToFilm(episode.id, filmId).then(() => {
-              console.log("Film created");
-              handleFilmAdded();
+            linkEpisodeToFilm(episode.id, filmId).then((result) => {
+              handleFilmAdded(result.link as EpisodeLink | undefined);
               handleCloseCreateFilmForm();
             });
           }}
           onFilmLinked={(filmId) => {
-            linkEpisodeToFilm(episode.id, filmId).then(() => {
-              console.log("Film linked");
-              handleFilmAdded();
+            linkEpisodeToFilm(episode.id, filmId).then((result) => {
+              handleFilmAdded(result.link as EpisodeLink | undefined);
               handleCloseCreateFilmForm();
             });
           }}

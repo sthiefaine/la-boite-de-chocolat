@@ -328,10 +328,9 @@
 .randomEpisode {
   background: linear-gradient(145deg, #d6a018, #daa520, #cdbc3f) !important;
   font-size: 0.7rem;
-  animation: pulse-glow 2s ease-in-out infinite;
+  animation: pulse-glow 3s ease-in-out infinite;
   position: relative;
   overflow: hidden;
-  will-change: transform, box-shadow;
 }
 
 .randomEpisode::before {
@@ -347,8 +346,12 @@
     rgba(255, 255, 255, 0.3),
     transparent
   );
-  animation: shimmer 3s infinite;
-  will-change: transform;
+  transform: translateX(-100%);
+}
+
+.randomEpisode:hover::before {
+  transform: translateX(100%);
+  transition: transform 0.6s ease;
 }
 
 .randomEpisode:hover {
@@ -375,9 +378,7 @@
 
 .randomEpisode .chocoIcon {
   font-size: 1.8rem;
-  animation: bounce 2s ease-in-out infinite;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
-  will-change: transform;
 }
 
 .randomEpisode:disabled .chocoIcon {
@@ -451,7 +452,6 @@
   color: var(--text-secondary);
   font-weight: 600;
   margin: 0;
-  animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
@@ -518,5 +518,19 @@
 
   .randomEpisode .chocoLabel {
     font-size: 0.65rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chocolateBox {
+    animation: none;
+  }
+
+  .randomEpisode {
+    animation: none;
+  }
+
+  .choco::after {
+    transition: none;
   }
 }

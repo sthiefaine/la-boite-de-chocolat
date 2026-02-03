@@ -436,6 +436,16 @@ export async function createFilmFromTMDB(
       }
     }
 
+    // Récupérer budget et revenue depuis TMDB
+    const tmdbBudget =
+      tmdbMovie.budget && tmdbMovie.budget > 0
+        ? BigInt(tmdbMovie.budget)
+        : null;
+    const tmdbRevenue =
+      tmdbMovie.revenue && tmdbMovie.revenue > 0
+        ? BigInt(tmdbMovie.revenue)
+        : null;
+
     // Créer le film en base
     const film = await prisma.film.create({
       data: {
@@ -447,12 +457,17 @@ export async function createFilmFromTMDB(
         tmdbId: tmdbId,
         sagaId: finalSagaId || null,
         age: age || null,
+        budget: tmdbBudget,
+        revenue: tmdbRevenue,
       },
     });
 
     // Revalider les pages
     revalidatePath("/admin/list/films");
     revalidatePath("/admin");
+    revalidatePath("/episodes/budget");
+    revalidatePath("/episodes/sagas");
+    revalidatePath("/");
 
     return { success: true, film };
   } catch (error) {
@@ -476,8 +491,10 @@ export async function getFilmBySlug(slug: string) {
               select: {
                 id: true,
                 title: true,
+                slug: true,
                 pubDate: true,
                 duration: true,
+                genre: true,
                 audioUrl: true,
               },
             },
@@ -569,6 +586,9 @@ export async function createFilmManually(data: {
     // Revalider les pages
     revalidatePath("/admin/list/films");
     revalidatePath("/admin");
+    revalidatePath("/episodes/budget");
+    revalidatePath("/episodes/sagas");
+    revalidatePath("/");
 
     return { success: true, film };
   } catch (error) {
@@ -587,13 +607,19 @@ export async function getAllFilms() {
       select: {
         id: true,
         title: true,
+        slug: true,
         year: true,
         director: true,
         imgFileName: true,
+        age: true,
         saga: {
           select: {
+            id: true,
             name: true,
           },
+        },
+        _count: {
+          select: { links: true },
         },
       },
     });
@@ -604,6 +630,96 @@ export async function getAllFilms() {
     return {
       success: false,
       error: error instanceof Error ? error.message : "Erreur de récupération",
+    };
+  }
+}
+
+/**
+ * Met à jour le budget et revenue d'un film depuis TMDB
+ */
+export async function updateFilmBudgetFromTMDB(filmId: string) {
+  try {
+    const film = await prisma.film.findUnique({
+      where: { id: filmId },
+      select: { tmdbId: true, title: true },
+    });
+
+    if (!film?.tmdbId) {
+      return { success: false, error: "Film sans ID TMDB" };
+    }
+
+    const detailsResult = await getMovieDetails(film.tmdbId);
+    if (!detailsResult.success) {
+      return { success: false, error: detailsResult.error };
+    }
+
+    const tmdbMovie = detailsResult.movie;
+    const budget =
+      tmdbMovie.budget && tmdbMovie.budget > 0
+        ? BigInt(tmdbMovie.budget)
+        : null;
+    const revenue =
+      tmdbMovie.revenue && tmdbMovie.revenue > 0
+        ? BigInt(tmdbMovie.revenue)
+        : null;
+
+    await prisma.film.update({
+      where: { id: filmId },
+      data: { budget, revenue },
+    });
+
+    revalidatePath("/episodes/budget");
+    revalidatePath("/episodes");
+    revalidatePath("/");
+
+    return { success: true, title: film.title, budget, revenue };
+  } catch (error) {
+    console.error("Erreur mise à jour budget:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Erreur de mise à jour",
+    };
+  }
+}
+
+/**
+ * Backfill les budgets de tous les films qui ont un tmdbId mais pas de budget
+ */
+export async function backfillAllBudgets() {
+  try {
+    const films = await prisma.film.findMany({
+      where: {
+        tmdbId: { not: null },
+        budget: null,
+      },
+      select: { id: true, tmdbId: true, title: true },
+    });
+
+    let updated = 0;
+    let failed = 0;
+
+    for (const film of films) {
+      const result = await updateFilmBudgetFromTMDB(film.id);
+      if (result.success) {
+        updated++;
+      } else {
+        failed++;
+      }
+      // Petite pause pour ne pas surcharger l'API TMDB
+      await new Promise((resolve) => setTimeout(resolve, 250));
+    }
+
+    return {
+      success: true,
+      total: films.length,
+      updated,
+      failed,
+    };
+  } catch (error) {
+    console.error("Erreur backfill budgets:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Erreur de backfill",
     };
   }
 }

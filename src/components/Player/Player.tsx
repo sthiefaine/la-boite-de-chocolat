@@ -19,10 +19,12 @@ import {
   Gauge,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useShallow } from "zustand/shallow";
 import { PlayerBar } from "@/components/Player/PlayerBar";
 import { PlayerQueue } from "./PlayerQueue";
+import { useSession } from "@/lib/auth/auth-client";
+import { markAsListened } from "@/app/actions/listened";
 import styles from "./PlayerBar.module.css";
 
 const useBackgroundColor = (episodeImg?: string) => {
@@ -130,7 +132,13 @@ export const Player = () => {
     })
   );
 
+  const { totalDuration } = usePlayerStore(
+    useShallow((state) => ({ totalDuration: state.totalDuration }))
+  );
+
   const audioRef = useRef<HTMLAudioElement>(null);
+  const markedAsListenedRef = useRef<string | null>(null);
+  const { data: session } = useSession();
   useMediaSession(episode);
   const [showQueue, setShowQueue] = useState(false);
   const [showSpeedControls, setShowSpeedControls] = useState(false);
@@ -139,6 +147,23 @@ export const Player = () => {
   const { options } = useOptionsStore(
     useShallow((state) => ({ options: state.options }))
   );
+
+  // Auto-mark as listened at 85% completion
+  useEffect(() => {
+    if (!episode?.id || !session?.user?.id) return;
+    if (totalDuration <= 0 || currentPlayTime <= 0) return;
+
+    const progress = currentPlayTime / totalDuration;
+    if (progress >= 0.85 && markedAsListenedRef.current !== episode.id) {
+      markedAsListenedRef.current = episode.id;
+      markAsListened(episode.id, session.user.id);
+    }
+  }, [currentPlayTime, totalDuration, episode?.id, session?.user?.id]);
+
+  // Reset auto-mark ref when episode changes
+  useEffect(() => {
+    markedAsListenedRef.current = null;
+  }, [episode?.id]);
 
   useEffect(() => {
     const audioElement = audioRef.current;

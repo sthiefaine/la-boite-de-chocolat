@@ -24,27 +24,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly" as const,
       priority: 0.8,
     },
-    {
-      url: `${baseUrl}/options`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/signin`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/signup`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.5,
-    },
   ];
 
-  // Récupérer les épisodes
+  // Récupérer les épisodes avec transcriptions
   const episodes = await prisma.podcastEpisode.findMany({
     where: {
       slug: { not: null },
@@ -59,24 +41,39 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           },
         },
       },
+      transcription: {
+        select: {
+          id: true,
+          updatedAt: true,
+        },
+      },
     },
     orderBy: {
       pubDate: "desc",
     },
   });
 
-  const episodePages = episodes
-    .filter((episode) => {
-      // Filtrer les épisodes avec contenu adulte
-      const mainFilm = episode.links[0]?.film;
-      const isAdult = mainFilm?.age === "18+" || mainFilm?.age === "adult";
-      return !isAdult; // Ne pas inclure les épisodes adultes dans le sitemap
-    })
+  const nonAdultEpisodes = episodes.filter((episode) => {
+    const mainFilm = episode.links[0]?.film;
+    const isAdult = mainFilm?.age === "18+" || mainFilm?.age === "adult";
+    return !isAdult;
+  });
+
+  const episodePages = nonAdultEpisodes.map((episode) => ({
+    url: `${baseUrl}/episodes/${episode.slug}`,
+    lastModified: episode.updatedAt,
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
+
+  // Pages de transcription (contenu textuel riche = haute valeur SEO)
+  const transcriptionPages = nonAdultEpisodes
+    .filter((episode) => episode.transcription)
     .map((episode) => ({
-      url: `${baseUrl}/episodes/${episode.slug}`,
-      lastModified: episode.updatedAt,
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
+      url: `${baseUrl}/episodes/${episode.slug}/transcription`,
+      lastModified: episode.transcription!.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     }));
 
   // Récupérer les sagas
@@ -97,5 +94,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...episodePages, ...sagaPages];
+  return [...staticPages, ...episodePages, ...transcriptionPages, ...sagaPages];
 }

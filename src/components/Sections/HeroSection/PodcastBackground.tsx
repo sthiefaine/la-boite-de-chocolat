@@ -25,7 +25,7 @@ function PodcastBackgroundFallback() {
   return (
     <div className={styles.headerScroll}>
       <div className={`${styles.gridContainer} ${styles.loading}`}>
-        {Array.from({ length: 100 }, (_, index) => (
+        {Array.from({ length: 150 }, (_, index) => (
           <div 
             key={index} 
             className={styles.heroCoverArtsDiv}
@@ -44,7 +44,7 @@ function PodcastBackgroundFallback() {
 export default async function PodcastBackground() {
   let podcastImages: string[] = [];
 
-  const episodes = await getPodcastImagesByFeed("la-boite-de-chocolat");
+  const episodes = await getPodcastImagesByFeed("la-boite-de-chocolat", 200);
   const imageUrls = await getPodcastImageUrls(episodes);
   podcastImages = imageUrls.length > 0 ? imageUrls : fallbackImages;
 
@@ -53,8 +53,9 @@ export default async function PodcastBackground() {
   }
 
   const shuffledImages = shuffleArray(podcastImages);
+  const totalSlots = Math.max(150, shuffledImages.length);
   const repeatedImages = [];
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < totalSlots; i++) {
     repeatedImages.push(shuffledImages[i % shuffledImages.length]);
   }
 

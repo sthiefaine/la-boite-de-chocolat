@@ -1,5 +1,5 @@
 "use server";
-import { SITE_URL } from "@/helpers/config";
+import { SITE_URL, PODCAST_URLS } from "@/helpers/config";
 import { getMaskedImageUrl } from "@/app/actions/image";
 
 export interface Episode {
@@ -24,6 +24,8 @@ export interface Episode {
       imgFileName: string | null;
       age: string | null;
       director?: string | null;
+      budget?: bigint | null;
+      revenue?: bigint | null;
       saga?: {
         id: string;
         name: string;
@@ -65,12 +67,21 @@ export async function PodcastJsonLd({ episode, canonicalUrl }: JsonLdProps) {
     duration: episode.duration ? `PT${episode.duration}S` : undefined,
     episodeNumber: episode.episode ? episode.episode.toString() : undefined,
     seasonNumber: episode.season ? episode.season.toString() : undefined,
+    associatedMedia: {
+      "@type": "AudioObject",
+      contentUrl: episode.audioUrl,
+      encodingFormat: "audio/mpeg",
+      duration: episode.duration ? `PT${episode.duration}S` : undefined,
+      inLanguage: "fr-FR",
+    },
     partOfSeries: {
       "@type": "PodcastSeries",
       name: "La Boîte de Chocolat",
-      description: "Podcast de critique cinématographique",
+      description:
+        "Le podcast cinéma français qui analyse vos films préférés avec mauvaise foi.",
       url: `${SITE_URL}/episodes`,
-      genre: "Arts",
+      webFeed: PODCAST_URLS.rss,
+      genre: ["Film", "Cinéma", "Entertainment"],
       inLanguage: "fr-FR",
       creator: {
         "@type": "Organization",
@@ -82,10 +93,16 @@ export async function PodcastJsonLd({ episode, canonicalUrl }: JsonLdProps) {
       ? {
           "@type": "Movie",
           name: mainFilm.title,
-          director: mainFilm.director,
+          director: mainFilm.director
+            ? {
+                "@type": "Person",
+                name: mainFilm.director,
+              }
+            : undefined,
           dateCreated: mainFilm.year?.toString(),
           contentRating: isAdult ? "18+" : "General",
-          genre: "Film",
+          ...(mainFilm.saga ? { isPartOf: { "@type": "CreativeWorkSeries", name: mainFilm.saga.name } } : {}),
+          ...(mainFilm.tmdbId ? { sameAs: `https://www.themoviedb.org/movie/${mainFilm.tmdbId}` } : {}),
           image: mainFilm.imgFileName
             ? await getMaskedImageUrl(
                 mainFilm.imgFileName,

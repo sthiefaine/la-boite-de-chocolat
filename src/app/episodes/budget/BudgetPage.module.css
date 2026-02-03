@@ -1,0 +1,281 @@
+.page {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, var(--chocolate-cream), var(--white));
+  padding: 60px 2rem 6rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Header + Stats */
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.pageTitle {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  margin: 0 0 0.3rem;
+}
+
+.pageSubtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0 0 1rem;
+}
+
+.statsRow {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 1.75rem;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+}
+
+.statBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.05rem;
+}
+
+.statValue {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.statSecondary {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.statLabel {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 0.15rem;
+}
+
+.statDivider {
+  width: 1px;
+  height: 44px;
+  background: var(--gray-200);
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 0.25rem;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.65rem 1.1rem;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--gray-200);
+  background: var(--white);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.tab:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--gray-300);
+  color: var(--text-primary);
+}
+
+.tabActive {
+  color: var(--white);
+  border-color: transparent;
+  background: var(--tab-color, var(--chocolate-secondary));
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.tabActive:hover {
+  color: var(--white);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.tabIcon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.tabLabel {
+  line-height: 1;
+}
+
+.tabCount {
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.08);
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  min-width: 1.4rem;
+  text-align: center;
+}
+
+.tabActive .tabCount {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Tab description */
+.tabDescription {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.tabResultCount {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Chart area */
+.chartArea {
+  transition: opacity 0.25s ease;
+}
+
+.chartIn {
+  opacity: 1;
+}
+
+.chartOut {
+  opacity: 0;
+}
+
+/* Grid - CSS Grid with auto-fill */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+  justify-items: center;
+}
+
+.gridIn .gridCard {
+  animation: cardSlideUp 0.4s ease-out both;
+}
+
+.gridOut .gridCard {
+  opacity: 0;
+  transform: translateY(8px) scale(0.97);
+  transition: all 0.15s ease-in;
+}
+
+@keyframes cardSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.gridCard {
+  width: 100%;
+  max-width: 220px;
+}
+
+/* Empty */
+.empty {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+
+.emptyTab {
+  padding: 4rem 0;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 40px 1rem 4rem;
+  }
+
+  .pageTitle {
+    font-size: 1.5rem;
+  }
+
+  .statsRow {
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .statValue {
+    font-size: 1.1rem;
+  }
+
+  .statDivider {
+    height: 30px;
+  }
+
+  .tabs {
+    gap: 0.4rem;
+  }
+
+  .tab {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.8rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .gridCard {
+    max-width: 190px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gridIn .gridCard {
+    animation: none;
+    opacity: 1;
+  }
+
+  .gridOut .gridCard {
+    transition: none;
+    opacity: 1;
+  }
+}

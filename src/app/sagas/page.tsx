@@ -1,8 +1,31 @@
-"use server";
-
+import { Metadata } from "next";
 import { getAllSagasWithStats } from "../actions/saga";
 import SagaCard from "@/components/Cards/SagaCard/SagaCard";
+import { SITE_URL } from "@/helpers/config";
 import styles from "./SagasPage.module.css";
+
+export const metadata: Metadata = {
+  title: "Sagas Cinéma - Toutes les Sagas de Films",
+  description:
+    "Explorez les sagas cinématographiques analysées dans notre podcast : Marvel, Star Wars, Harry Potter et bien d'autres. Tous les films, tous les épisodes.",
+  keywords: [
+    "saga cinéma",
+    "films Marvel podcast",
+    "saga Star Wars",
+    "saga films",
+    "podcast saga cinéma",
+  ],
+  alternates: {
+    canonical: `${SITE_URL}/sagas`,
+  },
+  openGraph: {
+    title: "Sagas Cinéma | La Boîte de Chocolat",
+    description:
+      "Explorez les sagas cinématographiques analysées dans notre podcast.",
+    type: "website",
+    url: `${SITE_URL}/sagas`,
+  },
+};
 
 export default async function SagasPage() {
   const sagasResult = await getAllSagasWithStats();

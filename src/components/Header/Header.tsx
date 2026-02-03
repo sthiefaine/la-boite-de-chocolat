@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import { getUser } from "@/lib/auth/auth-server";
 import { MobileMenu } from "./MobileMenu";
 import AuthButtonClient from "./AuthButtonClient";
-
+import { NavLink } from "./NavLink";
 import styles from "./Header.module.css";
 
 
@@ -35,15 +35,9 @@ export default async function Header() {
         </Link>
 
         <nav className={styles.nav}>
-          <Link href="/" className={styles.navLink}>
-            Accueil
-          </Link>
-          <Link href="/episodes" className={styles.navLink}>
-            Épisodes
-          </Link>
-          <Link href="/options" className={styles.navLink}>
-            Options
-          </Link>
+          <NavLink href="/">Accueil</NavLink>
+          <NavLink href="/episodes">Épisodes</NavLink>
+          <NavLink href="/options">Options</NavLink>
           <Suspense fallback={<ButtonSkeleton className={styles.navLink} />}>
             <ProfileLinkConditional className={styles.navLink} />
           </Suspense>

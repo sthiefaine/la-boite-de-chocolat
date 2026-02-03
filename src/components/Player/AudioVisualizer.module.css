@@ -1,46 +1,62 @@
 .visualizerContainer {
   flex: 1;
   height: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
   position: relative;
   border-radius: 0.75rem;
   overflow: hidden;
-  transition: all 0.2s ease;
-  will-change: background;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.05);
   contain: layout style paint;
   transform: translateZ(0);
 }
 
 .visualizerContainer:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.1);
 }
 
+/* Couche de barres - positionnement absolu pour superposition */
+.barsLayer,
+.barsLayerActive {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+/* Couche active - utilise clip-path pour révéler la progression */
+.barsLayerActive {
+  will-change: clip-path;
+}
+
+/* Barre inactive (grise) */
 .bar {
   flex: 1;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.4);
   border-radius: 0.5px;
   min-height: 4px;
-  z-index: 2;
-  position: relative;
   margin: 0 0.25px;
-  will-change: transform, height, opacity;
-  contain: layout style paint;
-  transform: translateZ(0);
 }
 
 .bar:nth-child(odd) {
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.3);
 }
 
+/* Barre active (colorée) */
 .activeBar {
-  will-change: transform, height, opacity;
-  contain: layout style paint;
-  transform: translateZ(0);
+  flex: 1;
+  background: rgba(210, 160, 90, 0.9);
+  border-radius: 0.5px;
+  min-height: 4px;
+  margin: 0 0.25px;
 }
 
+.activeBar:nth-child(odd) {
+  background: rgba(180, 130, 60, 0.85);
+}
+
+/* Playhead */
 .playhead {
   position: absolute;
   top: 0;
@@ -48,7 +64,21 @@
   height: 100%;
   background: rgba(255, 255, 255, 0.9);
   z-index: 3;
+  pointer-events: none;
+  opacity: 0.7;
   will-change: left;
-  contain: layout style paint;
-  transform: translateZ(0);
+}
+
+.playheadActive {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .barsLayerActive {
+    will-change: auto;
+  }
+
+  .playhead {
+    will-change: auto;
+  }
 }

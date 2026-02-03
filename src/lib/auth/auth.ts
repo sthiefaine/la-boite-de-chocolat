@@ -4,6 +4,7 @@ import { admin } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
 import { prisma } from "../prisma";
 import { SITE_URL } from "@/helpers/config";
+import { ac, developerRole, adminRole, moderatorRole } from "./permissions";
 
 /**
  * Normalise un email Gmail en supprimant les alias avec "+"
@@ -41,23 +42,10 @@ async function checkNormalizedEmailExists(email: string): Promise<boolean> {
 }
 
 export const auth = betterAuth({
+  baseURL: process.env.BETTER_AUTH_BASE_URL || SITE_URL,
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
-  roles: {
-    user: {
-      name: "Utilisateur",
-    },
-    admin: {
-      name: "Administrateur",
-    },
-    developer: {
-      name: "Développeur",
-    },
-    moderator: {
-      name: "Modérateur",
-    },
-  },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,
@@ -84,8 +72,13 @@ export const auth = betterAuth({
   ],
   plugins: [
     admin({
+      ac,
+      roles: {
+        developer: developerRole,
+        admin: adminRole,
+        moderator: moderatorRole,
+      },
       defaultRole: "user",
-      adminRoles: ["developer", "admin", "moderator"],
       impersonationSessionDuration: 60 * 60, // 1 heure
       defaultBanReason: "Violation des règles",
       bannedUserMessage:

@@ -51,7 +51,7 @@
   backdrop-filter: var(--glass-blur-medium);
   border: var(--glass-border-light);
   box-shadow: var(--glass-shadow-medium);
-  transition: all var(--transition-normal);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
   position: relative;
   overflow: hidden;
 }
@@ -75,7 +75,6 @@
   box-shadow: var(--shadow-sm);
   position: relative;
   overflow: hidden;
-  animation: pulse 2s ease-in-out infinite;
 }
 
 .episodeBadge::before {
@@ -133,9 +132,8 @@
   background: var(--glass-bg-light);
   padding: 0.5rem 1rem;
   border-radius: var(--radius-lg);
-  backdrop-filter: var(--glass-blur-light);
   border: var(--glass-border-light);
-  transition: all var(--transition-fast);
+  transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
   cursor: pointer;
 }
 
@@ -185,7 +183,7 @@
 .posterImage {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
-  transition: all var(--transition-normal);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
 }
 
 .posterImage:hover {
@@ -233,7 +231,7 @@
   text-decoration: none !important;
   font-weight: 700 !important;
   font-size: 1rem !important;
-  transition: all var(--transition-normal) !important;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal), background var(--transition-normal) !important;
   box-shadow: var(--shadow-md) !important;
   border: none !important;
   cursor: pointer !important;
@@ -275,9 +273,8 @@
   text-decoration: none;
   font-weight: 600;
   font-size: 0.9rem;
-  transition: all var(--transition-normal);
+  transition: background var(--transition-normal), color var(--transition-normal), transform var(--transition-normal), box-shadow var(--transition-normal);
   border: var(--glass-border-light);
-  backdrop-filter: var(--glass-blur-light);
   box-shadow: var(--glass-shadow-light);
   position: relative;
   overflow: hidden;

@@ -1,10 +1,6 @@
 "use server";
 
-import {
-  auth,
-  normalizeGmail,
-  checkNormalizedEmailExists,
-} from "@/lib/auth/auth";
+import { auth } from "@/lib/auth/auth";
 
 // Codes d'erreur officiels de Better Auth
 const BETTER_AUTH_ERROR_CODES = {
@@ -150,94 +146,11 @@ export async function signUpAction(
   prevState: SignUpState,
   formData: FormData
 ): Promise<SignUpState> {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const confirmPassword = formData.get("confirmPassword") as string;
-  const captcha = formData.get("captcha") as string;
-
-  // Validation du captcha
-  if (captcha) {
-    return {
-      error: "Erreur de validation",
-      success: false,
-    };
-  }
-
-  // Validation des champs requis
-  if (!email || !password || !confirmPassword) {
-    return {
-      error: "Tous les champs sont requis",
-      success: false,
-    };
-  }
-
-  // Validation de la correspondance des mots de passe
-  if (password !== confirmPassword) {
-    return {
-      error: "Les mots de passe ne correspondent pas",
-      success: false,
-    };
-  }
-
-  // Validation de la longueur du mot de passe
-  if (password.length < 8) {
-    return {
-      error: "Le mot de passe doit contenir au moins 8 caractères",
-      success: false,
-    };
-  }
-
-  if (password.length > 128) {
-    return {
-      error: "Le mot de passe est trop long (maximum 128 caractères)",
-      success: false,
-    };
-  }
-
-  // Vérification de l'email normalisé (empêche les alias Gmail)
-  try {
-    const exists = await checkNormalizedEmailExists(email);
-    if (exists) {
-      return {
-        error: "Un compte avec cet email existe déjà",
-        success: false,
-      };
-    }
-  } catch (error) {
-    return {
-      error: "Erreur lors de la vérification de l'email",
-      success: false,
-    };
-  }
-
-  // Création de l'utilisateur
-  try {
-    const result = await auth.api.createUser({
-      body: {
-        email,
-        password,
-        name: email.split("@")[0],
-      },
-    });
-
-    if (result.user) {
-      return {
-        error: null,
-        success: true,
-      };
-    }
-
-    return {
-      error: "Erreur lors de la création du compte",
-      success: false,
-    };
-  } catch (error) {
-    const errorMessage = handleBetterAuthError(error);
-    return {
-      error: errorMessage,
-      success: false,
-    };
-  }
+  // Inscription par email désactivée — utiliser Google OAuth uniquement
+  return {
+    error: "L'inscription par email est désactivée. Veuillez utiliser Google.",
+    success: false,
+  };
 }
 
 export async function signInAction(

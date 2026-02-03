@@ -14,8 +14,11 @@ import { ShareButton } from "@/components/ShareButton/ShareButton";
 import ButtonSkeleton from "@/components/Button/ButtonSkeleton";
 import RatingStars from "@/components/Rating/RatingStars";
 import RatingStarsSkeleton from "@/components/Rating/RatingStarsSkeleton";
+import FavoriteButton from "@/components/Favorite/FavoriteButton";
+import BudgetDisplay from "@/components/Film/BudgetDisplay";
 import styles from "./EpisodeHeader.module.css";
 import TranscriptionButton from '@/components/TranscriptionButton/TranscriptionButton';
+import ListenedButton from '@/components/Listened/ListenedButton';
 
 interface EpisodeHeaderProps {
   episode: {
@@ -34,6 +37,8 @@ interface EpisodeHeaderProps {
         imgFileName?: string | null;
         age?: string | null;
         tmdbId?: number | null;
+        budget?: bigint | null;
+        revenue?: bigint | null;
       } | null;
     }>;
     transcription?: {
@@ -88,7 +93,7 @@ export default async function EpisodeHeader({
               blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
               fill={true}
               src={mainFilmImageUrl}
-              alt={`Poster de ${mainFilm.title}`}
+              alt={`Poster du film ${mainFilm.title}${mainFilm.year ? ` (${mainFilm.year})` : ""}${mainFilm.director ? ` de ${mainFilm.director}` : ""}`}
               className={styles.backgroundImage}
               sizes={IMAGE_CONFIG.sizes.background}
               quality={100}
@@ -195,6 +200,20 @@ export default async function EpisodeHeader({
                 />
               </a>
             )}
+
+            <FavoriteButton
+              episodeId={episode.id}
+              className={`${styles.button} ${styles.favoriteButton}`}
+            >
+              Favoris
+            </FavoriteButton>
+
+            <ListenedButton
+              episodeId={episode.id}
+              className={`${styles.button} ${styles.listenedButton}`}
+            >
+              Écouté
+            </ListenedButton>
           </div>
 
           {/* Publication Date */}
@@ -219,18 +238,28 @@ export default async function EpisodeHeader({
             </Suspense>
           </div>
 
-          {/* Description */}
-          {episode.description && (
-            <div className={styles.description}>
-              <h3 className={styles.descriptionTitle}>Description</h3>
-              <div className={`${styles.descriptionContent} glass`}>
-                {truncateText(
-                  formatEpisodeDescription(episode.description),
-                  650
-                )}
+          {/* Budget + Description side by side */}
+          <div className={styles.bottomRow}>
+            {mainFilm?.budget && mainFilm.year && (
+              <BudgetDisplay
+                budget={Number(mainFilm.budget)}
+                revenue={mainFilm.revenue ? Number(mainFilm.revenue) : null}
+                year={mainFilm.year}
+              />
+            )}
+
+            {episode.description && (
+              <div className={styles.description}>
+                <h3 className={styles.descriptionTitle}>Description</h3>
+                <div className={`${styles.descriptionContent} glass`}>
+                  {truncateText(
+                    formatEpisodeDescription(episode.description),
+                    650
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>

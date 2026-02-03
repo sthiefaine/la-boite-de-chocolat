@@ -108,6 +108,17 @@
   opacity: 0.1;
 }
 
+.navLinkActive {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(166, 124, 82, 0.4);
+  color: var(--chocolate-secondary);
+  box-shadow: var(--shadow-md), inset 0 -2px 0 var(--chocolate-secondary);
+}
+
+.navLinkActive::before {
+  opacity: 0.08;
+}
+
 .menuButton {
   display: none;
   background: rgba(255, 255, 255, 0.8);
@@ -213,6 +224,12 @@
   box-shadow: var(--shadow-md);
 }
 
+.mobileNavLinkActive {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(166, 124, 82, 0.4);
+  color: var(--chocolate-secondary);
+  box-shadow: var(--shadow-md);
+}
 
 .nav button {
   color: var(--text-primary);

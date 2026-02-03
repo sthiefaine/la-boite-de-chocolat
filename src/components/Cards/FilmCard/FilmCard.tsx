@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { IMAGE_CONFIG } from "@/helpers/imageConfig";
+import ListenedButton from "@/components/Listened/ListenedButton";
 import styles from "./FilmCard.module.css";
 
 interface EpisodeData {
@@ -95,16 +96,19 @@ export default function FilmCard({
               )}
 
               {episode && (
-                <div className={styles.listenButtonOverlay}>
-                  <Link
-                    href={`/episodes/${episode.slug}`}
-                    className={styles.listenButtonOverlay}
-                    prefetch={true}
-                  >
-                    <span className={styles.buttonIcon}>🎬</span>
-                    Afficher
-                  </Link>
-                </div>
+                <>
+                  <ListenedButton episodeId={episode.id} variant="overlay" />
+                  <div className={styles.listenButtonOverlay}>
+                    <Link
+                      href={`/episodes/${episode.slug}`}
+                      className={styles.listenButtonOverlay}
+                      prefetch={true}
+                    >
+                      <span className={styles.buttonIcon}>🎬</span>
+                      Afficher
+                    </Link>
+                  </div>
+                </>
               )}
             </>
           ) : (

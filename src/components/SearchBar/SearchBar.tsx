@@ -21,6 +21,10 @@ interface SearchBarProps {
     onClick: () => void;
     label?: string;
   };
+  sortFilter?: {
+    value: string;
+    onChange: (value: string) => void;
+  };
   clearFilters?: () => void;
   hasActiveFilters?: boolean;
 }
@@ -32,6 +36,7 @@ export default function SearchBar({
   className = "",
   yearFilter,
   genreFilter,
+  sortFilter,
   marvelButton,
   clearFilters,
   hasActiveFilters = false,
@@ -96,6 +101,20 @@ export default function SearchBar({
             </select>
           )}
           
+          {sortFilter && (
+            <select
+              value={sortFilter.value}
+              onChange={(e) => sortFilter.onChange(e.target.value)}
+              className={styles.filterSelect}
+            >
+              <option value="latest">Plus récents</option>
+              <option value="oldest">Plus anciens</option>
+              <option value="shortest">Plus courts</option>
+              <option value="longest">Plus longs</option>
+              <option value="title">A → Z</option>
+            </select>
+          )}
+
           {marvelButton && (
             <button
               type="button"

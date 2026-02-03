@@ -7,9 +7,16 @@ import { Menu, X } from "lucide-react";
 import styles from "./Header.module.css";
 import { User } from "@/lib/auth/auth-client";
 import { signOutAction } from "@/app/actions/auth";
-
 interface MobileMenuProps {
   user?: User;
+}
+
+function isActivePath(pathname: string, href: string) {
+  return href === "/" ? pathname === "/" : pathname.startsWith(href);
+}
+
+function mobileNavCls(pathname: string, href: string) {
+  return `${styles.mobileNavLink} ${isActivePath(pathname, href) ? styles.mobileNavLinkActive : ""}`;
 }
 
 export function MobileMenu({ user }: MobileMenuProps) {
@@ -19,6 +26,8 @@ export function MobileMenu({ user }: MobileMenuProps) {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const pathname = usePathname();
 
   const handleLinkClick = () => {
     setIsOpen(false);
@@ -52,21 +61,21 @@ export function MobileMenu({ user }: MobileMenuProps) {
         <nav className={styles.mobileNav}>
           <Link
             href="/"
-            className={styles.mobileNavLink}
+            className={mobileNavCls(pathname, "/")}
             onClick={handleLinkClick}
           >
             Accueil
           </Link>
           <Link
             href="/episodes"
-            className={styles.mobileNavLink}
+            className={mobileNavCls(pathname, "/episodes")}
             onClick={handleLinkClick}
           >
             Épisodes
           </Link>
           <Link
             href="/options"
-            className={styles.mobileNavLink}
+            className={mobileNavCls(pathname, "/options")}
             onClick={handleLinkClick}
           >
             Options

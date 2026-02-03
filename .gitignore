@@ -44,3 +44,4 @@ next-env.d.ts
 .vscode
 src/app/api/test/
 .cursorrules
+CLAUDE.md

@@ -1,0 +1,255 @@
+.container {
+  margin-top: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--glass-bg-dark);
+  border-radius: var(--radius-lg);
+  border: var(--glass-border-dark);
+  backdrop-filter: var(--glass-blur-medium);
+  box-shadow: var(--glass-shadow-dark);
+  max-width: 380px;
+  animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.85rem;
+}
+
+.coinStack {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.coin {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+}
+
+.coinBack {
+  top: 0;
+  left: 0;
+  animation: coinFloat 3s ease-in-out infinite;
+}
+
+.coinFront {
+  bottom: 0;
+  right: 0;
+  animation: coinFloat 3s ease-in-out infinite 0.5s;
+}
+
+@keyframes coinFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+.title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-white);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+}
+
+/* Rows */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  gap: 0.75rem;
+}
+
+.row + .row {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.rowHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.rowCoin {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.rowLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.values {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.1rem;
+}
+
+.primaryValue {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-white);
+  font-variant-numeric: tabular-nums;
+}
+
+.secondaryValue {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(212, 175, 55, 0.3) 50%,
+    transparent 100%
+  );
+  margin: 0.35rem 0;
+}
+
+/* ROI */
+.roiSection {
+  margin-top: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-md);
+}
+
+.roiHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.trendIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.trendPositive {
+  color: var(--accent-green);
+}
+
+.trendNegative {
+  color: var(--accent-red);
+}
+
+.roiLabel {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.roiDisplay {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.roiValue {
+  font-size: 1.25rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  min-width: 70px;
+}
+
+.roiPositive {
+  color: var(--accent-green);
+}
+
+.roiNegative {
+  color: var(--accent-red);
+}
+
+.roiBarTrack {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.roiBar {
+  height: 100%;
+  border-radius: 3px;
+  animation: barGrow 0.8s ease-out 0.3s both;
+}
+
+.roiBarPositive {
+  background: linear-gradient(90deg, var(--accent-green), #66bb6a);
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+}
+
+.roiBarNegative {
+  background: linear-gradient(90deg, var(--accent-red), #ef5350);
+  box-shadow: 0 0 8px rgba(139, 38, 53, 0.3);
+}
+
+@keyframes barGrow {
+  from {
+    width: 0 !important;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .container {
+    max-width: 100%;
+    padding: 0.85rem 1rem;
+  }
+
+  .primaryValue {
+    font-size: 0.9rem;
+  }
+
+  .roiValue {
+    font-size: 1.1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .container {
+    animation: none;
+  }
+
+  .coinBack,
+  .coinFront {
+    animation: none;
+  }
+
+  .roiBar {
+    animation: none;
+  }
+}

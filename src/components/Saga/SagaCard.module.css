@@ -1,0 +1,144 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Carousel variant */
+.cardCarousel {
+  min-width: 200px;
+  width: 200px;
+  scroll-snap-align: start;
+}
+
+/* Grid variant */
+.cardGrid {
+  width: 100%;
+}
+
+/* Image */
+.imageContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+}
+
+.cardGrid .imageContainer {
+  aspect-ratio: 16 / 9;
+}
+
+.image {
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .image {
+  transform: scale(1.05);
+}
+
+.imageFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gray-100);
+  font-size: 3rem;
+}
+
+.imageOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.5));
+  pointer-events: none;
+}
+
+/* Info */
+.info {
+  padding: 0.75rem;
+}
+
+.cardGrid .info {
+  padding: 1rem;
+}
+
+.name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0 0 0.3rem;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.cardGrid .name {
+  font-size: 1.1rem;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.stat {
+  white-space: nowrap;
+}
+
+.statDot {
+  color: var(--gray-400);
+}
+
+/* Film list (grid variant) */
+.filmList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.6rem;
+}
+
+.filmTag {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  background: var(--gray-100);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.filmTagMore {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  background: var(--chocolate-light);
+  border-radius: var(--radius-md);
+  color: var(--white);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .cardCarousel {
+    min-width: 160px;
+    width: 160px;
+  }
+}

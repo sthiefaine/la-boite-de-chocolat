@@ -1,0 +1,67 @@
+.listenedButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: var(--glass-bg-light);
+  border-radius: var(--radius-full, 9999px);
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast), background var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.listenedButton:hover {
+  background: var(--glass-bg-medium);
+  color: var(--accent-green);
+  transform: scale(1.1);
+}
+
+.listenedButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.listenedButton.active {
+  color: var(--accent-green);
+}
+
+.listenedButton.active:hover {
+  color: var(--accent-green-dark);
+}
+
+/* Variante overlay pour les cartes */
+.listenedButton.overlay {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 10;
+  width: 32px;
+  height: 32px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.listenedButton.overlay:hover {
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--accent-green);
+}
+
+.listenedButton.overlay.active {
+  color: var(--accent-green);
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.checkIcon {
+  width: 18px;
+  height: 18px;
+}
+
+.overlay .checkIcon {
+  width: 16px;
+  height: 16px;
+}

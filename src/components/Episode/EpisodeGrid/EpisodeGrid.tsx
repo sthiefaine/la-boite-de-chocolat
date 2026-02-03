@@ -84,17 +84,21 @@ interface EpisodeGridProps {
   episodes: Episode[];
   title?: string;
   subtitle?: string;
+  headingLevel?: "h1" | "h2";
 }
 
 export default function EpisodeGrid({
   episodes,
   title = "Tous nos épisodes",
   subtitle,
+  headingLevel = "h2",
 }: EpisodeGridProps) {
+  const Heading = headingLevel;
   const [searchQuery, setSearchQuery] = useState("");
   const [yearFilter, setYearFilter] = useState("");
   const [genreFilter, setGenreFilter] = useState("");
   const [marvelFilter, setMarvelFilter] = useState(false);
+  const [sortBy, setSortBy] = useState("latest");
 
   const deferredSearchQuery = useDeferredValue(searchQuery);
 
@@ -173,8 +177,29 @@ export default function EpisodeGrid({
       );
     }
 
-    return filtered;
-  }, [episodes, deferredSearchQuery, yearFilter, genreFilter, marvelFilter]);
+    // Tri
+    const sorted = [...filtered];
+    switch (sortBy) {
+      case "oldest":
+        sorted.sort((a, b) => new Date(a.pubDate).getTime() - new Date(b.pubDate).getTime());
+        break;
+      case "shortest":
+        sorted.sort((a, b) => (a.duration || 0) - (b.duration || 0));
+        break;
+      case "longest":
+        sorted.sort((a, b) => (b.duration || 0) - (a.duration || 0));
+        break;
+      case "title":
+        sorted.sort((a, b) => a.title.localeCompare(b.title, "fr"));
+        break;
+      case "latest":
+      default:
+        sorted.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
+        break;
+    }
+
+    return sorted;
+  }, [episodes, deferredSearchQuery, yearFilter, genreFilter, marvelFilter, sortBy]);
 
   const hasActiveFilters = useMemo(() => {
     return !!(
@@ -238,6 +263,7 @@ export default function EpisodeGrid({
       yearFilter,
       genreFilter,
       marvelFilter,
+      sortBy,
     ],
   });
 
@@ -284,7 +310,7 @@ export default function EpisodeGrid({
       {/* Section Header */}
       <div className={styles.sectionHeader}>
         <div className={styles.titleSection}>
-          <h2 className={styles.sectionTitle}>
+          <Heading className={styles.sectionTitle}>
             {title}
             <span className={styles.episodeCount}>
               {" "}
@@ -292,7 +318,7 @@ export default function EpisodeGrid({
                 ? "1 épisode"
                 : `${filteredEpisodes.length} épisodes`}
             </span>
-          </h2>
+          </Heading>
           {subtitle && <p className={styles.sectionSubtitle}>{subtitle}</p>}
         </div>
 
@@ -310,6 +336,10 @@ export default function EpisodeGrid({
               value: genreFilter,
               onChange: handleGenreChange,
               genres: availableGenres,
+            }}
+            sortFilter={{
+              value: sortBy,
+              onChange: setSortBy,
             }}
             marvelButton={{
               onClick: handleMarvelClick,
@@ -353,6 +383,7 @@ export default function EpisodeGrid({
           <>
             {displayedEpisodes.map((episode, index) => {
               const episodeProps = {
+                episodeId: episode.id,
                 episodeTitle: episode.title,
                 episodeDate: episode.pubDate,
                 episodeDuration: episode.duration,

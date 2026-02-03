@@ -41,6 +41,7 @@
   box-shadow: var(--shadow-medium);
   transition: all var(--transition-normal);
   flex-shrink: 0;
+  perspective: 800px;
 }
 
 .heroCoverArtsDiv.fadeIn {
@@ -59,6 +60,25 @@
   100% {
     opacity: 1;
     transform: scale(1) translateY(0);
+  }
+}
+
+.heroCoverArtsDiv.flipping {
+  animation: mosaicFade 1.4s ease-in-out !important;
+}
+
+@keyframes mosaicFade {
+  0% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0;
+  }
+  55% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }
 
@@ -102,5 +122,11 @@
   }
   100% {
     opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroCoverArtsDiv.flipping {
+    animation: none !important;
   }
 }

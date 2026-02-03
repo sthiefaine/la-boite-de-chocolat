@@ -1,6 +1,7 @@
 "use server";
 
 import { cache } from "react";
+import { revalidatePath } from "next/cache";
 import { PODCAST_CATEGORIES } from "@/helpers/helpers";
 import { prisma } from "@/lib/prisma";
 import { uploadPodcastFile } from "@/helpers/uploadHelpers";
@@ -104,6 +105,8 @@ export const getEpisodeBySlugCached = cache(async (slug: string) => {
                 director: true,
                 year: true,
                 tmdbId: true,
+                budget: true,
+                revenue: true,
                 saga: {
                   select: {
                     id: true,
@@ -489,14 +492,38 @@ export async function linkEpisodeToFilm(episodeId: string, filmId: string) {
       return { success: false, error: "Ce lien existe déjà" };
     }
 
-    await prisma.podcastFilmLink.create({
+    const newLink = await prisma.podcastFilmLink.create({
       data: {
         podcastId: episodeId,
         filmId,
       },
+      select: {
+        id: true,
+        podcast: { select: { slug: true } },
+        film: {
+          select: {
+            id: true,
+            title: true,
+            year: true,
+            director: true,
+            imgFileName: true,
+            saga: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
     });
 
-    return { success: true };
+    revalidatePath(`/episodes/${newLink.podcast.slug}`);
+    revalidatePath("/episodes");
+    revalidatePath("/episodes/budget");
+    revalidatePath("/episodes/sagas");
+    revalidatePath("/");
+
+    return { success: true, link: newLink };
   } catch (error) {
     console.error("Erreur lors de la liaison épisode-film:", error);
     return { success: false, error: "Erreur lors de la liaison épisode-film" };
@@ -505,12 +532,25 @@ export async function linkEpisodeToFilm(episodeId: string, filmId: string) {
 
 export async function unlinkEpisodeFromFilm(episodeId: string, filmId: string) {
   try {
+    const episode = await prisma.podcastEpisode.findUnique({
+      where: { id: episodeId },
+      select: { slug: true },
+    });
+
     await prisma.podcastFilmLink.deleteMany({
       where: {
         podcastId: episodeId,
         filmId,
       },
     });
+
+    if (episode?.slug) {
+      revalidatePath(`/episodes/${episode.slug}`);
+    }
+    revalidatePath("/episodes");
+    revalidatePath("/episodes/budget");
+    revalidatePath("/episodes/sagas");
+    revalidatePath("/");
 
     return { success: true };
   } catch (error) {
@@ -649,7 +689,12 @@ export async function updateEpisode(
         imgFileName: data.imgFileName,
         age: data.age,
       },
+      select: { id: true, title: true, slug: true, description: true, genre: true, imgFileName: true, age: true },
     });
+
+    revalidatePath(`/episodes/${updatedEpisode.slug}`);
+    revalidatePath("/episodes");
+    revalidatePath("/");
 
     return { success: true, data: updatedEpisode };
   } catch (error) {
@@ -663,9 +708,18 @@ export async function updateEpisode(
 
 export async function deleteEpisodeLink(linkId: string) {
   try {
-    await prisma.podcastFilmLink.delete({
+    const link = await prisma.podcastFilmLink.delete({
       where: { id: linkId },
+      select: { podcast: { select: { slug: true } } },
     });
+
+    if (link.podcast.slug) {
+      revalidatePath(`/episodes/${link.podcast.slug}`);
+    }
+    revalidatePath("/episodes");
+    revalidatePath("/episodes/budget");
+    revalidatePath("/episodes/sagas");
+    revalidatePath("/");
 
     return { success: true };
   } catch (error) {
@@ -673,6 +727,83 @@ export async function deleteEpisodeLink(linkId: string) {
     return {
       success: false,
       error: "Erreur lors de la suppression du lien",
+    };
+  }
+}
+
+export async function getEpisodesWithBudgetStats() {
+  try {
+    const episodes = await prisma.podcastEpisode.findMany({
+      where: {
+        rssFeed: { nameId: "la-boite-de-chocolat" },
+        links: {
+          some: {
+            film: {
+              budget: { gt: 0 },
+            },
+          },
+        },
+      },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        pubDate: true,
+        links: {
+          select: {
+            film: {
+              select: {
+                id: true,
+                title: true,
+                slug: true,
+                year: true,
+                imgFileName: true,
+                budget: true,
+                revenue: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { pubDate: "desc" },
+    });
+
+    // Flatten: one entry per film with budget
+    const items = episodes.flatMap((ep) =>
+      ep.links
+        .filter((link) => link.film.budget && Number(link.film.budget) > 0)
+        .map((link) => ({
+          episodeId: ep.id,
+          episodeTitle: ep.title,
+          episodeSlug: ep.slug,
+          pubDate: ep.pubDate,
+          filmId: link.film.id,
+          filmTitle: link.film.title,
+          filmSlug: link.film.slug,
+          year: link.film.year,
+          imgFileName: link.film.imgFileName,
+          budget: Number(link.film.budget),
+          revenue: link.film.revenue ? Number(link.film.revenue) : null,
+        }))
+    );
+
+    // Deduplicate by filmId (keep first occurrence)
+    const seen = new Set<string>();
+    const unique = items.filter((item) => {
+      if (seen.has(item.filmId)) return false;
+      seen.add(item.filmId);
+      return true;
+    });
+
+    return { success: true, data: unique };
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération des épisodes avec budget:",
+      error
+    );
+    return {
+      success: false,
+      error: "Erreur lors de la récupération des épisodes avec budget",
     };
   }
 }

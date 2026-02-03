@@ -1,17 +1,52 @@
-"use server";
-
+import { Metadata } from "next";
 import { getSagaBySlug } from "../../actions/saga";
 import { getSagaWithFilmsAndEpisodes } from "../../actions/saga";
 import { notFound } from "next/navigation";
 import FilmCard from "@/components/Cards/FilmCard/FilmCard";
 import Image from "next/image";
 import { getUploadServerUrl } from "@/helpers/imageConfig";
+import { SITE_URL } from "@/helpers/config";
+import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
 import styles from "./SagaDetailPage.module.css";
 
 interface SagaDetailPageProps {
   params: Promise<{
     slug: string;
   }>;
+}
+
+export async function generateMetadata({
+  params,
+}: SagaDetailPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const sagaResult = await getSagaBySlug(slug);
+
+  if (!sagaResult.success || !sagaResult.data) {
+    return {
+      title: "Saga non trouvée",
+      robots: { index: false },
+    };
+  }
+
+  const saga = sagaResult.data;
+  const filmCount = saga.films.length;
+  const description = saga.description
+    ? saga.description.slice(0, 155)
+    : `Découvrez les ${filmCount} films de la saga ${saga.name} analysés dans notre podcast cinéma. Critiques et avis sur chaque film.`;
+
+  return {
+    title: `${saga.name} - Saga Cinéma`,
+    description,
+    alternates: {
+      canonical: `${SITE_URL}/sagas/${slug}`,
+    },
+    openGraph: {
+      title: `Saga ${saga.name} | La Boîte de Chocolat`,
+      description,
+      type: "website",
+      url: `${SITE_URL}/sagas/${slug}`,
+    },
+  };
 }
 
 export default async function SagaDetailPage({ params }: SagaDetailPageProps) {
@@ -37,6 +72,13 @@ export default async function SagaDetailPage({ params }: SagaDetailPageProps) {
   return (
     <main className={styles.main}>
       <div className={styles.container}>
+        <Breadcrumbs
+          items={[
+            { label: "Accueil", href: "/" },
+            { label: "Sagas", href: "/episodes/sagas" },
+            { label: saga.name },
+          ]}
+        />
         <div className={styles.header}>
           <div className={styles.headerImageContainer}>
             {saga.imgFileName && (

@@ -151,6 +151,13 @@
   margin: 0;
 }
 
+.info {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  margin: 0 0 1rem 0;
+}
+
 .captcha {
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.7);

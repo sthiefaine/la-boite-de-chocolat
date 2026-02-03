@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { formatDuration } from "@/helpers/podcastHelpers";
 import { IMAGE_CONFIG } from "@/helpers/imageConfig";
+import FavoriteButton from "@/components/Favorite/FavoriteButton";
+import ListenedButton from "@/components/Listened/ListenedButton";
 import styles from "./EpisodeCard.module.css";
 
 interface ImageConfig {
@@ -11,6 +13,7 @@ interface ImageConfig {
 }
 
 interface EpisodeCardProps {
+  episodeId?: string;
   film?: {
     id: string;
     title: string;
@@ -42,6 +45,7 @@ const getStaticImageUrl = (imgFileName: string, age: string | null): string => {
 };
 
 export default function EpisodeCard({
+  episodeId,
   film,
   episodeTitle,
   episodeDate,
@@ -62,6 +66,13 @@ export default function EpisodeCard({
   const displayImage = film?.imgFileName || null;
   const displayAge = film?.age || null;
   const shouldBlur = displayAge === "18+" || displayAge === "adult";
+
+  // Alt text enrichi pour le SEO
+  const altText = shouldBlur
+    ? "Poster flouté - contenu 18+"
+    : film?.year
+      ? `Poster du film ${displayTitle} (${film.year})`
+      : `Poster de ${displayTitle}`;
 
   const effectClass = effect !== "none" ? styles[`effect${effect}`] : "";
 
@@ -111,7 +122,7 @@ export default function EpisodeCard({
           {displayImage ? (
             <>
               <Image
-                alt={`Poster de ${displayTitle}`}
+                alt={altText}
                 fill
                 sizes="200px"
                 className={`${styles.cardImage} ${
@@ -138,10 +149,21 @@ export default function EpisodeCard({
               <span className={styles.genreBadge}>{episodeGenre}</span>
             </div>
           )}
+          {episodeDate &&
+            Date.now() - new Date(episodeDate).getTime() <
+              7 * 24 * 60 * 60 * 1000 && (
+              <span className={styles.newBadge}>Nouveau</span>
+            )}
           {episodeDuration && (
             <span className={styles.cardDuration}>
               {formatDuration(episodeDuration)}
             </span>
+          )}
+          {episodeId && (
+            <>
+              <FavoriteButton episodeId={episodeId} variant="overlay" />
+              <ListenedButton episodeId={episodeId} variant="overlay" />
+            </>
           )}
         </div>
         <div className={styles.cardInformations}>

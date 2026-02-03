@@ -1,0 +1,168 @@
+.container {
+  --bar-budget: linear-gradient(90deg, #b08d3a, #d4a843);
+  --bar-revenue: linear-gradient(90deg, #2e9e5a, #4ec87a);
+  --bar-revenue-flop: linear-gradient(90deg, #d43d3d, #e8605e);
+  --bar-positive: linear-gradient(90deg, #2e9e5a, #4ec87a);
+  --bar-negative: linear-gradient(90deg, #d43d3d, #e8605e);
+
+  background: rgba(18, 18, 24, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Legend */
+.legend {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.15rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Rows */
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.row {
+  animation: rowFadeIn 0.3s ease-out both;
+}
+
+@keyframes rowFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.rowHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.rank {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.35);
+  min-width: 1.3rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.filmName {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.filmYear {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+}
+
+.rowValue {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+
+/* Bars */
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-left: 1.8rem;
+}
+
+.bar {
+  height: 6px;
+  border-radius: 3px;
+  transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  min-width: 0;
+}
+
+.barBudget {
+  background: var(--bar-budget);
+  box-shadow: 0 0 8px rgba(176, 141, 58, 0.25);
+}
+
+.barRevenue {
+  background: var(--bar-revenue);
+  box-shadow: 0 0 8px rgba(46, 158, 90, 0.25);
+}
+
+.barRevenueFlop {
+  background: var(--bar-revenue-flop);
+  box-shadow: 0 0 8px rgba(212, 61, 61, 0.25);
+}
+
+.barPositive {
+  background: var(--bar-positive);
+  box-shadow: 0 0 10px rgba(46, 158, 90, 0.3);
+}
+
+.barNegative {
+  background: var(--bar-negative);
+  box-shadow: 0 0 10px rgba(212, 61, 61, 0.3);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1.1rem;
+  }
+
+  .filmName {
+    font-size: 0.75rem;
+  }
+
+  .rowValue {
+    font-size: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row {
+    animation: none;
+    opacity: 1;
+  }
+
+  .bar {
+    transition: none;
+  }
+}

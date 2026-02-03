@@ -1,0 +1,66 @@
+.favoriteButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: var(--glass-bg-light);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast), background var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.favoriteButton:hover {
+  background: var(--glass-bg-medium);
+  color: var(--accent-gold);
+  transform: scale(1.1);
+}
+
+.favoriteButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.favoriteButton.active {
+  color: var(--accent-gold);
+}
+
+.favoriteButton.active:hover {
+  color: var(--accent-red);
+}
+
+/* Variante overlay pour les cartes */
+.favoriteButton.overlay {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  width: 32px;
+  height: 32px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.favoriteButton.overlay:hover {
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--accent-gold);
+}
+
+.favoriteButton.overlay.active {
+  color: var(--accent-gold);
+}
+
+.starIcon {
+  width: 18px;
+  height: 18px;
+}
+
+.overlay .starIcon {
+  width: 16px;
+  height: 16px;
+}

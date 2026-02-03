@@ -191,6 +191,50 @@
   box-shadow: var(--glass-shadow-dark);
 }
 
+.favoriteButton {
+  background: var(--glass-bg-darker);
+  border: var(--glass-border-dark);
+  color: var(--text-white);
+}
+
+.favoriteButton:hover {
+  background: rgba(0, 0, 0, 0.6);
+  border: var(--glass-border-dark);
+  color: var(--accent-gold);
+  transform: translateY(-1px);
+  box-shadow: var(--glass-shadow-dark);
+}
+
+.favoriteButton[aria-pressed="true"] {
+  color: var(--accent-gold);
+}
+
+.favoriteButton[aria-pressed="true"]:hover {
+  color: var(--accent-red);
+}
+
+.listenedButton {
+  background: var(--glass-bg-darker);
+  border: var(--glass-border-dark);
+  color: var(--text-white);
+}
+
+.listenedButton:hover {
+  background: rgba(0, 0, 0, 0.6);
+  border: var(--glass-border-dark);
+  color: var(--accent-green);
+  transform: translateY(-1px);
+  box-shadow: var(--glass-shadow-dark);
+}
+
+.listenedButton[aria-pressed="true"] {
+  color: var(--accent-green);
+}
+
+.listenedButton[aria-pressed="true"]:hover {
+  color: var(--accent-green-dark);
+}
+
 .buttonIcon {
   font-size: 1.1rem;
   transition: transform 0.3s ease;
@@ -210,9 +254,40 @@
   transform: scale(1.02);
 }
 
+.transcriptionButton {
+  position: relative;
+}
+
+.betaBadge {
+  position: absolute;
+  top: 2px;
+  right: 6px;
+  background: #ffb347;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 0.08em 0.5em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  display: inline-block;
+  z-index: 2;
+  pointer-events: none;
+  line-height: 1.1;
+}
+
+/* Bottom row: budget + description side by side */
+.bottomRow {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-top: 1.5rem;
+}
+
 .description {
-  margin: 1.5rem 0;
-  max-width: 90%;
+  flex: 1;
+  min-width: 0;
   position: relative;
   z-index: 10;
 }
@@ -259,29 +334,6 @@
   background: rgba(255, 255, 255, 0.6);
 }
 
-.transcriptionButton {
-  position: relative;
-}
-
-.betaBadge {
-  position: absolute;
-  top: 2px;
-  right: 6px;
-  background: #ffb347;
-  color: #fff;
-  font-size: 0.65rem;
-  font-weight: 700;
-  border-radius: 8px;
-  padding: 0.08em 0.5em;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  display: inline-block;
-  z-index: 2;
-  pointer-events: none;
-  line-height: 1.1;
-}
-
 @media (max-width: 768px) {
   .headerInfo {
     padding: 1rem;
@@ -326,7 +378,6 @@
     justify-content: center;
   }
 
-  /* Première ligne : Écouter et Ajouter à la file d'attente */
   .listenButton {
     grid-column: 1;
   }
@@ -335,12 +386,10 @@
     grid-column: 2;
   }
 
-  /* Deuxième ligne : Télécharger et Partager */
   .downloadButton {
     grid-column: 1;
   }
 
-  /* Troisième ligne : TMDB (centré) */
   .tmdbButton {
     grid-column: 1 / -1;
     justify-self: center;
@@ -348,9 +397,12 @@
     min-width: 140px;
   }
 
+  .bottomRow {
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
   .description {
-    margin: 1.5rem auto;
-    max-width: 95%;
     text-align: center;
   }
 
@@ -368,4 +420,4 @@
     max-width: 100%;
     margin: 1rem 0;
   }
-} 
+}
