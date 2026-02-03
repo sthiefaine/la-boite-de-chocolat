@@ -244,6 +244,24 @@ export async function getAllSagasWithStats() {
   }
 }
 
+export async function getAllSagaSlugs() {
+  try {
+    const sagas = await prisma.saga.findMany({
+      select: {
+        slug: true,
+      },
+    });
+
+    return { success: true, data: sagas };
+  } catch (error) {
+    console.error("Erreur lors de la récupération des slugs de sagas:", error);
+    return {
+      success: false,
+      error: "Erreur lors de la récupération des slugs",
+    };
+  }
+}
+
 export async function getSagaBySlug(slug: string) {
   try {
     const saga = await prisma.saga.findUnique({

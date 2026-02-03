@@ -7,6 +7,7 @@ import FooterTransition from "@/components/Footer/FooterTransition";
 import { Player } from "@/components/Player/Player";
 import { Suspense } from "react";
 import { SITE_URL, PODCAST_URLS, SOCIAL_URLS } from "@/helpers/config";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -141,6 +142,8 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className={inter.className}>
+        <GoogleAnalytics gaId="G-Z1Y3QWL2C5" />
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}

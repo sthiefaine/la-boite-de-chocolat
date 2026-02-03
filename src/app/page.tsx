@@ -3,7 +3,6 @@ import { getEpisodesWithFilms, getLatestEpisode } from "./actions/episode";
 
 import LatestEpisodeSection from "@/components/Sections/LatestEpisodeSection/LatestEpisodeSection";
 import HeroSection from "@/components/Sections/HeroSection/HeroSection";
-import ContinueListeningSection from "@/components/Sections/ContinueListeningSection/ContinueListeningSection";
 import EpisodesSection from "@/components/Sections/EpisodesSection/EpisodesSection";
 import SagaCarousel from "@/components/Saga/SagaCarousel";
 import BudgetCarousel from "@/components/Film/BudgetCarousel";
@@ -64,7 +63,6 @@ export default async function Home() {
   return (
     <main>
       <HeroSection episodes={episodes || []} />
-      <ContinueListeningSection />
       <LatestEpisodeSection episode={latestEpisode.data || null} />
       <SagaCarousel />
       <BudgetCarousel />

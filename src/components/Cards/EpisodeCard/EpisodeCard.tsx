@@ -132,6 +132,8 @@ export default function EpisodeCard({
                 priority={imageConfig.priority}
                 loading={imageConfig.lazy ? "lazy" : "eager"}
                 quality={imageConfig.quality}
+                placeholder="blur"
+                blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
               />
               {shouldBlur && (
                 <div className={styles.ageOverlay}>

@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { getSagaBySlug } from "../../actions/saga";
+import { getSagaBySlug, getAllSagaSlugs } from "../../actions/saga";
 import { getSagaWithFilmsAndEpisodes } from "../../actions/saga";
 import { notFound } from "next/navigation";
 import FilmCard from "@/components/Cards/FilmCard/FilmCard";
@@ -13,6 +13,18 @@ interface SagaDetailPageProps {
   params: Promise<{
     slug: string;
   }>;
+}
+
+export async function generateStaticParams() {
+  const result = await getAllSagaSlugs();
+
+  if (!result.success || !result.data) {
+    return [];
+  }
+
+  return result.data.map((saga) => ({
+    slug: saga.slug,
+  }));
 }
 
 export async function generateMetadata({

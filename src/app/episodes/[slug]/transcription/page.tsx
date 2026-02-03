@@ -1,7 +1,7 @@
 "use server";
 
 import { notFound } from "next/navigation";
-import { getEpisodeBySlugCached } from "@/app/actions/episode";
+import { getEpisodeBySlugCached, getAllEpisodeSlugsWithTranscription } from "@/app/actions/episode";
 import { downloadTranscriptionContent } from "@/app/actions/transcription";
 import {
   parseSRT,
@@ -17,6 +17,18 @@ interface TranscriptionPageProps {
   params: Promise<{
     slug: string;
   }>;
+}
+
+export async function generateStaticParams() {
+  const result = await getAllEpisodeSlugsWithTranscription();
+
+  if (!result.success || !result.data) {
+    return [];
+  }
+
+  return result.data.map((episode) => ({
+    slug: episode.slug,
+  }));
 }
 
 export default async function TranscriptionPageServer({

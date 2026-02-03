@@ -327,6 +327,32 @@ export async function getAllEpisodeSlugs() {
   }
 }
 
+export async function getAllEpisodeSlugsWithTranscription() {
+  try {
+    const episodes = await prisma.podcastEpisode.findMany({
+      where: {
+        rssFeed: {
+          nameId: "la-boite-de-chocolat",
+        },
+        transcription: {
+          isNot: null,
+        },
+      },
+      select: {
+        slug: true,
+      },
+    });
+
+    return { success: true, data: episodes };
+  } catch (error) {
+    console.error("Erreur lors de la récupération des slugs avec transcription:", error);
+    return {
+      success: false,
+      error: "Erreur lors de la récupération des slugs",
+    };
+  }
+}
+
 export async function getEpisodesWithFilms() {
   try {
     const episodes = await prisma.podcastEpisode.findMany({
