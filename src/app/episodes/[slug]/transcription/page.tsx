@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getEpisodeBySlugCached, getAllEpisodeSlugsWithTranscription } from "@/app/actions/episode";
 import { downloadTranscriptionContent } from "@/app/actions/transcription";
 import {
-  parseSRT,
+  parseTranscription,
   parseWithTimeMarkers,
   srtTimeToSeconds,
 } from "@/helpers/transcriptionHelpers";
@@ -57,7 +57,7 @@ export default async function TranscriptionPageServer({
 
   const content = transcriptionResult.transcription.content;
 
-  const parsedEntries = parseSRT(content);
+  const parsedEntries = parseTranscription(content);
 
   const timeMarkedSections =
     parsedEntries.length === 0 ? parseWithTimeMarkers(content) : null;

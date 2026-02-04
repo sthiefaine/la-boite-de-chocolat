@@ -10,6 +10,7 @@ import {
 } from "@/app/actions/episode";
 import { getSagaWithFilmsAndEpisodes } from "@/app/actions/saga";
 import { getEpisodeRatingStats } from "@/app/actions/rating";
+import { getFilmCredits } from "@/app/actions/film";
 import { PodcastJsonLd } from "./json-ld";
 import { BreadcrumbJsonLd } from "./breadcrumb-json-ld";
 import { SITE_URL } from "@/helpers/config";
@@ -18,6 +19,7 @@ import EpisodeNavigation from "@/components/Episode/EpisodeNavigation/EpisodeNav
 import EpisodeSaga from "@/components/Episode/EpisodeSaga/EpisodeSaga";
 import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
 import RecommendationsSection from "@/components/Recommendations/RecommendationsSection";
+import PeopleSection from "@/components/People/PeopleSection";
 
 interface EpisodePageProps {
   params: Promise<{
@@ -61,6 +63,11 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
 
   const sagaResult = saga ? await getSagaWithFilmsAndEpisodes(saga.id) : null;
 
+  // Fetch credits for main film
+  const filmCredits = mainFilm?.tmdbId
+    ? await getFilmCredits(mainFilm.tmdbId)
+    : null;
+
   const previousEpisode = finalNavigationResult.success
     ? finalNavigationResult?.data?.previousEpisode
     : null;
@@ -97,6 +104,7 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
           userRating={userRating}
           ratingStats={ratingStats}
         />
+
         <EpisodeNavigation
           previousEpisode={previousEpisode || null}
           nextEpisode={nextEpisode || null}
@@ -107,6 +115,10 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
         )}
 
         <RecommendationsSection episodeId={episode.id} />
+
+        {filmCredits && (
+          <PeopleSection credits={filmCredits} filmTitle={mainFilm?.title} />
+        )}
       </div>
     </>
   );

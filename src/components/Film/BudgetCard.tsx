@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { getUploadServerUrl } from "@/helpers/imageConfig";
@@ -5,6 +8,7 @@ import {
   formatBudgetShort,
   convertUsdToEur,
 } from "@/helpers/budgetHelpers";
+import { useCountAnimation } from "@/hooks/useCountAnimation";
 import styles from "./BudgetCard.module.css";
 
 interface BudgetCardProps {
@@ -27,6 +31,8 @@ export default function BudgetCard({
   variant = "default",
   detailed = false,
 }: BudgetCardProps) {
+  const [isVisible, setIsVisible] = useState(false);
+
   const imageUrl = item.imgFileName
     ? getUploadServerUrl(item.imgFileName)
     : null;
@@ -43,6 +49,32 @@ export default function BudgetCard({
 
   const isPositive = roi !== null && roi >= 0;
 
+  // Animation des chiffres
+  const animatedBudget = useCountAnimation(item.budget, 1200, isVisible);
+  const animatedRevenue = useCountAnimation(
+    item.revenue || 0,
+    1200,
+    isVisible && item.revenue !== null
+  );
+
+  // Badge de performance
+  const getPerformanceBadge = () => {
+    if (roi === null) return null;
+    if (roi < -50) return { label: "FLOP", class: styles.badgeFlop };
+    if (roi < 0) return { label: "PERTE", class: styles.badgeLoss };
+    if (roi < 100) return { label: "HIT", class: styles.badgeHit };
+    if (roi < 300) return { label: "SUCCESS", class: styles.badgeSuccess };
+    return { label: "BLOCKBUSTER", class: styles.badgeBlockbuster };
+  };
+
+  const performanceBadge = getPerformanceBadge();
+
+  // Déclencher l'animation au montage
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <Link
       href={`/episodes/${item.episodeSlug || ""}`}
@@ -50,6 +82,12 @@ export default function BudgetCard({
     >
       {rank !== undefined && (
         <div className={styles.rank}>#{rank}</div>
+      )}
+
+      {performanceBadge && (
+        <div className={`${styles.performanceBadge} ${performanceBadge.class}`}>
+          {performanceBadge.label}
+        </div>
       )}
 
       <div className={styles.poster}>
@@ -75,11 +113,11 @@ export default function BudgetCard({
         <div className={styles.rows}>
           <div className={styles.budgetRow}>
             <span className={styles.label}>Budget</span>
-            <span className={styles.value}>
-              {formatBudgetShort(item.budget, "USD")}
+            <span className={`${styles.value} ${styles.animatedValue}`}>
+              {formatBudgetShort(animatedBudget, "USD")}
               {detailed && (
                 <span className={styles.eur}>
-                  {" · "}{formatBudgetShort(convertUsdToEur(item.budget), "EUR")}
+                  {" · "}{formatBudgetShort(convertUsdToEur(animatedBudget), "EUR")}
                 </span>
               )}
             </span>
@@ -87,13 +125,13 @@ export default function BudgetCard({
 
           <div className={styles.budgetRow}>
             <span className={styles.label}>Box-office</span>
-            <span className={styles.value}>
+            <span className={`${styles.value} ${styles.animatedValue}`}>
               {item.revenue !== null && item.revenue > 0 ? (
                 <>
-                  {formatBudgetShort(item.revenue, "USD")}
+                  {formatBudgetShort(animatedRevenue, "USD")}
                   {detailed && (
                     <span className={styles.eur}>
-                      {" · "}{formatBudgetShort(convertUsdToEur(item.revenue), "EUR")}
+                      {" · "}{formatBudgetShort(convertUsdToEur(animatedRevenue), "EUR")}
                     </span>
                   )}
                 </>
@@ -111,6 +149,18 @@ export default function BudgetCard({
               {roiLabel || "—"}
             </span>
           </div>
+
+          {roi !== null && (
+            <div className={styles.roiBarContainer}>
+              <div
+                className={`${styles.roiBar} ${isPositive ? styles.roiBarPositive : styles.roiBarNegative}`}
+                style={{
+                  width: `${Math.min(Math.abs(roi), 300) / 3}%`,
+                  animationDelay: "200ms",
+                }}
+              />
+            </div>
+          )}
         </div>
       </div>
     </Link>

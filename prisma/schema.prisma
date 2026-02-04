@@ -56,6 +56,8 @@ model Film {
   revenue     BigInt?
   saga        Saga?             @relation(fields: [sagaId], references: [id])
   links       PodcastFilmLink[]
+  directors   FilmDirector[]
+  cast        FilmCast[]
 }
 
 model Saga {
@@ -194,4 +196,44 @@ model Transcription {
   episode   PodcastEpisode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
 
   @@map("transcription")
+}
+
+model Person {
+  id           String         @id @default(uuid())
+  name         String
+  slug         String?        @unique
+  tmdbId       Int            @unique
+  photoFileName String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  directorOf   FilmDirector[]
+  actorIn      FilmCast[]
+
+  @@map("person")
+}
+
+model FilmDirector {
+  id        String   @id @default(uuid())
+  filmId    String
+  personId  String
+  createdAt DateTime @default(now())
+  film      Film     @relation(fields: [filmId], references: [id], onDelete: Cascade)
+  person    Person   @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@unique([filmId, personId])
+  @@map("film_director")
+}
+
+model FilmCast {
+  id        String   @id @default(uuid())
+  filmId    String
+  personId  String
+  character String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  film      Film     @relation(fields: [filmId], references: [id], onDelete: Cascade)
+  person    Person   @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@unique([filmId, personId])
+  @@map("film_cast")
 }

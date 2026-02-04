@@ -27,6 +27,16 @@ export default function SagaCard({ saga, variant = "carousel" }: SagaCardProps) 
     ? getUploadServerUrl(saga.films[0].imgFileName, "films")
     : null;
 
+  // Calculer la plage d'années pour la timeline simplifiée
+  const filmsWithYears = [...saga.films]
+    .filter((f) => f.year !== null && f.year !== undefined)
+    .sort((a, b) => (a.year || 0) - (b.year || 0));
+
+  const yearRange = filmsWithYears.length > 1 ? {
+    firstYear: filmsWithYears[0].year,
+    lastYear: filmsWithYears[filmsWithYears.length - 1].year,
+  } : null;
+
   return (
     <Link
       href={`/sagas/${saga.slug}`}
@@ -38,7 +48,7 @@ export default function SagaCard({ saga, variant = "carousel" }: SagaCardProps) 
             src={imageUrl}
             alt={saga.name}
             fill
-            sizes={variant === "carousel" ? "200px" : "(max-width: 768px) 50vw, 250px"}
+            sizes={variant === "carousel" ? "140px" : "(max-width: 768px) 50vw, 250px"}
             className={styles.image}
           />
         ) : (
@@ -49,11 +59,24 @@ export default function SagaCard({ saga, variant = "carousel" }: SagaCardProps) 
 
       <div className={styles.info}>
         <h3 className={styles.name}>{saga.name}</h3>
-        <div className={styles.stats}>
-          <span className={styles.stat}>{saga.films.length} film{saga.films.length > 1 ? "s" : ""}</span>
-          <span className={styles.statDot}>·</span>
-          <span className={styles.stat}>{saga.episodeCount} épisode{saga.episodeCount > 1 ? "s" : ""}</span>
+        <div className={styles.statsCompact}>
+          <div className={styles.statBadge}>
+            <span className={styles.statIcon}>🎬</span>
+            <span>{saga.films.length}</span>
+          </div>
+          <div className={styles.statBadge}>
+            <span className={styles.statIcon}>📺</span>
+            <span>{saga.episodeCount}</span>
+          </div>
         </div>
+
+        {variant === "carousel" && yearRange && (
+          <div className={styles.yearRange}>
+            <span className={styles.yearStart}>{yearRange.firstYear}</span>
+            <div className={styles.yearConnector} />
+            <span className={styles.yearEnd}>{yearRange.lastYear}</span>
+          </div>
+        )}
 
         {variant === "grid" && saga.films.length > 0 && (
           <div className={styles.filmList}>

@@ -72,7 +72,7 @@ export default async function LatestEpisodeSection({
             <p className={styles.episodeDescription}>
               {truncateToLines(
                 formatEpisodeDescription(episode.description),
-                3
+                5
               )}
             </p>
 
@@ -101,6 +101,22 @@ export default async function LatestEpisodeSection({
                 <div className={styles.metaItem}>
                   <span className={styles.metaIcon}>📺</span>
                   <span className={styles.seasonEpisode}>{seasonEpisode}</span>
+                </div>
+              )}
+
+              {episode.links.length > 0 && (
+                <div className={styles.metaItem}>
+                  <span className={styles.metaIcon}>🎬</span>
+                  <span className={styles.filmCount}>
+                    {episode.links.length} film{episode.links.length > 1 ? "s" : ""}
+                  </span>
+                </div>
+              )}
+
+              {mainFilm?.age && (
+                <div className={styles.metaItem}>
+                  <span className={styles.metaIcon}>🔞</span>
+                  <span className={styles.filmAge}>{mainFilm.age}</span>
                 </div>
               )}
             </div>

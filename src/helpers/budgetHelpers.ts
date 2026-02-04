@@ -130,7 +130,7 @@ export function formatBudget(
 }
 
 /**
- * Formate un montant en version courte (ex: 200 M$)
+ * Formate un montant en version courte (ex: 200M $)
  */
 export function formatBudgetShort(
   amount: number,
@@ -140,15 +140,15 @@ export function formatBudgetShort(
 
   if (amount >= 1_000_000_000) {
     const value = amount / 1_000_000_000;
-    return `${value.toFixed(value % 1 === 0 ? 0 : 1)} Md${symbol}`;
+    return `${value.toFixed(value % 1 === 0 ? 0 : 1)}Md ${symbol}`;
   }
   if (amount >= 1_000_000) {
     const value = amount / 1_000_000;
-    return `${value.toFixed(value % 1 === 0 ? 0 : 1)} M${symbol}`;
+    return `${value.toFixed(value % 1 === 0 ? 0 : 1)}M ${symbol}`;
   }
   if (amount >= 1_000) {
     const value = amount / 1_000;
-    return `${value.toFixed(0)} k${symbol}`;
+    return `${value.toFixed(0)}k ${symbol}`;
   }
   return `${amount} ${symbol}`;
 }

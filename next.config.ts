@@ -25,7 +25,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'la-boite-de-chocolat.vercel.app',
+        hostname: 'laboitedechocolat.clairdev.com',
         port: '',
         pathname: '/api/image/masked/**',
       },
@@ -37,7 +37,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'la-boite-de-chocolat.vercel.app',
+        hostname: 'laboitedechocolat.clairdev.com',
         port: '',
         pathname: '/api/image/og/**',
       },
@@ -49,7 +49,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'la-boite-de-chocolat.vercel.app',
+        hostname: 'laboitedechocolat.clairdev.com',
         port: '',
         pathname: '/api/image/og-default',
       },
@@ -60,6 +60,7 @@ const nextConfig: NextConfig = {
         pathname: '/api/image/og-default',
       },
     ],
+    qualities: [50, 75, 100],
   },
 };
 

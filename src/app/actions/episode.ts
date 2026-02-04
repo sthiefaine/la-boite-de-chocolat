@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { uploadPodcastFile } from "@/helpers/uploadHelpers";
 import { getMaskedImageUrl } from "@/app/actions/image";
 import { getUploadServerUrl } from "@/helpers/imageConfig";
+import { scrapeAndSaveFilmPeople } from "@/app/actions/film";
 
 export async function getEpisodeBySlug(slug: string) {
   try {
@@ -518,6 +519,12 @@ export async function linkEpisodeToFilm(episodeId: string, filmId: string) {
       return { success: false, error: "Ce lien existe déjà" };
     }
 
+    // Récupérer le film pour obtenir son tmdbId
+    const film = await prisma.film.findUnique({
+      where: { id: filmId },
+      select: { tmdbId: true, title: true },
+    });
+
     const newLink = await prisma.podcastFilmLink.create({
       data: {
         podcastId: episodeId,
@@ -542,6 +549,17 @@ export async function linkEpisodeToFilm(episodeId: string, filmId: string) {
         },
       },
     });
+
+    // Scraper les personnes (réalisateurs et acteurs) si le film a un tmdbId
+    if (film?.tmdbId) {
+      try {
+        await scrapeAndSaveFilmPeople(filmId, film.tmdbId);
+        console.log(`✅ Personnes scrapées pour ${film.title} lors du lien avec podcast`);
+      } catch (error) {
+        console.error(`⚠️ Erreur scraping personnes pour ${film?.title}:`, error);
+        // On ne fail pas le lien si le scraping échoue
+      }
+    }
 
     revalidatePath(`/episodes/${newLink.podcast.slug}`);
     revalidatePath("/episodes");

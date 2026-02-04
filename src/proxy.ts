@@ -27,23 +27,25 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  // Ajouter des headers pour améliorer l'indexation des pages d'épisodes
+  const response = NextResponse.next();
+
+  // Security headers (all routes)
+  response.headers.set("X-Frame-Options", "DENY");
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.headers.set("X-DNS-Prefetch-Control", "on");
+  response.headers.set(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=()"
+  );
+
+  // Episodes: indexation + cache headers
   if (pathname.startsWith("/episodes/")) {
-    const response = NextResponse.next();
-    
-    // Headers pour l'indexation
     response.headers.set("X-Robots-Tag", "index, follow");
-    response.headers.set("X-Content-Type-Options", "nosniff");
-    response.headers.set("X-Frame-Options", "DENY");
-    response.headers.set("Referrer-Policy", "origin-when-cross-origin");
-    
-    // Headers pour le cache et les performances
     response.headers.set("Cache-Control", "public, max-age=3600, s-maxage=86400");
-    
-    return response;
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {

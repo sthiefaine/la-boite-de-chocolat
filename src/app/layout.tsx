@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     template: "%s | La Boîte de Chocolat",
   },
   description:
-    "Le podcast cinéma français qui analyse vos films préférés avec mauvaise foi. +118 épisodes de critiques : blockbusters, Marvel, classiques et films d'auteur. Disponible sur Spotify, Apple Podcasts et Deezer.",
+    "Le podcast cinéma français qui analyse vos films préférés avec mauvaise foi. Des centaines d'épisodes de critiques : blockbusters, Marvel, classiques et films d'auteur. Disponible sur Spotify, Apple Podcasts et Deezer.",
   keywords: [
     "podcast cinéma",
     "podcast film",
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "La Boîte de Chocolat | Podcast Cinéma Français",
     description:
-      "Le podcast cinéma français qui analyse vos films préférés avec mauvaise foi. +118 épisodes de critiques disponibles.",
+      "Le podcast cinéma français qui analyse vos films préférés avec mauvaise foi. Des centaines d'épisodes de critiques disponibles.",
     type: "website",
     locale: "fr_FR",
     url: SITE_URL,
@@ -78,7 +78,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "La Boîte de Chocolat | Podcast Cinéma Français",
     description:
-      "Le podcast cinéma français qui analyse vos films préférés avec mauvaise foi. +118 épisodes de critiques.",
+      "Le podcast cinéma français qui analyse vos films préférés avec mauvaise foi. Des centaines d'épisodes de critiques.",
     images: ["/twitter-image"],
   },
   verification: {

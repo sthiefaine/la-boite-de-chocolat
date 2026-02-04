@@ -74,19 +74,23 @@ function getVariant(
 
 export default function BudgetShowcase({ items }: { items: BudgetItem[] }) {
   const [active, setActive] = useState<FilterKey>("all");
-  const [animating, setAnimating] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
   const categories = computeCategories(items);
-  const current = categories[active];
 
   function handleFilter(key: FilterKey) {
     if (key === active) return;
-    setAnimating(true);
-    setTimeout(() => {
+
+    // Use View Transitions API for smooth morphing
+    // @ts-ignore - View Transitions API not yet in TypeScript types
+    if (document.startViewTransition) {
+      // @ts-ignore
+      document.startViewTransition(() => {
+        setActive(key);
+      });
+    } else {
+      // Fallback for browsers without View Transitions support
       setActive(key);
-      setAnimating(false);
-      carouselRef.current?.scrollTo({ left: 0, behavior: "smooth" });
-    }, 200);
+    }
   }
 
   return (
@@ -100,23 +104,10 @@ export default function BudgetShowcase({ items }: { items: BudgetItem[] }) {
             width="28"
             height="28"
           >
-            <circle cx="12" cy="12" r="10" fill="url(#coinGrad)" />
-            <text
-              x="12"
-              y="16"
-              textAnchor="middle"
-              fontSize="11"
-              fontWeight="bold"
-              fill="#7c5a2a"
-            >
-              $
-            </text>
-            <defs>
-              <linearGradient id="coinGrad" x1="0" y1="0" x2="24" y2="24">
-                <stop offset="0%" stopColor="#f0d060" />
-                <stop offset="100%" stopColor="#c9a030" />
-              </linearGradient>
-            </defs>
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"
+              fill="currentColor"
+            />
           </svg>
           <h2 className={styles.title}>Budget & Box-office</h2>
         </div>
@@ -141,23 +132,34 @@ export default function BudgetShowcase({ items }: { items: BudgetItem[] }) {
         ))}
       </div>
 
-      <div
-        ref={carouselRef}
-        className={`${styles.carousel} ${animating ? styles.carouselOut : styles.carouselIn}`}
-      >
-        {current.map((item, index) => (
-          <div
-            key={item.filmId}
-            className={styles.cardWrapper}
-            style={{ animationDelay: `${index * 40}ms` }}
-          >
-            <BudgetCard
-              rank={index + 1}
-              item={item}
-              variant={getVariant(active)}
-            />
-          </div>
-        ))}
+      <div className={styles.carouselContainer}>
+        {FILTERS.map((filter) => {
+          const isActive = active === filter.key;
+          const categoryItems = categories[filter.key];
+
+          return (
+            <div
+              key={filter.key}
+              ref={isActive ? carouselRef : null}
+              className={`${styles.carousel} ${isActive ? styles.carouselVisible : styles.carouselHidden}`}
+              aria-hidden={!isActive}
+            >
+              {categoryItems.map((item, index) => (
+                <div
+                  key={item.filmId}
+                  className={styles.cardWrapper}
+                  style={{ animationDelay: `${index * 40}ms` }}
+                >
+                  <BudgetCard
+                    rank={index + 1}
+                    item={item}
+                    variant={getVariant(filter.key)}
+                  />
+                </div>
+              ))}
+            </div>
+          );
+        })}
       </div>
     </section>
   );

@@ -35,7 +35,7 @@ export async function uploadTranscription(formData: FormData) {
     if (!isSupportedFileType(file.name)) {
       return {
         success: false,
-        error: "Type de fichier non supporté. Utilisez .srt, .txt ou .vtt",
+        error: "Type de fichier non supporté. Utilisez .srt, .txt, .vtt ou .json",
       };
     }
 

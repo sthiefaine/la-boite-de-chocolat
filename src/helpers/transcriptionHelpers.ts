@@ -2,7 +2,7 @@ export const TRANSCRIPTION_CONFIG = {
   uploadServer: "https://uploadfiles.clairdev.com/api/upload",
   readServer:
     "https://uploadfiles.clairdev.com/api/display/podcasts/laboitedechocolat/episodes/",
-  allowedTypes: [".srt", ".txt", ".vtt"],
+  allowedTypes: [".srt", ".txt", ".vtt", ".json"],
   maxSize: 5 * 1024 * 1024,
 };
 
@@ -121,6 +121,57 @@ function parseVTT(content: string): SubtitleEntry[] {
   }
 
   return entries;
+}
+
+export function secondsToSrtTime(totalSeconds: number): string {
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = Math.floor(totalSeconds % 60);
+  const milliseconds = Math.round((totalSeconds % 1) * 1000);
+
+  return `${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}:${seconds.toString().padStart(2, "0")},${milliseconds
+    .toString()
+    .padStart(3, "0")}`;
+}
+
+interface TranscriptionJsonSegment {
+  text: string;
+  start: number;
+  end: number;
+  type?: string;
+  speaker_id?: string;
+}
+
+export function parseJSON(content: string): SubtitleEntry[] {
+  try {
+    const data = JSON.parse(content);
+    const segments: TranscriptionJsonSegment[] = data.segments;
+
+    if (!Array.isArray(segments)) {
+      return [];
+    }
+
+    return segments.map((segment, index) => ({
+      id: index + 1,
+      startTime: secondsToSrtTime(segment.start),
+      endTime: secondsToSrtTime(segment.end),
+      text: segment.text.trim(),
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export function parseTranscription(content: string): SubtitleEntry[] {
+  const trimmed = content.trim();
+
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+    return parseJSON(trimmed);
+  }
+
+  return parseSRT(trimmed);
 }
 
 export function srtTimeToSeconds(time: string): number {

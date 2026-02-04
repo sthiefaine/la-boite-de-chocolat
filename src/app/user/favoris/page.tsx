@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getSession } from "@/lib/auth/auth-server";
 import { getUserFavorites } from "@/app/actions/favorite";
+import { getUserListenedEpisodes } from "@/app/actions/listened";
 import EpisodeCard from "@/components/Cards/EpisodeCard/EpisodeCard";
 import styles from "./FavorisPage.module.css";
 
@@ -18,6 +19,8 @@ export default async function FavorisPage() {
   }
 
   const favorites = await getUserFavorites(session.user.id);
+  const listened = await getUserListenedEpisodes(session.user.id);
+  const recentListened = listened.slice(0, 3);
 
   return (
     <div className={styles.container}>

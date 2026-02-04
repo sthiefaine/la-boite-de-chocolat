@@ -18,6 +18,8 @@
     "test:email": "npx tsx src/lib/test-email-validation.ts"
   },
   "dependencies": {
+    "@img/sharp-darwin-arm64": "^0.34.5",
+    "@img/sharp-libvips-darwin-arm64": "^1.2.4",
     "@next/third-parties": "^16.1.6",
     "@prisma/client": "^6.11.1",
     "@react-three/drei": "^10.4.2",
@@ -31,24 +33,24 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "rss-parser": "^3.13.0",
-    "sharp": "^0.34.3",
+    "sharp": "^0.34.5",
     "three": "^0.178.0",
     "zustand": "^5.0.6"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@locator/runtime": "^0.4.4",
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/oxide-darwin-arm64": "^4.1.18",
+    "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^20",
     "@types/react": "^19.2.10",
     "@types/react-dom": "^19.2.3",
     "eslint": "^9",
     "eslint-config-next": "^16.1.6",
+    "lightningcss": "^1.31.1",
+    "lightningcss-darwin-arm64": "^1.31.1",
     "prisma": "^6.11.1",
     "tailwindcss": "^4",
     "typescript": "^5"
-  },
-  "optionalDependencies": {
-    "lightningcss-linux-x64-gnu": "^1.30.2"
   }
 }

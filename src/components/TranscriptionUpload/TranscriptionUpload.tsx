@@ -33,7 +33,7 @@ export default function TranscriptionUpload({ episodeId }: TranscriptionUploadPr
     if (file) {
       // Vérifier le type de fichier
       if (!isSupportedFileType(file.name)) {
-        alert('Type de fichier non supporté. Utilisez .srt, .txt ou .vtt');
+        alert('Type de fichier non supporté. Utilisez .srt, .txt, .vtt ou .json');
         return;
       }
 
@@ -132,7 +132,7 @@ export default function TranscriptionUpload({ episodeId }: TranscriptionUploadPr
         <input
           ref={fileInputRef}
           type="file"
-          accept=".srt,.txt"
+          accept=".srt,.txt,.json"
           onChange={handleFileSelect}
           className={styles.fileInput}
         />
@@ -140,12 +140,12 @@ export default function TranscriptionUpload({ episodeId }: TranscriptionUploadPr
         <div className={styles.uploadArea} onClick={handleUploadClick}>
           <div className={styles.uploadIcon}>📄</div>
           <div className={styles.uploadText}>
-            {selectedFile ? selectedFile.name : 'Cliquez pour sélectionner un fichier SRT ou TXT'}
+            {selectedFile ? selectedFile.name : 'Cliquez pour sélectionner un fichier SRT, TXT ou JSON'}
           </div>
           <div className={styles.uploadSubtext}>
             {selectedFile 
               ? `Taille: ${formatFileSize(selectedFile.size)}`
-              : 'Formats supportés: .srt, .txt, .vtt (max 5MB)'
+              : 'Formats supportés: .srt, .txt, .vtt, .json (max 5MB)'
             }
           </div>
         </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getTranscriptionDownloadUrl, parseSRT, searchInTranscription, formatFileSize } from '@/helpers/transcriptionHelpers';
+import { getTranscriptionDownloadUrl, parseTranscription, searchInTranscription, formatFileSize } from '@/helpers/transcriptionHelpers';
 import styles from './TranscriptionViewer.module.css';
 
 interface SubtitleEntry {
@@ -47,7 +47,7 @@ export default function TranscriptionViewer({ episodeId, transcription }: Transc
         }
 
         setContent(result.transcription.content);
-        const parsedEntries = parseSRT(result.transcription.content);
+        const parsedEntries = parseTranscription(result.transcription.content);
         setEntries(parsedEntries);
         setFilteredEntries(parsedEntries);
 

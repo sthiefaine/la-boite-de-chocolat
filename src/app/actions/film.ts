@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 import { uploadToServer, uploadImageFromUrl } from "@/helpers/uploadHelpers";
 import { generateSlug } from "@/helpers/podcastHelpers";
 
@@ -462,6 +462,15 @@ export async function createFilmFromTMDB(
       },
     });
 
+    // Scraper et sauvegarder les personnes (réalisateurs et acteurs)
+    try {
+      await scrapeAndSaveFilmPeople(film.id, tmdbId);
+      console.log(`✅ Personnes scrapées pour ${film.title}`);
+    } catch (error) {
+      console.error(`⚠️ Erreur lors du scraping des personnes pour ${film.title}:`, error);
+      // On ne fail pas la création du film si le scraping échoue
+    }
+
     // Revalider les pages
     revalidatePath("/admin/list/films");
     revalidatePath("/admin");
@@ -723,3 +732,258 @@ export async function backfillAllBudgets() {
     };
   }
 }
+
+/**
+ * Télécharge une photo de profil depuis TMDB et la sauvegarde localement
+ */
+async function uploadProfilePhotoFromTMDB(
+  profilePath: string,
+  personName: string,
+  tmdbPersonId: number
+): Promise<string | null> {
+  if (!profilePath) return null;
+
+  try {
+    // Télécharger l'image depuis TMDB (w185 est une taille moyenne optimale pour les avatars)
+    const imageUrl = `https://image.tmdb.org/t/p/w185${profilePath}`;
+
+    // Sanitize person name for filename
+    const sanitizedName = personName
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+
+    const filename = `${sanitizedName}-${tmdbPersonId}.jpg`;
+
+    // Upload vers le serveur en utilisant la fonction existante
+    const result = await uploadImageFromUrl(imageUrl, filename, "people");
+
+    if (result.success) {
+      return result.filename ?? null;
+    } else {
+      console.error(`Failed to upload profile photo: ${result.error}`);
+      return null;
+    }
+  } catch (error) {
+    console.error(`Failed to upload profile photo for ${personName}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Crée ou récupère une personne dans la DB
+ */
+async function getOrCreatePerson(
+  name: string,
+  tmdbId: number,
+  profilePath: string | null
+) {
+  // Vérifier si la personne existe déjà
+  let person = await prisma.person.findUnique({
+    where: { tmdbId },
+  });
+
+  if (person) {
+    return person;
+  }
+
+  // Générer le slug à partir du nom
+  let slug = generateSlug(name);
+
+  // Vérifier l'unicité du slug (au cas où deux personnes ont le même nom)
+  const existingSlug = await prisma.person.findUnique({
+    where: { slug },
+  });
+
+  if (existingSlug) {
+    // Ajouter l'ID TMDB pour rendre le slug unique
+    slug = `${slug}-${tmdbId}`;
+  }
+
+  // Uploader la photo si disponible
+  let photoFileName: string | null = null;
+  if (profilePath) {
+    photoFileName = await uploadProfilePhotoFromTMDB(profilePath, name, tmdbId);
+  }
+
+  // Créer la personne avec le slug
+  person = await prisma.person.create({
+    data: {
+      name,
+      slug,
+      tmdbId,
+      photoFileName,
+    },
+  });
+
+  return person;
+}
+
+/**
+ * Scrappe et sauvegarde les personnes (réalisateurs et acteurs) d'un film
+ */
+export async function scrapeAndSaveFilmPeople(filmId: string, tmdbId: number) {
+  try {
+    const detailsResult = await getMovieDetails(tmdbId);
+    if (!detailsResult.success || !detailsResult.movie?.credits) {
+      return { success: false, error: "No credits available" };
+    }
+
+    const { cast, crew } = detailsResult.movie.credits;
+    const affectedPersonSlugs: string[] = [];
+
+    // Traiter les réalisateurs
+    const directors = crew.filter((c: any) => c.job === "Director");
+    for (const directorData of directors) {
+      const person = await getOrCreatePerson(
+        directorData.name,
+        directorData.id,
+        directorData.profile_path
+      );
+
+      // Créer la relation si elle n'existe pas
+      const existingRelation = await prisma.filmDirector.findUnique({
+        where: {
+          filmId_personId: {
+            filmId,
+            personId: person.id,
+          },
+        },
+      });
+
+      if (!existingRelation) {
+        await prisma.filmDirector.create({
+          data: { filmId, personId: person.id },
+        });
+      }
+
+      // Ajouter le slug pour revalidation
+      if (person.slug) {
+        affectedPersonSlugs.push(person.slug);
+      }
+    }
+
+    // Traiter les acteurs (top 20)
+    const topCast = cast.slice(0, 20);
+    for (const actorData of topCast) {
+      const person = await getOrCreatePerson(
+        actorData.name,
+        actorData.id,
+        actorData.profile_path
+      );
+
+      // Créer la relation si elle n'existe pas
+      const existingRelation = await prisma.filmCast.findUnique({
+        where: {
+          filmId_personId: {
+            filmId,
+            personId: person.id,
+          },
+        },
+      });
+
+      if (!existingRelation) {
+        await prisma.filmCast.create({
+          data: {
+            filmId,
+            personId: person.id,
+            character: actorData.character || null,
+            order: actorData.order || 0,
+          },
+        });
+      }
+
+      // Ajouter le slug pour revalidation
+      if (person.slug) {
+        affectedPersonSlugs.push(person.slug);
+      }
+    }
+
+    // Revalider les pages des personnes affectées
+    for (const slug of affectedPersonSlugs) {
+      revalidatePath(`/people/${slug}`);
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error(`Failed to scrape people for film ${filmId}:`, error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
+
+/**
+ * Récupère les crédits (réalisateur et acteurs) d'un film depuis la DB
+ */
+export const getFilmCredits = unstable_cache(
+  async (tmdbId: number) => {
+    if (!tmdbId) return null;
+
+    try {
+      // Récupérer le film avec ses relations
+      const film = await prisma.film.findUnique({
+        where: { tmdbId },
+        include: {
+          directors: {
+            include: {
+              person: {
+                select: {
+                  name: true,
+                  slug: true,
+                  photoFileName: true,
+                },
+              },
+            },
+          },
+          cast: {
+            include: {
+              person: {
+                select: {
+                  name: true,
+                  slug: true,
+                  photoFileName: true,
+                },
+              },
+            },
+            orderBy: {
+              order: "asc",
+            },
+          },
+        },
+      });
+
+      if (!film) return null;
+
+      // Formater la réponse
+      const director =
+        film.directors.length > 0
+          ? {
+              name: film.directors[0].person.name,
+              slug: film.directors[0].person.slug,
+              photoFileName: film.directors[0].person.photoFileName,
+            }
+          : null;
+
+      const cast = film.cast.map((c) => ({
+        name: c.person.name,
+        slug: c.person.slug,
+        character: c.character || "",
+        photoFileName: c.person.photoFileName,
+      }));
+
+      return {
+        director,
+        cast,
+      };
+    } catch (error) {
+      console.error(`Failed to fetch credits for TMDB ID ${tmdbId}:`, error);
+      return null;
+    }
+  },
+  ["film-credits"],
+  {
+    revalidate: 86400, // 24 hours - credits don't change often
+  }
+);

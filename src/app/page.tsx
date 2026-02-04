@@ -8,20 +8,23 @@ import SagaCarousel from "@/components/Saga/SagaCarousel";
 import BudgetCarousel from "@/components/Film/BudgetCarousel";
 import { SITE_URL } from "@/helpers/config";
 
-export const metadata: Metadata = {
-  title: "La Boîte de Chocolat | Podcast Cinéma Français - Critiques & Analyses de Films",
-  description:
-    "Le podcast cinéma qui te fait aimer le cinoche (et la mauvaise foi). +118 épisodes de critiques de films : blockbusters, Marvel, classiques, thrillers. Écoute gratuite sur Spotify, Apple Podcasts et Deezer.",
-  alternates: {
-    canonical: SITE_URL,
-  },
-  openGraph: {
-    title: "La Boîte de Chocolat | Podcast Cinéma Français",
-    description:
-      "Le podcast cinéma qui te fait aimer le cinoche et la mauvaise foi. +118 épisodes de critiques de films.",
-    url: SITE_URL,
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const episodesResult = await getEpisodesWithFilms();
+  const count = episodesResult.success ? episodesResult.data?.length || 0 : 0;
+
+  return {
+    title: "La Boîte de Chocolat | Podcast Cinéma Français - Critiques & Analyses de Films",
+    description: `Le podcast cinéma qui te fait aimer le cinoche (et la mauvaise foi). +${count} épisodes de critiques de films : blockbusters, Marvel, classiques, thrillers. Écoute gratuite sur Spotify, Apple Podcasts et Deezer.`,
+    alternates: {
+      canonical: SITE_URL,
+    },
+    openGraph: {
+      title: "La Boîte de Chocolat | Podcast Cinéma Français",
+      description: `Le podcast cinéma qui te fait aimer le cinoche et la mauvaise foi. +${count} épisodes de critiques de films.`,
+      url: SITE_URL,
+    },
+  };
+}
 
 export interface Episode {
   id: string;
@@ -61,12 +64,12 @@ export default async function Home() {
   const episodes = episodesResult.success ? episodesResult.data : [];
   const latestEpisode = await getLatestEpisode();
   return (
-    <main>
+    <>
       <HeroSection episodes={episodes || []} />
       <LatestEpisodeSection episode={latestEpisode.data || null} />
       <SagaCarousel />
       <BudgetCarousel />
       <EpisodesSection episodes={episodes || []} />
-    </main>
+    </>
   );
 }

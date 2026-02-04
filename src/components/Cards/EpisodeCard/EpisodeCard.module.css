@@ -11,8 +11,6 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   box-shadow: var(--shadow-medium), 0 2px 4px rgba(0, 0, 0, 0.05);
   position: relative;
-  will-change: transform;
-  transform: translateZ(0);
 }
 
 .cardArticle:hover {
@@ -90,10 +88,6 @@
   object-fit: cover;
   color: transparent;
   filter: brightness(0.9);
-  transform-style: preserve-3d;
-  perspective: 1000px;
-  will-change: transform, filter;
-  transform: translateZ(0);
   transition: filter 0.3s ease, transform 0.3s ease;
 }
 
@@ -419,33 +413,13 @@
   }
 }
 
-.cardArticle {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  contain: layout style paint;
-}
-
-.cardImage,
-.cardImageholo,
-.cardImageglow {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  contain: layout style paint;
-}
-
-.cardArticle:hover .cardImageContainerholo::after,
-.cardArticle:hover .cardImageContainerglow {
-  backface-visibility: hidden;
-  transform: translateZ(0);
-  will-change: opacity, transform;
-}
 
 @keyframes scan-lines {
   0% {
-    transform: translateY(-100%) translateZ(0);
+    transform: translateY(-100%);
   }
   100% {
-    transform: translateY(100%) translateZ(0);
+    transform: translateY(100%);
   }
 }
 
@@ -454,12 +428,10 @@
   100% {
     box-shadow: 0 0 20px rgba(138, 43, 226, 0.4),
       0 0 40px rgba(138, 43, 226, 0.2), 0 0 60px rgba(138, 43, 226, 0.1);
-    transform: translateZ(0);
   }
   50% {
     box-shadow: 0 0 30px rgba(138, 43, 226, 0.6),
       0 0 60px rgba(138, 43, 226, 0.4), 0 0 90px rgba(138, 43, 226, 0.2);
-    transform: translateZ(0);
   }
 }
 

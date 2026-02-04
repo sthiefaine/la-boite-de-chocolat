@@ -35,6 +35,7 @@ export const IMAGE_CONFIG = {
   domains: {
     uploadServer: "https://uploadfiles.clairdev.com/api/upload",
     uploadReadServer: "https://uploadfiles.clairdev.com/api/display/podcasts",
+    uploadFilesBase: "https://uploadfiles.clairdev.com/uploads/podcasts",
     tmdb: "image.tmdb.org",
   },
 
@@ -52,16 +53,24 @@ export const IMAGE_CONFIG = {
 // Fonction utilitaire pour construire l'URL du serveur d'upload
 export function getUploadServerUrl(
   imgFileName: string,
-  folder: string = "films"
+  folder: "films" | "sagas" | "people" | string = "films"
 ): string {
   if (folder.includes("/")) {
     // Pour les chemins complexes comme "podcasts/la-boite-de-chocolat/episodes"
     return `${IMAGE_CONFIG.domains.uploadReadServer}${folder}/${imgFileName}`;
   }
 
-  // Pour les dossiers simples comme "films", "sagas"
+  // Pour les dossiers simples comme "films", "sagas", "people" - utiliser l'API display
   const baseUrl = `${IMAGE_CONFIG.domains.uploadReadServer}`;
-  const imgFolder = folder.endsWith("s") ? folder : `${folder}s`;
+
+  // Mapping des dossiers spéciaux
+  const folderMap: Record<string, string> = {
+    films: "films",
+    sagas: "sagas",
+    people: "people",
+  };
+
+  const imgFolder = folderMap[folder] || (folder.endsWith("s") ? folder : `${folder}s`);
   return `${baseUrl}/${imgFolder}/${imgFileName}`;
 }
 

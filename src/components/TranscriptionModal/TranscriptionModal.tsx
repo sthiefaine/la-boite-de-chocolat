@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { downloadTranscriptionContent } from '@/app/actions/transcription';
-import { parseSRT, searchInTranscription, formatFileSize, TRANSCRIPTION_CONFIG } from '@/helpers/transcriptionHelpers';
+import { parseTranscription, searchInTranscription, formatFileSize, TRANSCRIPTION_CONFIG } from '@/helpers/transcriptionHelpers';
 import styles from './TranscriptionModal.module.css';
 
 interface SubtitleEntry {
@@ -74,7 +74,7 @@ export default function TranscriptionModal({
       
       console.log('🔍 Format détecté:', detectedFormat);
       
-      const parsedEntries = parseSRT(result.transcription.content);
+      const parsedEntries = parseTranscription(result.transcription.content);
       console.log('🔢 Entrées parsées:', parsedEntries.length);
       
       setEntries(parsedEntries);
@@ -180,8 +180,8 @@ export default function TranscriptionModal({
                   ))}
                 </div>
               )}
-              {/* Cas SRT/VTT : blocs synchronisés - détection automatique */}
-              {(transcription.fileType === 'srt' || transcription.fileType === 'vtt') && content && (
+              {/* Cas SRT/VTT/JSON : blocs synchronisés - détection automatique */}
+              {(transcription.fileType === 'srt' || transcription.fileType === 'vtt' || transcription.fileType === 'json') && content && (
                 <>
                   {filteredEntries.length > 0 ? (
                     <div className={styles.srtList}>
