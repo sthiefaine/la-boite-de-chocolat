@@ -51,15 +51,8 @@ function computeCategories(items: BudgetItem[]) {
     .sort((a, b) => b.roi - a.roi)
     .slice(0, 12);
 
-  // "All" = curated mix
-  const seen = new Set<string>();
-  const all: BudgetItem[] = [];
-  for (const item of [...topBudgets, ...successes, ...flops]) {
-    if (!seen.has(item.filmId) && all.length < 12) {
-      seen.add(item.filmId);
-      all.push(item);
-    }
-  }
+  // "All" = 12 most recent films (items already sorted by episode date)
+  const all = items.slice(0, 12);
 
   return { all, top: topBudgets, low: lowBudgets, flops, success: successes };
 }

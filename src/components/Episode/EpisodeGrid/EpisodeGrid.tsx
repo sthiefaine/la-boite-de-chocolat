@@ -69,6 +69,7 @@ interface Episode {
   duration?: number | null;
   slug: string | null;
   genre?: string | null;
+  hasTranscription?: boolean;
   parentSaga?: {
     id: string;
     name: string;
@@ -98,6 +99,7 @@ export default function EpisodeGrid({
   const [yearFilter, setYearFilter] = useState("");
   const [genreFilter, setGenreFilter] = useState("");
   const [marvelFilter, setMarvelFilter] = useState(false);
+  const [transcriptionFilter, setTranscriptionFilter] = useState(false);
   const [sortBy, setSortBy] = useState("latest");
 
   const deferredSearchQuery = useDeferredValue(searchQuery);
@@ -177,6 +179,10 @@ export default function EpisodeGrid({
       );
     }
 
+    if (transcriptionFilter) {
+      filtered = filtered.filter((episode) => episode.hasTranscription);
+    }
+
     // Tri
     const sorted = [...filtered];
     switch (sortBy) {
@@ -199,16 +205,17 @@ export default function EpisodeGrid({
     }
 
     return sorted;
-  }, [episodes, deferredSearchQuery, yearFilter, genreFilter, marvelFilter, sortBy]);
+  }, [episodes, deferredSearchQuery, yearFilter, genreFilter, marvelFilter, transcriptionFilter, sortBy]);
 
   const hasActiveFilters = useMemo(() => {
     return !!(
       deferredSearchQuery.trim() ||
       yearFilter ||
       genreFilter ||
-      marvelFilter
+      marvelFilter ||
+      transcriptionFilter
     );
-  }, [deferredSearchQuery, yearFilter, genreFilter, marvelFilter]);
+  }, [deferredSearchQuery, yearFilter, genreFilter, marvelFilter, transcriptionFilter]);
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value);
@@ -226,11 +233,16 @@ export default function EpisodeGrid({
     setMarvelFilter(!marvelFilter);
   }, [marvelFilter]);
 
+  const handleTranscriptionClick = useCallback(() => {
+    setTranscriptionFilter(!transcriptionFilter);
+  }, [transcriptionFilter]);
+
   const handleClearFilters = useCallback(() => {
     setSearchQuery("");
     setYearFilter("");
     setGenreFilter("");
     setMarvelFilter(false);
+    setTranscriptionFilter(false);
   }, []);
 
   const handleRemoveFilter = useCallback((filterType: string) => {
@@ -246,6 +258,9 @@ export default function EpisodeGrid({
         break;
       case "marvel":
         setMarvelFilter(false);
+        break;
+      case "transcription":
+        setTranscriptionFilter(false);
         break;
     }
   }, []);
@@ -263,6 +278,7 @@ export default function EpisodeGrid({
       yearFilter,
       genreFilter,
       marvelFilter,
+      transcriptionFilter,
       sortBy,
     ],
   });
@@ -302,8 +318,16 @@ export default function EpisodeGrid({
       });
     }
 
+    if (transcriptionFilter) {
+      filters.push({
+        type: "transcription",
+        label: "Transcription",
+        icon: "📝",
+      });
+    }
+
     return filters;
-  }, [deferredSearchQuery, yearFilter, genreFilter, marvelFilter]);
+  }, [deferredSearchQuery, yearFilter, genreFilter, marvelFilter, transcriptionFilter]);
 
   return (
     <div className={styles.container}>
@@ -344,6 +368,10 @@ export default function EpisodeGrid({
             marvelButton={{
               onClick: handleMarvelClick,
               label: marvelFilter ? "Tous" : "Marvel",
+            }}
+            transcriptionButton={{
+              onClick: handleTranscriptionClick,
+              active: transcriptionFilter,
             }}
             clearFilters={handleClearFilters}
             hasActiveFilters={hasActiveFilters}

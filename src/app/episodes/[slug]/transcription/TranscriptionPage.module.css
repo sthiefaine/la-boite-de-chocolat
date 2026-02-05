@@ -4,14 +4,17 @@
   flex-direction: column;
   background: #f8fafc;
   color: #1e293b;
+  padding-top: 48px;
 }
 
 .header {
   background: #fff;
   border-bottom: 1px solid #e2e8f0;
   padding: 0.75rem 0;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 20;
   min-height: 48px;
   display: flex;
@@ -106,8 +109,6 @@
   font-size: 1.1em;
 }
 
-
-
 .controls {
   position: sticky;
   top: 48px;
@@ -154,6 +155,71 @@
   opacity: 0.7;
 }
 
+/* Main layout: sidebar + content */
+.mainLayout {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow: hidden;
+  gap: 1rem;
+  padding: 0 1rem;
+}
+
+/* Speaker sidebar - desktop */
+.speakerSidebar {
+  display: none;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 180px;
+  flex-shrink: 0;
+  padding: 1rem 0;
+  position: sticky;
+  top: 120px;
+  align-self: flex-start;
+}
+
+.speakerSidebarTitle {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--chocolate-light);
+}
+
+/* Speaker legend - mobile (horizontal) */
+.speakerLegendMobile {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.25rem 0 0.5rem;
+}
+
+.speakerLegendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.speakerLegendLabel {
+  font-weight: 500;
+}
+
+.speakerDot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
 .main {
   flex: 1 1 0;
   min-height: 0;
@@ -170,7 +236,7 @@
   max-width: 900px;
   margin: 0 auto;
   overflow-y: auto;
-  padding: 1rem;
+  padding: 1.25rem 1.5rem;
   margin-bottom: 8vh;
   background: var(--glass-bg-light);
   border: var(--glass-border-medium);
@@ -184,13 +250,12 @@
 .timeMarkedSections {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.15rem;
 }
 
 .timeMarkedSection {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
 }
 
 .timeMarker {
@@ -238,28 +303,67 @@
   padding-left: 0.5rem;
 }
 
+/* Speaker badge - shown on speaker change */
+.speakerBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0;
+  margin-top: 0.75rem;
+  margin-bottom: 0.15rem;
+}
+
+.speakerName {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Lyric line */
 .lyricLine {
   font-size: 1.08rem;
-  line-height: 1.2;
+  line-height: 1.5;
   color: var(--text-primary);
-  margin: 0 0 0.2rem 0;
-  padding-left: 0.5rem;
+  margin: 0;
+  padding: 0.3rem 0.6rem;
   font-weight: 400;
   white-space: pre-line;
   position: relative;
+  border-radius: 6px;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.lyricLine:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+/* Small speaker dot inline */
+.lineSpeakerDot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  flex-shrink: 0;
 }
 
 .lyricTime {
   display: none;
   margin-left: 0.75em;
   color: var(--text-secondary);
-  font-size: 0.92em;
+  font-size: 0.85em;
   font-style: normal;
   background: var(--glass-bg-light);
   border-radius: 6px;
-  padding: 0.1em 0.5em;
+  padding: 0.15em 0.5em;
   vertical-align: middle;
   box-shadow: var(--glass-shadow-light);
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", monospace;
 }
 
 .lyricLine:hover .lyricTime {
@@ -306,9 +410,9 @@
 }
 
 .syncButton.inactive {
-  background: #fff0f0;
-  border: 1.5px solid #ef4444;
-  color: #b91c1c;
+  background: #fff7ed;
+  border: 1.5px solid #f59e0b;
+  color: #92400e;
 }
 
 .syncButton:active,
@@ -329,15 +433,38 @@
   letter-spacing: 0.04em;
 }
 
+/* Active line - always highlighted, sync only controls auto-scroll */
 .lyricActive {
-  background: rgba(34, 197, 94, 0.1);
-  border-left: 3px solid #22c55e;
+  background: color-mix(in srgb, var(--speaker-color, #22c55e) 12%, transparent);
+  border-left: 3px solid var(--speaker-color, #22c55e);
   color: #000000;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.15);
-  border-radius: 4px;
-  padding: 0.1rem 0.2rem;
-  transition: all var(--transition-fast);
+  box-shadow: 0 1px 6px color-mix(in srgb, var(--speaker-color, #22c55e) 15%, transparent);
+  transition: all 0.15s ease;
+}
+
+.noResults {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+/* Desktop: show sidebar, hide mobile legend */
+@media (min-width: 1024px) {
+  .speakerSidebar {
+    display: flex;
+  }
+
+  .speakerLegendMobile {
+    display: none;
+  }
+
+  .headerContent,
+  .controls {
+    max-width: 1200px;
+    padding: 0 1rem;
+  }
 }
 
 @media (max-width: 768px) {
@@ -369,8 +496,6 @@
     box-shadow: var(--shadow-medium);
   }
 
-
-
   .headerActions {
     flex-direction: column;
     gap: 0.5rem;
@@ -386,14 +511,30 @@
   .lyricsScroller {
     padding: 1rem 0.5rem 1.5rem 0.5rem;
   }
+
   .timeMarkedSections {
-    gap: 1.5rem;
+    gap: 0.1rem;
   }
+
   .sectionContent {
     font-size: 1rem;
   }
+
   .syncButton {
     font-size: 0.92rem;
     padding: 0.4em 0.7em;
+  }
+
+  .mainLayout {
+    padding: 0 0.25rem;
+  }
+
+  .speakerBadge {
+    margin-top: 0.5rem;
+  }
+
+  .speakerLegendMobile {
+    padding: 0.25rem 0.5rem;
+    gap: 0.5rem;
   }
 }

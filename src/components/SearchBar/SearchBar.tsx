@@ -21,6 +21,10 @@ interface SearchBarProps {
     onClick: () => void;
     label?: string;
   };
+  transcriptionButton?: {
+    onClick: () => void;
+    active: boolean;
+  };
   sortFilter?: {
     value: string;
     onChange: (value: string) => void;
@@ -38,6 +42,7 @@ export default function SearchBar({
   genreFilter,
   sortFilter,
   marvelButton,
+  transcriptionButton,
   clearFilters,
   hasActiveFilters = false,
 }: SearchBarProps) {
@@ -122,6 +127,16 @@ export default function SearchBar({
               className={styles.marvelButton}
             >
               {marvelButton.label || "Marvel"}
+            </button>
+          )}
+
+          {transcriptionButton && (
+            <button
+              type="button"
+              onClick={transcriptionButton.onClick}
+              className={`${styles.transcriptionButton} ${transcriptionButton.active ? styles.transcriptionButtonActive : ""}`}
+            >
+              Transcription
             </button>
           )}
 

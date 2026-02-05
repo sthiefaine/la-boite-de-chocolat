@@ -1,12 +1,15 @@
 "use client";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import styles from "./AudioVisualizer.module.css";
+import type { SpeakerSegment } from "@/helpers/transcriptionHelpers";
+import { getSpeakerColor } from "@/helpers/transcriptionHelpers";
 
 interface AudioVisualizerProps {
   isPlaying: boolean;
   progress: number;
   totalDuration: number;
   onProgressClick: (event: React.MouseEvent<HTMLDivElement>) => void;
+  speakerSegments?: SpeakerSegment[] | null;
 }
 
 // Générateur pseudo-aléatoire déterministe (mulberry32)
@@ -61,18 +64,60 @@ function generateStaticWaveform(totalDuration: number): BarData[] {
   });
 }
 
+function hexToRgba(hex: string, alpha: number): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+/**
+ * For each bar, determine the speaker color based on the time position.
+ * Returns an array of hex colors (or null for default).
+ */
+function computeBarColors(
+  barCount: number,
+  totalDuration: number,
+  speakerSegments: SpeakerSegment[]
+): (string | null)[] {
+  if (totalDuration <= 0) return new Array(barCount).fill(null);
+
+  return Array.from({ length: barCount }, (_, index) => {
+    const timePosition = (index / barCount) * totalDuration;
+
+    // Find the speaker active at this time position
+    for (const segment of speakerSegments) {
+      if (timePosition >= segment.start && timePosition < segment.end) {
+        return getSpeakerColor(segment.speakerId);
+      }
+    }
+
+    return null;
+  });
+}
+
 export const AudioVisualizer = ({
   isPlaying,
   progress,
   totalDuration,
   onProgressClick,
+  speakerSegments,
 }: AudioVisualizerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const playheadRef = useRef<HTMLDivElement>(null);
 
   // Générer la waveform une seule fois
-  const bars = useMemo(() => generateStaticWaveform(totalDuration), [totalDuration]);
+  const bars = useMemo(
+    () => generateStaticWaveform(totalDuration),
+    [totalDuration]
+  );
+
+  // Compute speaker colors for each bar
+  const barColors = useMemo(() => {
+    if (!speakerSegments || speakerSegments.length === 0) return null;
+    return computeBarColors(bars.length, totalDuration, speakerSegments);
+  }, [bars.length, totalDuration, speakerSegments]);
 
   // Mettre à jour le progress via DOM direct (pas de re-render)
   useEffect(() => {
@@ -115,18 +160,32 @@ export const AudioVisualizer = ({
       aria-valuenow={progress}
       aria-label={`Progression audio: ${Math.round(progress)}%`}
     >
-      {/* Couche inactive (barres grises) */}
+      {/* Couche inactive (barres grises ou colorées à faible opacité) */}
       <div className={styles.barsLayer}>
-        {bars.map((bar, index) => (
-          <div
-            key={index}
-            className={styles.bar}
-            style={{
-              height: `${bar.height}%`,
-              opacity: bar.intensity * 0.5,
-            }}
-          />
-        ))}
+        {bars.map((bar, index) => {
+          const color = barColors?.[index];
+          const isOdd = index % 2 === 1;
+
+          return (
+            <div
+              key={index}
+              className={color ? undefined : styles.bar}
+              style={{
+                height: `${bar.height}%`,
+                opacity: bar.intensity * 0.5,
+                ...(color
+                  ? {
+                      flex: 1,
+                      background: hexToRgba(color, isOdd ? 0.35 : 0.45),
+                      borderRadius: "0.5px",
+                      minHeight: "4px",
+                      margin: "0 0.25px",
+                    }
+                  : undefined),
+              }}
+            />
+          );
+        })}
       </div>
 
       {/* Couche active (barres colorées) - clippée par le progress */}
@@ -135,16 +194,30 @@ export const AudioVisualizer = ({
         className={styles.barsLayerActive}
         style={{ clipPath: `inset(0 ${100 - progress}% 0 0)` }}
       >
-        {bars.map((bar, index) => (
-          <div
-            key={index}
-            className={styles.activeBar}
-            style={{
-              height: `${bar.height}%`,
-              opacity: bar.intensity,
-            }}
-          />
-        ))}
+        {bars.map((bar, index) => {
+          const color = barColors?.[index];
+          const isOdd = index % 2 === 1;
+
+          return (
+            <div
+              key={index}
+              className={color ? undefined : styles.activeBar}
+              style={{
+                flex: 1,
+                height: `${bar.height}%`,
+                opacity: bar.intensity,
+                borderRadius: "0.5px",
+                minHeight: "4px",
+                margin: "0 0.25px",
+                ...(color
+                  ? {
+                      background: hexToRgba(color, isOdd ? 0.75 : 0.9),
+                    }
+                  : undefined),
+              }}
+            />
+          );
+        })}
       </div>
 
       {/* Playhead */}

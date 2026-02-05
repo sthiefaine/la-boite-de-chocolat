@@ -1,7 +1,5 @@
 import { getEpisodesWithFilms } from "@/app/actions/episode";
 import EpisodeGrid from "@/components/Episode/EpisodeGrid/EpisodeGrid";
-import SagaCarousel from "@/components/Saga/SagaCarousel";
-import BudgetCarousel from "@/components/Film/BudgetCarousel";
 import { Metadata } from "next";
 import { SITE_URL, PODCAST_URLS } from "@/helpers/config";
 
@@ -77,8 +75,6 @@ export default async function PodcastsPage() {
           __html: JSON.stringify(podcastSeriesJsonLd),
         }}
       />
-      <SagaCarousel />
-      <BudgetCarousel />
       <EpisodeGrid
         episodes={episodes}
         title="Tous nos épisodes de podcast cinéma"

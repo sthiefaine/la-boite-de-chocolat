@@ -57,7 +57,15 @@ export async function uploadTranscription(formData: FormData) {
 
     const form = new FormData();
     form.append('folder', 'podcasts/laboitedechocolat/episodes');
-    form.append('files', file, file.name);
+
+    // Le serveur d'upload refuse application/json, on force text/plain pour les .json
+    const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf("."));
+    if (fileExtension === ".json") {
+      const blob = new Blob([await file.arrayBuffer()], { type: "text/plain" });
+      form.append('files', blob, file.name);
+    } else {
+      form.append('files', file, file.name);
+    }
 
     let uploadResult;
     try {

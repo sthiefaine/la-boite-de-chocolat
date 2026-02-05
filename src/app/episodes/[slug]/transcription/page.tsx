@@ -70,6 +70,7 @@ export default async function TranscriptionPageServer({
           content: entry.text,
           startSeconds: srtTimeToSeconds(entry.startTime),
           endSeconds: srtTimeToSeconds(entry.endTime),
+          ...(entry.speaker_id && { speaker_id: entry.speaker_id }),
         }))
       : null;
 

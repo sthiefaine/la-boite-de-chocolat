@@ -393,6 +393,11 @@ export async function getEpisodesWithFilms() {
             },
           },
         },
+        transcription: {
+          select: {
+            id: true,
+          },
+        },
         rssFeed: {
           select: {
             id: true,
@@ -429,6 +434,7 @@ export async function getEpisodesWithFilms() {
 
       return {
         ...episode,
+        hasTranscription: !!episode.transcription,
         parentSaga: parentSaga
           ? {
               id: parentSaga.id,
@@ -810,6 +816,7 @@ export async function getEpisodesWithBudgetStats() {
         },
       },
       orderBy: { pubDate: "desc" },
+      take: 12,
     });
 
     // Flatten: one entry per film with budget

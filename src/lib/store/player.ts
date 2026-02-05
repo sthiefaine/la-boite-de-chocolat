@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useQueueStore } from "./queue";
+import type { SpeakerSegment } from "@/helpers/transcriptionHelpers";
 
 type EpisodeInfo = {
   id: string;
@@ -20,6 +21,7 @@ type PlayerState = {
   episode: EpisodeInfo | null;
   totalDuration: number;
   isMinimized: boolean;
+  speakerSegments: SpeakerSegment[] | null;
 };
 
 export type PlayerActions = {
@@ -33,6 +35,7 @@ export type PlayerActions = {
   playNext: () => void;
   playPrevious: () => void;
   setRandomEpisode: (episode: EpisodeInfo) => void;
+  setSpeakerSegments: (segments: SpeakerSegment[] | null) => void;
 };
 
 export type PlayerStore = PlayerState & PlayerActions;
@@ -43,7 +46,8 @@ export const defaultInitState: PlayerState = {
   currentPlayTime: 0,
   totalDuration: 0,
   episode: null,
-  isMinimized: false
+  isMinimized: false,
+  speakerSegments: null,
 };
 
 export const usePlayerStore = create(
@@ -70,6 +74,7 @@ export const usePlayerStore = create(
       setCurrentPlayTime: (currentPlayTime: number) => set({ currentPlayTime }),
       setTotalDuration: (totalDuration: number) => set({ totalDuration }),
       setIsMinimized: (isMinimized: boolean) => set({ isMinimized }),
+      setSpeakerSegments: (segments: SpeakerSegment[] | null) => set({ speakerSegments: segments }),
       setClearPlayerStore: () => set(defaultInitState),
       playNext: () => {
         const queueStore = useQueueStore.getState();

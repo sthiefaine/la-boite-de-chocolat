@@ -2,13 +2,20 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { srtTimeToSeconds, extractTimeAndText } from "@/helpers/transcriptionHelpers";
+import {
+  srtTimeToSeconds,
+  extractTimeAndText,
+  getSpeakerColor,
+  getSpeakerLabel,
+} from "@/helpers/transcriptionHelpers";
+import type { SpeakerSegment } from "@/helpers/transcriptionHelpers";
 import styles from "./TranscriptionPage.module.css";
 import {
   Link as LinkIcon,
   Pause as PauseIcon,
   Play,
   ArrowLeft,
+  Unlink,
 } from "lucide-react";
 import { usePlayerStore } from "@/lib/store/player";
 import { useShallow } from "zustand/shallow";
@@ -18,9 +25,8 @@ interface SubtitleEntry {
   startTime: string;
   endTime: string;
   text: string;
+  speaker_id?: string;
 }
-
-
 
 interface Episode {
   id: string;
@@ -36,19 +42,22 @@ interface Episode {
   }>;
 }
 
+interface Section {
+  id: number | string;
+  timeMarker: string;
+  content: string;
+  startSeconds: number;
+  endSeconds?: number;
+  showTimeMarker?: boolean;
+  isSectionHeader?: boolean;
+  speaker_id?: string;
+}
+
 interface TranscriptionPageProps {
   episode: Episode;
   content: string;
   entries: SubtitleEntry[];
-  timeMarkedSections?: Array<{
-    id: number | string;
-    timeMarker: string;
-    content: string;
-    startSeconds: number;
-    endSeconds?: number;
-    showTimeMarker?: boolean;
-    isSectionHeader?: boolean;
-  }> | null;
+  timeMarkedSections?: Section[] | null;
   mainFilmImageUrl: string;
 }
 
@@ -61,6 +70,8 @@ function LyricLine({
   syncWithPlayer,
   episode,
   mainFilmImageUrl,
+  speakerId,
+  showSpeakerBadge,
 }: {
   text: string;
   timeMarker: string;
@@ -70,6 +81,8 @@ function LyricLine({
   syncWithPlayer: boolean;
   episode: Episode;
   mainFilmImageUrl: string;
+  speakerId?: string;
+  showSpeakerBadge: boolean;
 }) {
   const [showTime, setShowTime] = useState(false);
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
@@ -87,35 +100,33 @@ function LyricLine({
     }))
   );
 
+  const isCurrentEpisode = playerEpisode?.id === episodeId;
   const isActive =
-    syncWithPlayer &&
-    playerEpisode?.id === episodeId &&
+    isCurrentEpisode &&
     currentPlayTime >= timeSeconds &&
-    currentPlayTime < timeEnd;
+    currentPlayTime < timeEnd + 0.15;
 
+  // Scroll only when sync is ON
   useEffect(() => {
-    if (isActive && lineRef.current) {
-      const scrollerElement = document.querySelector(`.${styles.lyricsScroller}`);
+    if (isActive && syncWithPlayer && lineRef.current) {
+      const scrollerElement = document.querySelector(
+        `.${styles.lyricsScroller}`
+      );
       if (scrollerElement) {
         const lineRect = lineRef.current.getBoundingClientRect();
         const scrollerRect = scrollerElement.getBoundingClientRect();
-        
-        const lineTop = lineRect.top;
-        const scrollerTop = scrollerRect.top;
-        const scrollerHeight = scrollerRect.height;
-        
-        const lineCenter = lineTop + lineRect.height / 2;
-        const scrollerCenter = scrollerTop + scrollerHeight / 2;
-        
+
+        const lineCenter = lineRect.top + lineRect.height / 2;
+        const scrollerCenter = scrollerRect.top + scrollerRect.height / 2;
         const scrollOffset = lineCenter - scrollerCenter;
-        
+
         scrollerElement.scrollBy({
           top: scrollOffset,
           behavior: "smooth",
         });
       }
     }
-  }, [isActive]);
+  }, [isActive, syncWithPlayer]);
 
   const handleSeek = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -163,18 +174,46 @@ function LyricLine({
     [timer]
   );
 
+  const speakerColor = speakerId ? getSpeakerColor(speakerId) : undefined;
+
+  // Always highlight active line in green - sync only controls auto-scroll
+  const activeClass = isActive ? styles.lyricActive : "";
+
   return (
-    <p
-      ref={lineRef}
-      className={styles.lyricLine + (isActive ? " " + styles.lyricActive : "")}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onClick={handleSeek}
-      style={{ cursor: "pointer" }}
-    >
-      {text}
-      {showTime && <i className={styles.lyricTime}>{timeMarker}</i>}
-    </p>
+    <>
+      {showSpeakerBadge && speakerId && (
+        <div className={styles.speakerBadge}>
+          <span
+            className={styles.speakerDot}
+            style={{ backgroundColor: speakerColor }}
+          />
+          <span className={styles.speakerName}>
+            {getSpeakerLabel(speakerId)}
+          </span>
+        </div>
+      )}
+      <p
+        ref={lineRef}
+        className={`${styles.lyricLine} ${activeClass}`}
+        style={
+          speakerColor
+            ? ({ "--speaker-color": speakerColor } as React.CSSProperties)
+            : undefined
+        }
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleSeek}
+      >
+        {speakerId && (
+          <span
+            className={styles.lineSpeakerDot}
+            style={{ backgroundColor: speakerColor }}
+          />
+        )}
+        {text}
+        {showTime && <i className={styles.lyricTime}>{timeMarker}</i>}
+      </p>
+    </>
   );
 }
 
@@ -191,15 +230,7 @@ export default function TranscriptionPage({
     entries.length > 0 ? entries : createEntriesFromContent(content);
 
   const sectionsFromEntries = (() => {
-    const sections: Array<{
-      id: number | string;
-      timeMarker: string;
-      content: string;
-      startSeconds: number;
-      endSeconds: number;
-      showTimeMarker: boolean;
-      isSectionHeader: boolean;
-    }> = [];
+    const sections: Section[] = [];
 
     const maxSeconds =
       entriesWithTimestamps.length > 0
@@ -255,14 +286,11 @@ export default function TranscriptionPage({
         endSeconds,
         showTimeMarker: false,
         isSectionHeader: false,
+        speaker_id: entry.speaker_id,
       });
     });
 
-    const sortedSections = sections.sort(
-      (a, b) => a.startSeconds - b.startSeconds
-    );
-
-    return sortedSections;
+    return sections.sort((a, b) => a.startSeconds - b.startSeconds);
   })();
 
   const [filteredSections, setFilteredSections] = useState(
@@ -276,19 +304,34 @@ export default function TranscriptionPage({
     }))
   );
 
-  function createEntriesFromContent(content: string): Array<{
-    id: number;
-    startTime: string;
-    endTime: string;
-    text: string;
-  }> {
+  // Push speaker segments to the player store for AudioVisualizer
+  useEffect(() => {
+    const hasSpeakers = entries.some((e) => e.speaker_id);
+    if (!hasSpeakers) return;
+
+    const segments: SpeakerSegment[] = entries
+      .filter((e) => e.speaker_id)
+      .map((e) => ({
+        start: srtTimeToSeconds(e.startTime),
+        end: srtTimeToSeconds(e.endTime),
+        speakerId: e.speaker_id!,
+      }));
+
+    usePlayerStore.getState().setSpeakerSegments(segments);
+  }, [entries]);
+
+  // Unique speakers for legend
+  const uniqueSpeakers = (() => {
+    const speakers = new Set<string>();
+    entries.forEach((e) => {
+      if (e.speaker_id) speakers.add(e.speaker_id);
+    });
+    return Array.from(speakers).sort();
+  })();
+
+  function createEntriesFromContent(content: string): SubtitleEntry[] {
     const lines = content.split("\n").filter((line) => line.trim());
-    const entries: Array<{
-      id: number;
-      startTime: string;
-      endTime: string;
-      text: string;
-    }> = [];
+    const result: SubtitleEntry[] = [];
 
     let currentTime = 0;
     const timePerLine = 5;
@@ -301,7 +344,7 @@ export default function TranscriptionPage({
         const startTime = formatTime(currentTime);
         const endTime = formatTime(currentTime + timePerLine);
 
-        entries.push({
+        result.push({
           id: i + 1,
           startTime,
           endTime,
@@ -312,7 +355,7 @@ export default function TranscriptionPage({
       }
     }
 
-    return entries;
+    return result;
   }
 
   function formatTime(seconds: number): string {
@@ -343,9 +386,8 @@ export default function TranscriptionPage({
     setFilteredSections(results);
   }, [searchQuery, timeMarkedSections, sectionsFromEntries]);
 
-
-
-
+  // Track previous speaker for badge display
+  let prevSpeakerId: string | undefined = undefined;
 
   return (
     <div className={styles.container}>
@@ -400,11 +442,7 @@ export default function TranscriptionPage({
               {isPlaying ? "Pause" : "Écouter"}
             </button>
             <button
-              className={
-                styles.syncButton +
-                " " +
-                (syncWithPlayer ? styles.active : styles.inactive)
-              }
+              className={`${styles.syncButton} ${syncWithPlayer ? styles.active : styles.inactive}`}
               type="button"
               onClick={() => setSyncWithPlayer((v) => !v)}
               aria-pressed={syncWithPlayer}
@@ -414,7 +452,7 @@ export default function TranscriptionPage({
                 {syncWithPlayer ? (
                   <LinkIcon size={18} strokeWidth={2.2} />
                 ) : (
-                  <PauseIcon size={18} strokeWidth={2.2} />
+                  <Unlink size={18} strokeWidth={2.2} />
                 )}
               </span>
               Sync
@@ -438,44 +476,94 @@ export default function TranscriptionPage({
         </div>
       </div>
 
-      <main className={styles.main}>
-        <div className={styles.lyricsScroller}>
-          {filteredSections && filteredSections.length > 0 ? (
-            <div className={styles.timeMarkedSections}>
-              {filteredSections.map((section) => (
-                <div key={section.id} className={styles.timeMarkedSection}>
-                  {section.isSectionHeader && (
-                    <div className={styles.sectionHeader}>
-                      <div className={styles.sectionTimeMarker}>
-                        {section.timeMarker}
-                      </div>
-                      <div className={styles.sectionDivider}></div>
-                    </div>
-                  )}
-                  {section.content && (
-                    <LyricLine
-                      key={section.id}
-                      text={section.content}
-                      timeMarker={section.timeMarker}
-                      timeSeconds={section.startSeconds}
-                      timeEnd={section.endSeconds || section.startSeconds + 5}
-                      episodeId={episode.id}
-                      syncWithPlayer={syncWithPlayer}
-                      episode={episode}
-                      mainFilmImageUrl={mainFilmImageUrl}
-                    />
-                  )}
+      <div className={styles.mainLayout}>
+        {/* Speaker sidebar - desktop only */}
+        {uniqueSpeakers.length > 1 && (
+          <aside className={styles.speakerSidebar}>
+            <div className={styles.speakerSidebarTitle}>Intervenants</div>
+            {uniqueSpeakers.map((speakerId) => (
+              <div key={speakerId} className={styles.speakerLegendItem}>
+                <span
+                  className={styles.speakerDot}
+                  style={{ backgroundColor: getSpeakerColor(speakerId) }}
+                />
+                <span className={styles.speakerLegendLabel}>
+                  {getSpeakerLabel(speakerId)}
+                </span>
+              </div>
+            ))}
+          </aside>
+        )}
+
+        <main className={styles.main}>
+          {/* Speaker legend - mobile only (horizontal) */}
+          {uniqueSpeakers.length > 1 && (
+            <div className={styles.speakerLegendMobile}>
+              {uniqueSpeakers.map((speakerId) => (
+                <div key={speakerId} className={styles.speakerLegendItem}>
+                  <span
+                    className={styles.speakerDot}
+                    style={{ backgroundColor: getSpeakerColor(speakerId) }}
+                  />
+                  <span className={styles.speakerLegendLabel}>
+                    {getSpeakerLabel(speakerId)}
+                  </span>
                 </div>
               ))}
             </div>
-          ) : (
-            <div className={styles.noResults}>
-              <div>Aucune parole trouvée</div>
-              <div>Essayez avec un autre mot-clé</div>
-            </div>
           )}
-        </div>
-      </main>
+
+          <div className={styles.lyricsScroller}>
+            {filteredSections && filteredSections.length > 0 ? (
+              <div className={styles.timeMarkedSections}>
+                {filteredSections.map((section) => {
+                  const showBadge =
+                    !!section.speaker_id &&
+                    section.speaker_id !== prevSpeakerId;
+                  if (section.speaker_id) {
+                    prevSpeakerId = section.speaker_id;
+                  }
+
+                  return (
+                    <div key={section.id} className={styles.timeMarkedSection}>
+                      {section.isSectionHeader && (
+                        <div className={styles.sectionHeader}>
+                          <div className={styles.sectionTimeMarker}>
+                            {section.timeMarker}
+                          </div>
+                          <div className={styles.sectionDivider}></div>
+                        </div>
+                      )}
+                      {section.content && (
+                        <LyricLine
+                          key={section.id}
+                          text={section.content}
+                          timeMarker={section.timeMarker}
+                          timeSeconds={section.startSeconds}
+                          timeEnd={
+                            section.endSeconds || section.startSeconds + 5
+                          }
+                          episodeId={episode.id}
+                          syncWithPlayer={syncWithPlayer}
+                          episode={episode}
+                          mainFilmImageUrl={mainFilmImageUrl}
+                          speakerId={section.speaker_id}
+                          showSpeakerBadge={showBadge}
+                        />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className={styles.noResults}>
+                <div>Aucune parole trouvée</div>
+                <div>Essayez avec un autre mot-clé</div>
+              </div>
+            )}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

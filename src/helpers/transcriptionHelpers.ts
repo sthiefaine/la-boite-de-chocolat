@@ -32,6 +32,39 @@ export interface SubtitleEntry {
   startTime: string;
   endTime: string;
   text: string;
+  speaker_id?: string;
+}
+
+export interface SpeakerSegment {
+  start: number;
+  end: number;
+  speakerId: string;
+}
+
+export const SPEAKER_COLORS = [
+  "#e67e22", // orange chaud
+  "#3498db", // bleu
+  "#2ecc71", // vert
+  "#9b59b6", // violet
+  "#e74c3c", // rouge
+  "#1abc9c", // turquoise
+  "#f39c12", // jaune doré
+  "#e84393", // rose
+  "#00cec9", // cyan
+  "#6c5ce7", // indigo
+  "#fd79a8", // rose clair
+  "#00b894", // vert menthe
+];
+
+export function getSpeakerColor(speakerId: string): string {
+  const match = speakerId.match(/(\d+)/);
+  const index = match ? (parseInt(match[1]) - 1) % SPEAKER_COLORS.length : 0;
+  return SPEAKER_COLORS[index];
+}
+
+export function getSpeakerLabel(speakerId: string): string {
+  const match = speakerId.match(/(\d+)/);
+  return match ? `Intervenant ${match[1]}` : speakerId;
 }
 
 export function parseSRT(content: string): SubtitleEntry[] {
@@ -158,6 +191,7 @@ export function parseJSON(content: string): SubtitleEntry[] {
       startTime: secondsToSrtTime(segment.start),
       endTime: secondsToSrtTime(segment.end),
       text: segment.text.trim(),
+      ...(segment.speaker_id && { speaker_id: segment.speaker_id }),
     }));
   } catch {
     return [];

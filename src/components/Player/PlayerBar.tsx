@@ -11,17 +11,19 @@ interface PlayerBarProps {
 }
 
 export const PlayerBar = ({ audioRef, isPlaying }: PlayerBarProps) => {
-  const { 
-    setCurrentPlayTime, 
-    setTotalDuration: setStoreTotalDuration, 
-    currentPlayTime, 
-    totalDuration 
+  const {
+    setCurrentPlayTime,
+    setTotalDuration: setStoreTotalDuration,
+    currentPlayTime,
+    totalDuration,
+    speakerSegments,
   } = usePlayerStore(
     useShallow((state) => ({
       setCurrentPlayTime: state.setCurrentPlayTime,
       setTotalDuration: state.setTotalDuration,
       currentPlayTime: state.currentPlayTime,
       totalDuration: state.totalDuration,
+      speakerSegments: state.speakerSegments,
     }))
   );
 
@@ -114,6 +116,7 @@ export const PlayerBar = ({ audioRef, isPlaying }: PlayerBarProps) => {
         progress={progress}
         totalDuration={totalDuration}
         onProgressClick={handleProgressBarClick}
+        speakerSegments={speakerSegments}
       />
       <div className={styles.timer_container}>
         <span className={styles.player_bar_timer}>

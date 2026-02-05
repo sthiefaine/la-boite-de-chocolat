@@ -11,6 +11,8 @@ import {
 import { getSagaWithFilmsAndEpisodes } from "@/app/actions/saga";
 import { getEpisodeRatingStats } from "@/app/actions/rating";
 import { getFilmCredits } from "@/app/actions/film";
+import { getSession } from "@/lib/auth/auth-server";
+import { isAdminRole } from "@/lib/auth/auth-helpers";
 import { PodcastJsonLd } from "./json-ld";
 import { BreadcrumbJsonLd } from "./breadcrumb-json-ld";
 import { SITE_URL } from "@/helpers/config";
@@ -64,9 +66,11 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
   const sagaResult = saga ? await getSagaWithFilmsAndEpisodes(saga.id) : null;
 
   // Fetch credits for main film
-  const filmCredits = mainFilm?.tmdbId
-    ? await getFilmCredits(mainFilm.tmdbId)
-    : null;
+  const [filmCredits, session] = await Promise.all([
+    mainFilm?.tmdbId ? getFilmCredits(mainFilm.tmdbId) : null,
+    getSession(),
+  ]);
+  const isAdmin = isAdminRole(session?.user?.role);
 
   const previousEpisode = finalNavigationResult.success
     ? finalNavigationResult?.data?.previousEpisode
@@ -103,6 +107,7 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
           isAdultContent={isAdultContent}
           userRating={userRating}
           ratingStats={ratingStats}
+          isAdmin={isAdmin}
         />
 
         <EpisodeNavigation

@@ -8,6 +8,7 @@ import {
   truncateText,
   formatEpisodeDescription,
 } from "@/helpers/podcastHelpers";
+import Link from "next/link";
 import { EpisodePlayerButton } from "@/components/Episode/EpisodePlayerButton/EpisodePlayerButton";
 import { AddToQueueButton } from "@/components/Queue/AddToQueueButton";
 import { ShareButton } from "@/components/ShareButton/ShareButton";
@@ -57,6 +58,7 @@ interface EpisodeHeaderProps {
     totalRatings: number;
     ratingDistribution: { [key: number]: number };
   } | null;
+  isAdmin?: boolean;
 }
 
 export default async function EpisodeHeader({
@@ -65,6 +67,7 @@ export default async function EpisodeHeader({
   isAdultContent,
   userRating,
   ratingStats,
+  isAdmin,
 }: EpisodeHeaderProps) {
   const mainFilm = episode.links[0]?.film;
 
@@ -214,6 +217,16 @@ export default async function EpisodeHeader({
             >
               Écouté
             </ListenedButton>
+
+            {isAdmin && (
+              <Link
+                href={`/admin/episode/${episode.id}/edit`}
+                className={`${styles.button} ${styles.adminButton}`}
+              >
+                <span className={styles.buttonIcon}>✏️</span>
+                Éditer
+              </Link>
+            )}
           </div>
 
           {/* Publication Date */}
