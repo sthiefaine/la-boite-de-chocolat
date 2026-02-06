@@ -4,11 +4,20 @@ import { MetadataRoute } from "next";
 const AI_BOTS = [
   "GPTBot",
   "ChatGPT-User",
+  "OAI-SearchBot",
   "Claude-Web",
+  "ClaudeBot",
+  "anthropic-ai",
   "Bard",
-  "Perplexity",
   "Gemini",
   "Google-Extended",
+  "PerplexityBot",
+  "Perplexity",
+  "CCBot",
+  "cohere-ai",
+  "Applebot-Extended",
+  "Meta-ExternalAgent",
+  "Bytespider",
 ];
 
 const SOCIAL_BOTS = [
@@ -35,8 +44,8 @@ const DEFAULT_RULES = {
 };
 
 const AI_RULES = {
-  allow: ["/episodes/", "/films/", "/"],
-  disallow: ["/admin/", "/api/"],
+  allow: ["/", "/episodes/", "/films/", "/sagas/", "/people/", "/about", "/llms.txt"],
+  disallow: ["/admin/", "/api/", "/private/"],
 };
 
 const SOCIAL_RULES = {

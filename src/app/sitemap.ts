@@ -24,6 +24,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly" as const,
       priority: 0.8,
     },
+    {
+      url: `${baseUrl}/films`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/episodes/top`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/about`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    },
   ];
 
   // Récupérer les épisodes avec transcriptions
@@ -94,5 +112,56 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...episodePages, ...transcriptionPages, ...sagaPages];
+  // Récupérer les films (hors contenu adulte)
+  const films = await prisma.film.findMany({
+    where: {
+      NOT: {
+        OR: [{ age: "18+" }, { age: "adult" }],
+      },
+    },
+    select: {
+      slug: true,
+      updatedAt: true,
+    },
+    orderBy: {
+      updatedAt: "desc",
+    },
+  });
+
+  const filmPages = films.map((film) => ({
+    url: `${baseUrl}/films/${film.slug}`,
+    lastModified: film.updatedAt,
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
+
+  // Récupérer les personnes (réalisateurs, acteurs)
+  const people = await prisma.person.findMany({
+    where: {
+      slug: { not: null },
+    },
+    select: {
+      slug: true,
+      updatedAt: true,
+    },
+    orderBy: {
+      updatedAt: "desc",
+    },
+  });
+
+  const peoplePages = people.map((person) => ({
+    url: `${baseUrl}/people/${person.slug}`,
+    lastModified: person.updatedAt,
+    changeFrequency: "monthly" as const,
+    priority: 0.5,
+  }));
+
+  return [
+    ...staticPages,
+    ...episodePages,
+    ...transcriptionPages,
+    ...sagaPages,
+    ...filmPages,
+    ...peoplePages,
+  ];
 }

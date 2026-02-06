@@ -55,6 +55,9 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: SITE_URL,
+    types: {
+      "application/rss+xml": `${SITE_URL}/feed.xml`,
+    },
   },
   openGraph: {
     title: "La Boîte de Chocolat | Podcast Cinéma Français",
@@ -102,13 +105,34 @@ const websiteJsonLd = {
   description:
     "Le podcast cinéma français qui analyse vos films préférés avec mauvaise foi.",
   inLanguage: "fr-FR",
-  potentialAction: {
-    "@type": "SearchAction",
-    target: {
-      "@type": "EntryPoint",
-      urlTemplate: `${SITE_URL}/episodes?q={search_term_string}`,
+  potentialAction: [
+    {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}/episodes?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
     },
-    "query-input": "required name=search_term_string",
+    {
+      "@type": "ListenAction",
+      target: [
+        {
+          "@type": "EntryPoint",
+          urlTemplate: PODCAST_URLS.spotify,
+          actionPlatform: "https://schema.org/DesktopWebPlatform",
+        },
+        {
+          "@type": "EntryPoint",
+          urlTemplate: PODCAST_URLS.apple,
+          actionPlatform: "https://schema.org/IOSPlatform",
+        },
+      ],
+    },
+  ],
+  speakable: {
+    "@type": "SpeakableSpecification",
+    cssSelector: ["h1", "h2", "meta[name='description']"],
   },
 };
 

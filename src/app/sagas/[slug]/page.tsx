@@ -7,6 +7,7 @@ import Image from "next/image";
 import { getUploadServerUrl } from "@/helpers/imageConfig";
 import { SITE_URL } from "@/helpers/config";
 import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
+import { SagaJsonLd } from "./json-ld";
 import styles from "./SagaDetailPage.module.css";
 
 interface SagaDetailPageProps {
@@ -83,6 +84,7 @@ export default async function SagaDetailPage({ params }: SagaDetailPageProps) {
 
   return (
     <main className={styles.main}>
+      <SagaJsonLd saga={saga} />
       <div className={styles.container}>
         <Breadcrumbs
           items={[

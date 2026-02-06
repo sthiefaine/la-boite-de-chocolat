@@ -353,6 +353,98 @@ function timeToSeconds(time: string): number {
   return hours * 3600 + minutes * 60 + parseFloat(seconds.toString());
 }
 
+// --- Speaker Turn grouping for conversation/chat layout ---
+
+export interface SpeakerTurn {
+  speakerId: string | undefined;
+  startSeconds: number;
+  endSeconds: number;
+  startTime: string; // format "MM:SS"
+  segments: Array<{
+    id: number | string;
+    text: string;
+    startSeconds: number;
+    endSeconds: number;
+  }>;
+  mergedText: string;
+}
+
+interface SectionForGrouping {
+  id: number | string;
+  content: string;
+  startSeconds: number;
+  endSeconds?: number;
+  isSectionHeader?: boolean;
+  speaker_id?: string;
+}
+
+export function formatMinutesSeconds(totalSeconds: number): string {
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const secs = Math.floor(totalSeconds % 60);
+
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  }
+  return `${minutes}:${secs.toString().padStart(2, "0")}`;
+}
+
+export function groupEntriesIntoTurns(
+  sections: SectionForGrouping[],
+  sectionIntervalMinutes: number = 15
+): { turns: SpeakerTurn[]; timeMarkers: number[] } {
+  const turns: SpeakerTurn[] = [];
+  let currentTurn: SpeakerTurn | null = null;
+
+  const contentSections = sections.filter(
+    (s) => !s.isSectionHeader && s.content
+  );
+
+  for (const section of contentSections) {
+    const endSec = section.endSeconds || section.startSeconds + 5;
+
+    if (currentTurn && section.speaker_id === currentTurn.speakerId) {
+      currentTurn.segments.push({
+        id: section.id,
+        text: section.content,
+        startSeconds: section.startSeconds,
+        endSeconds: endSec,
+      });
+      currentTurn.endSeconds = endSec;
+      currentTurn.mergedText += " " + section.content;
+    } else {
+      if (currentTurn) turns.push(currentTurn);
+      currentTurn = {
+        speakerId: section.speaker_id,
+        startSeconds: section.startSeconds,
+        endSeconds: endSec,
+        startTime: formatMinutesSeconds(section.startSeconds),
+        segments: [
+          {
+            id: section.id,
+            text: section.content,
+            startSeconds: section.startSeconds,
+            endSeconds: endSec,
+          },
+        ],
+        mergedText: section.content,
+      };
+    }
+  }
+  if (currentTurn) turns.push(currentTurn);
+
+  // Compute time markers
+  const maxSeconds =
+    turns.length > 0 ? turns[turns.length - 1].endSeconds : 0;
+  const intervalSeconds = sectionIntervalMinutes * 60;
+  const timeMarkers: number[] = [];
+  for (let s = intervalSeconds; s < maxSeconds; s += intervalSeconds) {
+    timeMarkers.push(s);
+  }
+
+  return { turns, timeMarkers };
+}
+
 export function extractTimeAndText(line: string): {
   startTime: string | null;
   endTime: string | null;

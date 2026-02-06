@@ -388,8 +388,11 @@
 
   .button {
     width: 100%;
-    min-width: unset;
+    min-width: 0;
     justify-content: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .listenButton {
@@ -405,10 +408,9 @@
   }
 
   .tmdbButton {
-    grid-column: 1 / -1;
-    justify-self: center;
-    width: 140px;
-    min-width: 140px;
+    grid-column: span 1;
+    width: 100%;
+    min-width: 0;
   }
 
   .bottomRow {
@@ -433,5 +435,17 @@
   .ratingSection {
     max-width: 100%;
     margin: 1rem 0;
+  }
+}
+
+@media (max-width: 380px) {
+  .button {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+    gap: 0.3rem;
+  }
+
+  .buttonIcon {
+    font-size: 0.95rem;
   }
 }
