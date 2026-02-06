@@ -6,6 +6,7 @@ import { getUploadServerUrl, IMAGE_CONFIG } from "@/helpers/imageConfig";
 import { generateMetadata } from "./metadata";
 import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
 import FilmCard from "@/components/Cards/FilmCard/FilmCard";
+import { PersonJsonLd } from "./json-ld";
 
 interface PersonPageProps {
   params: Promise<{
@@ -39,6 +40,7 @@ export default async function PersonPage({ params }: PersonPageProps) {
 
   return (
     <div className={styles.container}>
+      <PersonJsonLd person={person} />
       <Breadcrumbs
         variant="light"
         items={[

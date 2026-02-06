@@ -36,6 +36,7 @@ export interface Episode {
   season?: number | null;
   episode?: number | null;
   slug: string | null;
+  age?: string | null;
   links: Array<{
     film: {
       id: string;

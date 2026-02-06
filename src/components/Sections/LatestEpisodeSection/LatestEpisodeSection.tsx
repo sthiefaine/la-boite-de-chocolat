@@ -46,6 +46,9 @@ export default async function LatestEpisodeSection({
   }
 
   const mainFilm = episode.links[0]?.film;
+  const isAdult =
+    episode.age === "18+" || episode.age === "adult" ||
+    mainFilm?.age === "18+" || mainFilm?.age === "adult";
 
   const seasonEpisode =
     episode.season && episode.episode
@@ -126,8 +129,8 @@ export default async function LatestEpisodeSection({
             {mainFilm?.imgFileName && (
               <div className={styles.filmPoster}>
                 <Image
-                  src={getImageUrl(mainFilm.imgFileName)}
-                  alt={`Poster de ${mainFilm.title}`}
+                  src={isAdult ? `/api/image/masked/${mainFilm.imgFileName}` : getImageUrl(mainFilm.imgFileName)}
+                  alt={isAdult ? "Poster flouté - contenu 18+" : `Poster de ${mainFilm.title}`}
                   width={120}
                   height={180}
                   className={styles.posterImage}
@@ -136,6 +139,9 @@ export default async function LatestEpisodeSection({
                   quality={IMAGE_CONFIG.defaultQuality}
                   unoptimized={true}
                 />
+                {isAdult && (
+                  <div className={styles.ageBadge}>+18</div>
+                )}
                 <div className={styles.filmInfo}>
                   <h4 className={styles.filmTitle}>{mainFilm.title}</h4>
                   {mainFilm.year && (
@@ -150,7 +156,7 @@ export default async function LatestEpisodeSection({
                 title={episode.title}
                 audioUrl={episode.audioUrl}
                 imageUrl={
-                  mainFilm?.imgFileName
+                  mainFilm?.imgFileName && !isAdult
                     ? getImageUrl(mainFilm.imgFileName)
                     : undefined
                 }

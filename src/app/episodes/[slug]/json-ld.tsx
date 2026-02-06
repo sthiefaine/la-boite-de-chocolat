@@ -45,7 +45,9 @@ interface JsonLdProps {
 
 export async function PodcastJsonLd({ episode, canonicalUrl }: JsonLdProps) {
   const mainFilm = episode.links[0]?.film;
-  const isAdult = mainFilm?.age === "18+" || mainFilm?.age === "adult";
+  const isAdult =
+    episode.age === "18+" || episode.age === "adult" ||
+    mainFilm?.age === "18+" || mainFilm?.age === "adult";
 
   let description = "";
   if (!description && mainFilm) {

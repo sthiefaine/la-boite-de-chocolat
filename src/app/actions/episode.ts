@@ -56,22 +56,18 @@ export async function getEpisodeBySlug(slug: string) {
     }
 
     const mainFilm = episode.links[0]?.film;
-    const isAdultContent = mainFilm?.age === "18+" || mainFilm?.age === "adult";
+    const isAdultContent =
+      episode.age === "18+" || episode.age === "adult" ||
+      mainFilm?.age === "18+" || mainFilm?.age === "adult";
 
     const mainFilmImageUrl = isAdultContent
       ? await getMaskedImageUrl(
           mainFilm?.imgFileName || null,
-          mainFilm?.age || null
+          "18+"
         )
       : mainFilm?.imgFileName
       ? getUploadServerUrl(mainFilm.imgFileName)
       : "/images/navet.png";
-
-    /*
-      film: "https://XXXXXXXXXXXX.public.blob.vercel-storage.com/films/poster_twilight__chapitre_5___r_v_lation__2_me_partie_1752071582681-wGjg6p2A2dFq3uZoR5byWPYcgpsbZp.jpg"
-      adult: "/api/image/masked/poster_la_cambrioleuse_1752279342328-QhbXwke7cFBWoDjZB9EuhGjDmh8jzX.jpg"
-      navet: "/images/navet.png"
-*/
 
     return {
       episode,
@@ -149,22 +145,18 @@ export const getEpisodeBySlugCached = cache(async (slug: string) => {
     }
 
     const mainFilm = episode.links[0]?.film;
-    const isAdultContent = mainFilm?.age === "18+" || mainFilm?.age === "adult";
+    const isAdultContent =
+      episode.age === "18+" || episode.age === "adult" ||
+      mainFilm?.age === "18+" || mainFilm?.age === "adult";
 
     const mainFilmImageUrl = isAdultContent
       ? await getMaskedImageUrl(
           mainFilm?.imgFileName || null,
-          mainFilm?.age || null
+          "18+"
         )
       : mainFilm?.imgFileName
       ? getUploadServerUrl(mainFilm.imgFileName)
       : "/images/navet.png";
-
-    /*
-      film: "https://XXXXXXXXXXXX.public.blob.vercel-storage.com/films/poster_twilight__chapitre_5___r_v_lation__2_me_partie_1752071582681-wGjg6p2A2dFq3uZoR5byWPYcgpsbZp.jpg"
-      adult: "/api/image/masked/poster_la_cambrioleuse_1752279342328-QhbXwke7cFBWoDjZB9EuhGjDmh8jzX.jpg"
-      navet: "/images/navet.png"
-*/
 
     return {
       episode,
@@ -371,6 +363,7 @@ export async function getEpisodesWithFilms() {
         duration: true,
         slug: true,
         genre: true,
+        age: true,
         links: {
           select: {
             film: {
@@ -480,6 +473,7 @@ export async function getLatestEpisode() {
         slug: true,
         season: true,
         episode: true,
+        age: true,
         links: {
           select: {
             id: true,

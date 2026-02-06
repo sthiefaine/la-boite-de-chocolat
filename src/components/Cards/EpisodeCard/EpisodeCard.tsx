@@ -31,6 +31,7 @@ interface EpisodeCardProps {
   episodeDuration?: number | null;
   episodeSlug?: string | null;
   episodeGenre?: string | null;
+  episodeAge?: string | null;
   isNoResults?: boolean;
   variant?: "default" | "compact";
   imageConfig?: ImageConfig;
@@ -52,6 +53,7 @@ export default function EpisodeCard({
   episodeDuration,
   episodeSlug,
   episodeGenre,
+  episodeAge,
   isNoResults = false,
   variant = "default",
   imageConfig = {
@@ -65,7 +67,9 @@ export default function EpisodeCard({
   const displayTitle = film ? film.title : episodeTitle || "Épisode sans titre";
   const displayImage = film?.imgFileName || null;
   const displayAge = film?.age || null;
-  const shouldBlur = displayAge === "18+" || displayAge === "adult";
+  const shouldBlur =
+    displayAge === "18+" || displayAge === "adult" ||
+    episodeAge === "18+" || episodeAge === "adult";
 
   // Alt text enrichi pour le SEO
   const altText = shouldBlur

@@ -562,7 +562,7 @@ export async function createFilmManually(data: {
       const sanitizedTitle = data.title
         .replace(/[^a-zA-Z0-9]/g, "_")
         .toLowerCase();
-      const filename = `films/poster_${sanitizedTitle}_${timestamp}.jpg`;
+      const filename = `poster_${sanitizedTitle}_${timestamp}.jpg`;
 
       const uploadResult = await uploadImage(data.posterFile, filename);
       if (uploadResult.success) {

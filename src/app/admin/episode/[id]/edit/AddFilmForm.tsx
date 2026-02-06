@@ -642,9 +642,9 @@ export default function AddFilmForm({
                 className={styles.input}
               >
                 <option value="">Sélectionner un âge</option>
-                {Object.entries(AGE_RATINGS).map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
+                {Object.values(AGE_RATINGS).map((age) => (
+                  <option key={age} value={age}>
+                    {age}
                   </option>
                 ))}
               </select>

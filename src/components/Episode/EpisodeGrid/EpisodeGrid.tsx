@@ -69,6 +69,7 @@ interface Episode {
   duration?: number | null;
   slug: string | null;
   genre?: string | null;
+  age?: string | null;
   hasTranscription?: boolean;
   parentSaga?: {
     id: string;
@@ -417,6 +418,7 @@ export default function EpisodeGrid({
                 episodeDuration: episode.duration,
                 episodeSlug: episode.slug,
                 episodeGenre: episode.genre,
+                episodeAge: episode.age,
               };
               const isMarvel =
                 episode.links[0]?.film?.saga?.name

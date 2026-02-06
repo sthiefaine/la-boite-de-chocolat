@@ -1,58 +1,98 @@
-## Workflow Orchestration
+# CLAUDE.md — Trading Analysis Platform
 
-### 1. Plan Mode Default
+## Project Overview
 
-- Enter plan mode for ANY non-trivial task (3+ steps or architectural decisions)
-- If something goes sideways, STOP and re-plan immediately - don't keep pushing
-- Use plan mode for verification steps, not just building
-- Write detailed specs upfront to reduce ambiguity
+Stock trading analysis and portfolio management app built with:
 
-### 2. Subagent Strategy
+- **Frontend:** Next.js 16, React 19, TypeScript, Tailwind CSS 4, shadcn/ui, Recharts, Lightweight Charts
+- **Backend:** Next.js API routes, Prisma ORM, PostgreSQL
+- **Data:** Yahoo Finance, Reddit scraping, news scraping, sentiment analysis, technical indicators
+- **Infra:** Node-cron for scheduled jobs, custom server.ts entry point
 
-- Use subagents liberally to keep main context window clean
-- Offload research, exploration, and parallel analysis to subagents
-- For complex problems, throw more compute at it via subagents
-- One task per subagent for focused execution
+## Autonomy Directive
 
-### 3. Self-Improvement Loop
+You operate with **full autonomy** on this project. You are expected to:
 
-- After ANY correction from the user: update `tasks/lessons.md` with the pattern
-- Write rules for yourself that prevent the same mistake
-- Ruthlessly iterate on these lessons until mistake rate drops
-- Review lessons at session start for relevant project
+- Make decisions independently — do not ask for permission on routine actions (file edits, package installs, builds, tests, git operations, refactoring)
+- Act first, report after — execute tasks fully before summarizing what you did
+- Take initiative — if you see something broken, fix it; if something is missing, add it
+- Chain actions — don't stop after one step when the task requires multiple steps
+- Handle errors yourself — when something fails, diagnose, fix, and retry before asking for help
 
-### 4. Verification Before Done
+## Skill Management
 
-- Never mark a task complete without proving it works
-- Diff behavior between main and your changes when relevant
-- Ask yourself: "Would a staff engineer approve this?"
-- Run tests, check logs, demonstrate correctness
+- **Discover skills proactively:** When a task could benefit from a specialized skill, use `/find-skills` to search for one
+- **Install skills** when they match your needs — don't hesitate
+- **Create custom skills** when no existing skill covers a recurring task pattern. Save them to `.claude/skills/` with clear descriptions so they can be reused
+- Use existing skills like `next-best-practices`, `vercel-react-best-practices`, `better-auth-best-practices`, `next-cache-components` when relevant
 
-### 5. Demand Elegance (Balanced)
+## Subagents & Teammates
 
-- For non-trivial changes: pause and ask "is there a more elegant way?"
-- If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"
-- Skip this for simple, obvious fixes - don't over-engineer
-- Challenge your own work before presenting it
+Spin up Task agents aggressively to parallelize work:
 
-### 6. Autonomous Bug Fixing
+- **Explore agents** — for codebase research, finding patterns, understanding dependencies
+- **Bash agents** — for running builds, tests, linters, database operations in background
+- **Plan agents** — for designing architecture and implementation strategies
+- **General-purpose agents** — for complex multi-step research tasks
 
-- When given a bug report: just fix it. Don't ask for hand-holding
-- Point at logs, errors, failing tests - then resolve them
-- Zero context switching required from the user
-- Go fix failing CI tests without being told how
+Treat subagents as teammates. Delegate work to them to keep the main context focused. Launch multiple agents in parallel whenever their tasks are independent.
 
-## Task Management
+## MCP Servers
 
-1. **Plan First**: Write plan to `tasks/todo.md` with checkable items
-2. **Verify Plan**: Check in before starting implementation
-3. **Track Progress**: Mark items complete as you go
-4. **Explain Changes**: High-level summary at each step
-5. **Document Results**: Add review section to `tasks/todo.md`
-6. **Capture Lessons**: Update `tasks/lessons.md` after corrections
+When a task requires persistent external tool access (database queries, API integrations, third-party services), proactively set up MCP servers:
 
-## Core Principles
+- Configure them in `.claude/mcp.json` or the project settings
+- Use MCP tools for database inspection, API exploration, and service integration
+- Prefer MCP over manual CLI commands for repeated interactions with external services
 
-- **Simplicity First**: Make every change as simple as possible. Impact minimal code.
-- **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
-- **Minimal Impact**: Changes should only touch what's necessary. Avoid introducing bugs.
+## Memory & Learning
+
+- **Always consult** `/Users/thief/.claude/projects/-Users-thief-projets-trading-test/memory/MEMORY.md` before starting work
+- **Record learnings** after completing meaningful tasks — patterns, gotchas, strategies that worked
+- **Create topic files** (e.g., `debugging.md`, `database.md`, `api-patterns.md`) for detailed notes
+- **Update or remove** outdated memories
+- Learn from mistakes — if something goes wrong, write it down so it doesn't happen again
+
+## Project Conventions
+
+### Key Paths
+
+- `src/app/` — Next.js pages and API routes
+- `src/components/` — React components (charts, dashboard, layout, news, reddit, ui)
+- `src/lib/` — Business logic (API clients, analysis, cron, utilities)
+- `src/types/` — TypeScript type definitions
+- `prisma/schema.prisma` — Database schema
+- `scripts/` — Data fetching and analysis scripts
+- `server.ts` — Custom server with cron initialization
+
+### Common Commands
+
+- `npm run dev` — Start dev server (Turbopack)
+- `npm run dev:cron` — Run cron jobs separately
+- `npm run build` — Production build
+- `npm run lint` — ESLint checks
+- `npm run db:push` — Push schema to database
+- `npm run db:generate` — Regenerate Prisma client
+- `npm run db:seed` — Seed database
+
+### Path Alias
+
+- `@/*` maps to `./src/*`
+
+### Component Library
+
+- Using shadcn/ui (New York style) — add components via `npx shadcn@latest add <component>`
+
+### Database
+
+- PostgreSQL via Prisma
+- Models: Stock, StockPrice, Signal, SentimentData, NewsArticle, RedditTrending, Portfolio
+- Prisma client generated to `src/generated/prisma/`
+
+### Coding Patterns
+
+- Server Components by default, `"use client"` only when needed
+- API routes in `src/app/api/` following Next.js conventions
+- Shared Prisma client from `src/lib/db.ts`
+- Technical indicators computed in `src/lib/analysis/indicators.ts`
+- Signal generation in `src/lib/analysis/signal-generator.ts`

@@ -34,7 +34,7 @@ export async function uploadSingleFile(
     }
 
     const formData = new FormData();
-    formData.append('folder', folder);
+    formData.append('folder', 'podcasts/' + folder);
     formData.append('files', file);
 
     console.log('📤 Upload request:', {

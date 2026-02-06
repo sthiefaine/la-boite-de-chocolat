@@ -58,7 +58,7 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
   const episode = episodeResult.episode;
   const mainFilm = episode.links[0]?.film;
   const saga = mainFilm?.saga || null;
-  const isAdultContent = mainFilm?.age === "18+" || mainFilm?.age === "adult";
+  const isAdultContent = episodeResult.isAdultContent;
 
   const ratingStats = await getEpisodeRatingStats(episode.id);
   const userRating = null;
