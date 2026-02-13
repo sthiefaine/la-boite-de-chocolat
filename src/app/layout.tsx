@@ -1,6 +1,7 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import type { Metadata, Viewport } from "next";
+import { ViewTransitions } from "next-view-transitions";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import FooterTransition from "@/components/Footer/FooterTransition";
@@ -164,26 +165,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr">
-      <body className={inter.className}>
-        <GoogleAnalytics gaId="G-Z1Y3QWL2C5" />
+    <ViewTransitions>
+      <html lang="fr">
+        <body className={inter.className}>
+          <GoogleAnalytics gaId="G-Z1Y3QWL2C5" />
 
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
-        />
-        <Header />
-        <main>{children}</main>
-        <Footer />
-        <Suspense fallback={null}>
-          <FooterTransition />
-          <Player />
-        </Suspense>
-      </body>
-    </html>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+          />
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+          />
+          <Header />
+          <main>{children}</main>
+          <Footer />
+          <Suspense fallback={null}>
+            <FooterTransition />
+            <Player />
+          </Suspense>
+        </body>
+      </html>
+    </ViewTransitions>
   );
 }

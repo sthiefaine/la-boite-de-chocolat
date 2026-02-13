@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 import { formatDuration } from "@/helpers/podcastHelpers";
 import { IMAGE_CONFIG } from "@/helpers/imageConfig";
 import FavoriteButton from "@/components/Favorite/FavoriteButton";
@@ -138,6 +138,7 @@ export default function EpisodeCard({
                 quality={imageConfig.quality}
                 placeholder="blur"
                 blurDataURL={IMAGE_CONFIG.defaultBlurDataURL}
+                style={episodeSlug ? { viewTransitionName: `episode-${episodeSlug}-image` } : undefined}
               />
               {shouldBlur && (
                 <div className={styles.ageOverlay}>
@@ -174,7 +175,10 @@ export default function EpisodeCard({
         </div>
         <div className={styles.cardInformations}>
           <div className={styles.cardTop}>
-            <h2 className={styles.cardTitle}>{displayTitle}</h2>
+            <h2
+              className={styles.cardTitle}
+              style={episodeSlug ? { viewTransitionName: `episode-${episodeSlug}-title` } : undefined}
+            >{displayTitle}</h2>
             <span className={styles.cardOptions}></span>
           </div>
           <div className={styles.cardBottom}>

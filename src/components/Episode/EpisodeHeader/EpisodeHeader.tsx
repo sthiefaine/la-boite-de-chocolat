@@ -84,7 +84,7 @@ export default async function EpisodeHeader({
             sizes={IMAGE_CONFIG.sizes.background}
             quality={75}
             loading="lazy"
-            style={{ objectFit: "cover" }}
+            style={{ objectFit: "cover", viewTransitionName: `episode-${episode.slug}-image` }}
           />
           <div className={styles.backgroundOverlay}></div>
         </div>
@@ -102,7 +102,7 @@ export default async function EpisodeHeader({
               quality={100}
               loading="eager"
               fetchPriority="high"
-              style={{ objectFit: "cover" }}
+              style={{ objectFit: "cover", viewTransitionName: `episode-${episode.slug}-image` }}
             />
             <div className={styles.backgroundOverlay}></div>
           </div>
@@ -113,7 +113,10 @@ export default async function EpisodeHeader({
         <div className={styles.headerInfo}>
           {/* Title Section */}
           <div className={styles.titleSection}>
-            <h1 className={styles.title}>{mainFilm?.title || episode.title}</h1>
+            <h1
+              className={styles.title}
+              style={{ viewTransitionName: `episode-${episode.slug}-title` }}
+            >{mainFilm?.title || episode.title}</h1>
             {mainFilm?.year && (
               <span className={styles.year}>({mainFilm.year})</span>
             )}
