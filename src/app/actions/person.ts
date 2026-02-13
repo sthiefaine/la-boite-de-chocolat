@@ -25,6 +25,49 @@ export async function getAllPersonSlugs() {
 }
 
 /**
+ * Récupère toutes les personnes avec le nombre de films
+ */
+export const getAllPeople = cache(async () => {
+  try {
+    const people = await prisma.person.findMany({
+      where: {
+        slug: { not: null },
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        photoFileName: true,
+        _count: {
+          select: {
+            directorOf: true,
+            actorIn: true,
+          },
+        },
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+
+    return {
+      success: true,
+      data: people.map((p) => ({
+        id: p.id,
+        name: p.name,
+        slug: p.slug!,
+        photoFileName: p.photoFileName,
+        filmsAsDirector: p._count.directorOf,
+        filmsAsActor: p._count.actorIn,
+      })),
+    };
+  } catch (error) {
+    console.error("Error fetching all people:", error);
+    return { success: false, data: [] };
+  }
+});
+
+/**
  * Récupère une personne par son slug avec ses films
  */
 export const getPersonBySlug = cache(async (slug: string) => {
