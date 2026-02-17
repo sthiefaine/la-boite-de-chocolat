@@ -137,7 +137,7 @@ function MobileAuthButton({
         : `/signin?callbackUrl=${encodeURIComponent(pathname)}`;
 
     return (
-      <Link href={signInUrl} className={className} onClick={onLinkClick}>
+      <Link href={signInUrl} className={className} onClick={onLinkClick} rel="nofollow">
         Connexion
       </Link>
     );

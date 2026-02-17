@@ -22,7 +22,7 @@ export default function AuthButtonClient({
         : `/signin?callbackUrl=${encodeURIComponent(pathname)}`;
 
     return (
-      <Link href={signInUrl} className={className}>
+      <Link href={signInUrl} className={className} rel="nofollow">
         Connexion
       </Link>
     );

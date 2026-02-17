@@ -45,3 +45,4 @@ next-env.d.ts
 src/app/api/test/
 .cursorrules
 CLAUDE.md
+.claude/

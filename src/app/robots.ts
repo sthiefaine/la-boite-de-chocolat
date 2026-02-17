@@ -40,12 +40,12 @@ const SEARCH_ENGINE_BOTS = [
 
 const DEFAULT_RULES = {
   allow: ["/", "/episodes/", "/sagas/", "/transcriptions/"],
-  disallow: ["/admin/", "/api/", "/private/", "/*?*utm*", "/*?*ref*"],
+  disallow: ["/admin/", "/api/", "/private/", "/signin", "/signup", "/unauthorized", "/options", "/*?*utm*", "/*?*ref*", "/*?*callbackUrl*"],
 };
 
 const AI_RULES = {
   allow: ["/", "/episodes/", "/films/", "/sagas/", "/people/", "/about", "/llms.txt"],
-  disallow: ["/admin/", "/api/", "/private/"],
+  disallow: ["/admin/", "/api/", "/private/", "/signin", "/signup"],
 };
 
 const SOCIAL_RULES = {
@@ -54,7 +54,7 @@ const SOCIAL_RULES = {
 
 const SEARCH_ENGINE_RULES = {
   allow: ["/episodes/", "/films/", "/"],
-  disallow: ["/admin/", "/api/"],
+  disallow: ["/admin/", "/api/", "/signin", "/signup"],
 };
 
 export default function robots(): MetadataRoute.Robots {

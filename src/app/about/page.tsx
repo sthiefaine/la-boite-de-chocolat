@@ -10,7 +10,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "À propos | La Boîte de Chocolat",
+    title: "À propos",
     description:
       "Découvrez La Boîte de Chocolat, le podcast cinéma francophone animé par Thomas, Charlie et Thomas. Critiques, analyses et débats sur le cinéma avec humour et mauvaise foi.",
     alternates: {

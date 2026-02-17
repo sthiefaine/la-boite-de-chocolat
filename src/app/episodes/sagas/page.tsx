@@ -1,12 +1,16 @@
 import { getAllSagasWithStats } from "@/app/actions/saga";
 import SagaCard from "@/components/Saga/SagaCard";
 import { Metadata } from "next";
+import { SITE_URL } from "@/helpers/config";
 import styles from "./SagasPage.module.css";
 
 export const metadata: Metadata = {
   title: "Sagas Cinéma - Films par Saga",
   description:
     "Retrouvez toutes les sagas de films analysées dans notre podcast : Marvel, Star Wars, Harry Potter et bien d'autres. Critiques et épisodes pour chaque saga.",
+  alternates: {
+    canonical: `${SITE_URL}/episodes/sagas`,
+  },
 };
 
 export default async function SagasPage() {

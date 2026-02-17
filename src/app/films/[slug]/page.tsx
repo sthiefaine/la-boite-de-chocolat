@@ -30,7 +30,7 @@ export async function generateMetadata({
     : `${film.title} (${film.year || "?"}). Écoutez les épisodes du podcast La Boîte de Chocolat qui parlent de ce film.`;
 
   return {
-    title: `${film.title} ${film.year ? `(${film.year})` : ""} | La Boîte de Chocolat`,
+    title: `${film.title} ${film.year ? `(${film.year})` : ""}`,
     description,
     alternates: { canonical: `${SITE_URL}/films/${slug}` },
     openGraph: {

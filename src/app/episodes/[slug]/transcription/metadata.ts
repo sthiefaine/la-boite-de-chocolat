@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { getEpisodeBySlugCached } from "@/app/actions/episode";
 import { downloadTranscriptionContent } from "@/app/actions/transcription";
+import { SITE_URL } from "@/helpers/config";
 
 interface GenerateMetadataProps {
   params: Promise<{
@@ -45,6 +46,9 @@ export async function generateMetadata({ params }: GenerateMetadataProps): Promi
       card: "summary",
       title: `Transcription - ${title}${year ? ` (${year})` : ''}`,
       description: `Transcription complète de l'épisode sur ${title}${year ? ` (${year})` : ''}${director ? ` de ${director}` : ''}. ${wordCount} mots.`,
+    },
+    alternates: {
+      canonical: `${SITE_URL}/episodes/${slug}/transcription`,
     },
     robots: {
       index: true,
