@@ -6,7 +6,7 @@ import { SITE_URL } from "@/helpers/config";
 import styles from "./FilmsPage.module.css";
 
 export const metadata: Metadata = {
-  title: "Tous les Films | La Boîte de Chocolat",
+  title: "Tous les Films",
   description:
     "Retrouvez tous les films analysés dans le podcast La Boîte de Chocolat. Critiques, avis et discussions sur le cinéma.",
   alternates: {

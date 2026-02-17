@@ -13,7 +13,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const count = episodesResult.success ? episodesResult.data?.length || 0 : 0;
 
   return {
-    title: "La Boîte de Chocolat | Podcast Cinéma Français - Critiques & Analyses de Films",
+    title: {
+      absolute: "La Boîte de Chocolat | Podcast Cinéma Français - Critiques & Analyses de Films",
+    },
     description: `Le podcast cinéma qui te fait aimer le cinoche (et la mauvaise foi). +${count} épisodes de critiques de films : blockbusters, Marvel, classiques, thrillers. Écoute gratuite sur Spotify, Apple Podcasts et Deezer.`,
     alternates: {
       canonical: SITE_URL,

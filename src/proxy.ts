@@ -39,8 +39,11 @@ export function proxy(request: NextRequest) {
     "camera=(), microphone=(), geolocation=()"
   );
 
-  // Episodes: indexation + cache headers
-  if (pathname.startsWith("/episodes/")) {
+  // Pages publiques : indexation + cache headers
+  const publicPaths = ["/", "/episodes", "/films", "/sagas", "/people", "/episodes/top", "/episodes/budget", "/episodes/sagas"];
+  const isPublicPage = publicPaths.includes(pathname) || pathname.startsWith("/episodes/") || pathname.startsWith("/films/") || pathname.startsWith("/sagas/") || pathname.startsWith("/people/");
+
+  if (isPublicPage) {
     response.headers.set("X-Robots-Tag", "index, follow");
     response.headers.set("Cache-Control", "public, max-age=3600, s-maxage=86400");
   }

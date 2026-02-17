@@ -8,7 +8,7 @@ import { SITE_URL } from "@/helpers/config";
 import styles from "./PeoplePage.module.css";
 
 export const metadata: Metadata = {
-  title: "Toutes les Personnes | La Boîte de Chocolat",
+  title: "Toutes les Personnes",
   description:
     "Découvrez tous les acteurs et réalisateurs des films analysés dans le podcast La Boîte de Chocolat.",
   alternates: {

@@ -11,7 +11,7 @@ import { SITE_URL } from "@/helpers/config";
 import styles from "./TopEpisodesPage.module.css";
 
 export const metadata: Metadata = {
-  title: "Top Épisodes | La Boîte de Chocolat",
+  title: "Top Épisodes",
   description:
     "Découvrez les épisodes les mieux notés, les plus écoutés et les plus mis en favoris du podcast La Boîte de Chocolat.",
   alternates: {

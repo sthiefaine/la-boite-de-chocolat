@@ -7,7 +7,7 @@ import EpisodeCard from "@/components/Cards/EpisodeCard/EpisodeCard";
 import styles from "./FavorisPage.module.css";
 
 export const metadata = {
-  title: "Mes Favoris - La Boîte de Chocolat",
+  title: "Mes Favoris",
   description: "Vos épisodes favoris de La Boîte de Chocolat",
 };
 
