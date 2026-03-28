@@ -5,7 +5,8 @@ import { IMAGE_CONFIG } from "@/helpers/imageConfig";
 import styles from "./PodcastBackground.module.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const GRID_SIZE = 100;
+const GRID_SIZE_DESKTOP = 100;
+const GRID_SIZE_MOBILE = 50;
 const SWAP_INTERVAL = 2000;
 const SWAP_COUNT = 1;
 const FLIP_DURATION = 1400;
@@ -19,9 +20,12 @@ export function PodcastBackgroundAnimation({
   repeatedImages,
   fallbackImages,
 }: PodcastBackgroundAnimationProps) {
+  const [isMobile, setIsMobile] = useState(false);
+  const gridSize = isMobile ? GRID_SIZE_MOBILE : GRID_SIZE_DESKTOP;
+
   const [isTransitioning, setIsTransitioning] = useState(true);
   const [currentImages, setCurrentImages] = useState<string[]>(() =>
-    Array.from({ length: GRID_SIZE }, (_, i) =>
+    Array.from({ length: GRID_SIZE_DESKTOP }, (_, i) =>
       repeatedImages.length > 0
         ? repeatedImages[i % repeatedImages.length]
         : fallbackImages[i % fallbackImages.length]
@@ -33,7 +37,12 @@ export function PodcastBackgroundAnimation({
   const pendingSwaps = useRef<Map<number, string>>(new Map());
 
   useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
     setIsTransitioning(false);
+    return () => mq.removeEventListener("change", handler);
   }, []);
 
   const pickNewImage = useCallback(
@@ -52,12 +61,12 @@ export function PodcastBackgroundAnimation({
   );
 
   useEffect(() => {
-    if (isTransitioning || repeatedImages.length < 2) return;
+    if (isTransitioning || repeatedImages.length < 2 || isMobile) return;
 
     const interval = setInterval(() => {
       const indices = new Set<number>();
       while (indices.size < SWAP_COUNT) {
-        indices.add(Math.floor(Math.random() * GRID_SIZE));
+        indices.add(Math.floor(Math.random() * gridSize));
       }
 
       const swaps = new Map<number, string>();
@@ -86,7 +95,7 @@ export function PodcastBackgroundAnimation({
     }, SWAP_INTERVAL);
 
     return () => clearInterval(interval);
-  }, [isTransitioning, repeatedImages, pickNewImage]);
+  }, [isTransitioning, repeatedImages, pickNewImage, isMobile, gridSize]);
 
   return (
     <div className={styles.headerScroll}>
@@ -95,7 +104,7 @@ export function PodcastBackgroundAnimation({
           isTransitioning ? styles.loading : styles.loaded
         }`}
       >
-        {currentImages.map((image, index) => (
+        {currentImages.slice(0, gridSize).map((image, index) => (
           <div
             key={index}
             className={`${styles.heroCoverArtsDiv} ${

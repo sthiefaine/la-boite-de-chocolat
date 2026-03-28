@@ -39,7 +39,7 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: var(--shadow-medium);
-  transition: all var(--transition-normal);
+  transition: opacity var(--transition-normal);
   flex-shrink: 0;
   perspective: 800px;
 }
@@ -101,7 +101,6 @@
   height: 100%;
   object-fit: cover;
   border-radius: 12px;
-  transition: all var(--transition-normal);
 }
 
 .imagePlaceholder {
@@ -122,6 +121,22 @@
   }
   100% {
     opacity: 0.4;
+  }
+}
+
+@media (max-width: 768px) {
+  .heroCoverArtsDiv {
+    perspective: none;
+    box-shadow: none;
+    transition: none;
+  }
+
+  .heroCoverArtsDiv:hover {
+    opacity: unset;
+    filter: none;
+    transform: none;
+    box-shadow: none;
+    z-index: auto;
   }
 }
 

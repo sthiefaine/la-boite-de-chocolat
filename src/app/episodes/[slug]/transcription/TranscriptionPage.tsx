@@ -247,21 +247,31 @@ export default function TranscriptionPage({
     return markers;
   }, [contentSections]);
 
-  // Push speaker segments to the player store
-  useEffect(() => {
+  // Build speaker segments once
+  const speakerSegments = useMemo(() => {
     const hasSpeakers = entries.some((e) => e.speaker_id);
-    if (!hasSpeakers) return;
+    if (!hasSpeakers) return null;
 
-    const segments: SpeakerSegment[] = entries
+    return entries
       .filter((e) => e.speaker_id)
       .map((e) => ({
         start: srtTimeToSeconds(e.startTime),
         end: srtTimeToSeconds(e.endTime),
         speakerId: e.speaker_id!,
       }));
-
-    usePlayerStore.getState().setSpeakerSegments(segments);
   }, [entries]);
+
+  // Push speaker segments to the player store only when this episode is playing
+  const playerEpisodeId = usePlayerStore(
+    useShallow((state) => state.episode?.id)
+  );
+
+  useEffect(() => {
+    if (!speakerSegments) return;
+    if (playerEpisodeId !== episode.id) return;
+
+    usePlayerStore.getState().setSpeakerSegments(speakerSegments);
+  }, [speakerSegments, playerEpisodeId, episode.id]);
 
   // Focus search input when opened
   useEffect(() => {

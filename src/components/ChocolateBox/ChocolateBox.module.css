@@ -471,6 +471,10 @@
 }
 
 @media (max-width: 768px) {
+  .randomEpisode {
+    animation: none;
+  }
+
   .coffret {
     padding: 6px;
     transform-style: flat;

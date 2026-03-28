@@ -56,7 +56,9 @@ export const usePlayerStore = create(
       ...defaultInitState,
       setIsPlaying: (isPlaying: boolean) => set({ isPlaying }),
       setEpisode: (episode: EpisodeInfo) => {
-        set({ episode });
+        const current = get().episode;
+        const changed = current?.id !== episode.id;
+        set({ episode, ...(changed ? { speakerSegments: null } : {}) });
         const queueStore = useQueueStore.getState();
         const queueIndex = queueStore.queue.findIndex(item => item.id === episode.id);
         if (queueIndex !== -1) {
@@ -64,10 +66,7 @@ export const usePlayerStore = create(
         }
       },
       setRandomEpisode: (episode: EpisodeInfo) => {
-        set({ isPlaying: false });
-        set({ currentPlayTime: 0 });
-        set({ episode });
-        set({ launchPlay: true });
+        set({ isPlaying: false, currentPlayTime: 0, episode, launchPlay: true, speakerSegments: null });
         set({ isPlaying: true });
       },
       setLaunchPlay: (launchPlay: boolean) => set({ launchPlay }),
@@ -80,7 +79,7 @@ export const usePlayerStore = create(
         const queueStore = useQueueStore.getState();
         const nextEpisode = queueStore.getNextEpisode();
         if (nextEpisode) {
-          set({ episode: nextEpisode, isPlaying: true });
+          set({ episode: nextEpisode, isPlaying: true, speakerSegments: null });
           queueStore.setCurrentIndex(queueStore.currentIndex + 1);
         }
       },
@@ -88,7 +87,7 @@ export const usePlayerStore = create(
         const queueStore = useQueueStore.getState();
         const previousEpisode = queueStore.getPreviousEpisode();
         if (previousEpisode) {
-          set({ episode: previousEpisode, isPlaying: true });
+          set({ episode: previousEpisode, isPlaying: true, speakerSegments: null });
           queueStore.setCurrentIndex(queueStore.currentIndex - 1);
         }
       },
