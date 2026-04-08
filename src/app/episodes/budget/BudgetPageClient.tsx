@@ -30,9 +30,11 @@ const TABS: { key: TabKey; label: string; icon: string; color: string }[] = [
   { key: "success", label: "Succès", icon: "🚀", color: "#2e7d32" },
 ];
 
+const MAX_PER_CATEGORY = 20;
+
 function computeAll(items: BudgetItem[]) {
-  const top = [...items].sort((a, b) => b.budget - a.budget);
-  const low = [...items].sort((a, b) => a.budget - b.budget);
+  const top = [...items].sort((a, b) => b.budget - a.budget).slice(0, MAX_PER_CATEGORY);
+  const low = [...items].sort((a, b) => a.budget - b.budget).slice(0, MAX_PER_CATEGORY);
 
   const withRoi = items
     .filter((i) => i.revenue && i.revenue > 0)
@@ -43,11 +45,13 @@ function computeAll(items: BudgetItem[]) {
 
   const flops = withRoi
     .filter((i) => i.roi < 0)
-    .sort((a, b) => a.roi - b.roi);
+    .sort((a, b) => a.roi - b.roi)
+    .slice(0, MAX_PER_CATEGORY);
 
   const success = withRoi
     .filter((i) => i.roi > 200)
-    .sort((a, b) => b.roi - a.roi);
+    .sort((a, b) => b.roi - a.roi)
+    .slice(0, MAX_PER_CATEGORY);
 
   return { top, low, flops, success };
 }

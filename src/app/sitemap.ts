@@ -5,51 +5,6 @@ import { SITE_URL } from "@/helpers/config";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = SITE_URL || "http://localhost:3000";
 
-  const staticPages = [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: "daily" as const,
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/episodes`,
-      lastModified: new Date(),
-      changeFrequency: "daily" as const,
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/sagas`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/films`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/episodes/top`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/people`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    },
-  ];
-
   // Récupérer les épisodes avec transcriptions
   const episodes = await prisma.podcastEpisode.findMany({
     where: {
@@ -161,6 +116,54 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "monthly" as const,
     priority: 0.5,
   }));
+
+  // Utiliser les dates réelles de la DB pour les pages statiques
+  const latestEpisodeDate = episodes[0]?.updatedAt ?? new Date("2026-04-01");
+
+  const staticPages = [
+    {
+      url: baseUrl,
+      lastModified: latestEpisodeDate,
+      changeFrequency: "daily" as const,
+      priority: 1,
+    },
+    {
+      url: `${baseUrl}/episodes`,
+      lastModified: latestEpisodeDate,
+      changeFrequency: "daily" as const,
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/sagas`,
+      lastModified: sagas[0]?.updatedAt ?? latestEpisodeDate,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/films`,
+      lastModified: films[0]?.updatedAt ?? latestEpisodeDate,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/episodes/top`,
+      lastModified: latestEpisodeDate,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/people`,
+      lastModified: people[0]?.updatedAt ?? latestEpisodeDate,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/about`,
+      lastModified: new Date("2026-01-01"),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    },
+  ];
 
   return [
     ...staticPages,

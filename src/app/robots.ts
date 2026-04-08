@@ -39,7 +39,7 @@ const SEARCH_ENGINE_BOTS = [
 ];
 
 const DEFAULT_RULES = {
-  allow: ["/", "/episodes/", "/sagas/", "/transcriptions/"],
+  allow: ["/", "/episodes/", "/films/", "/sagas/", "/people/", "/transcriptions/", "/about"],
   disallow: ["/admin/", "/api/", "/private/", "/signin", "/signup", "/unauthorized", "/options", "/*?*utm*", "/*?*ref*", "/*?*callbackUrl*"],
 };
 

@@ -810,7 +810,6 @@ export async function getEpisodesWithBudgetStats() {
         },
       },
       orderBy: { pubDate: "desc" },
-      take: 12,
     });
 
     // Flatten: one entry per film with budget
