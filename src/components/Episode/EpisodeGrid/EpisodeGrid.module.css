@@ -188,35 +188,6 @@
   opacity: 0.3;
 }
 
-/* Animation d'apparition en cascade pour les cartes */
-.episodesGrid > * {
-  animation: fadeInUp 0.6s ease-out forwards;
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-.episodesGrid > *:nth-child(1) {
-  animation-delay: 0.1s;
-}
-.episodesGrid > *:nth-child(2) {
-  animation-delay: 0.2s;
-}
-.episodesGrid > *:nth-child(3) {
-  animation-delay: 0.3s;
-}
-.episodesGrid > *:nth-child(4) {
-  animation-delay: 0.4s;
-}
-.episodesGrid > *:nth-child(5) {
-  animation-delay: 0.5s;
-}
-.episodesGrid > *:nth-child(6) {
-  animation-delay: 0.6s;
-}
-.episodesGrid > *:nth-child(7) {
-  animation-delay: 0.7s;
-}
-
 @keyframes fadeInUp {
   to {
     opacity: 1;
@@ -637,12 +608,14 @@
   padding: 1rem 0;
 }
 
-/* Animation d'apparition améliorée avec stagger */
+/* Animation d'apparition en cascade pour les cartes.
+   Pas de will-change permanent : sur une longue liste (infinite scroll),
+   il promeut chaque carte en couche GPU et provoque l'éviction des couches
+   hors-écran sur mobile -> les cartes retombent à opacity:0 et disparaissent. */
 .episodesGrid > * {
   animation: fadeInUp 0.3s ease-out forwards;
   opacity: 0;
   transform: translateY(20px);
-  will-change: transform, opacity;
 }
 
 .episodesGrid > *:nth-child(1) {
@@ -674,6 +647,18 @@
 }
 .episodesGrid > *:nth-child(10) {
   animation-delay: 0.5s;
+}
+
+/* Mobile/tactile : pas de cascade d'apparition. Les cartes sont affichées
+   directement (opacity:1, sans transform/animation/will-change) -> scroll
+   fluide et aucune carte ne peut disparaître au scroll. */
+@media (hover: none) and (pointer: coarse) {
+  .episodesGrid > * {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+  }
 }
 
 .loadingObserver {

@@ -64,6 +64,10 @@ export default function Footer() {
         </div>
 
         <div className={styles.credits}>
+          <a href="/plan-du-site" className={styles.link}>
+            Plan du site
+          </a>
+          <span className={styles.separator} aria-hidden="true">·</span>
           <p className={styles.text}>
             Les images de films sont fournies par{" "}
             <a

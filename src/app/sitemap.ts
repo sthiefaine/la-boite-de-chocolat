@@ -2,6 +2,11 @@ import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { SITE_URL } from "@/helpers/config";
 
+// Mise en cache ISR : le sitemap exécute plusieurs requêtes Prisma.
+// Le régénérer 1x/jour évite les "Erreur de traitement temporaire" vues par
+// Googlebot quand la DB est sous charge, et garantit une réponse rapide.
+export const revalidate = 86400;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = SITE_URL || "http://localhost:3000";
 
@@ -162,6 +167,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date("2026-01-01"),
       changeFrequency: "monthly" as const,
       priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/plan-du-site`,
+      lastModified: latestEpisodeDate,
+      changeFrequency: "daily" as const,
+      priority: 0.5,
     },
   ];
 

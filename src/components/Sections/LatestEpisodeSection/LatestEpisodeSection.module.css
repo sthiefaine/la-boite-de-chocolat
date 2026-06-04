@@ -354,6 +354,20 @@
   .episodeBadge {
     animation: none !important;
   }
+
+  /* Alléger le rendu mobile : supprimer les effets coûteux au scroll.
+     Le backdrop-filter force un recompositing GPU à chaque frame de scroll,
+     et les overlays ::before (shine au hover) sont inutiles sur tactile. */
+  .episodeCard {
+    backdrop-filter: none;
+    transition: none;
+  }
+  .latestEpisode::before,
+  .episodeBadge::before,
+  .playButton::before,
+  .visitButton::before {
+    display: none;
+  }
 }
 
 @media (max-width: 480px) {

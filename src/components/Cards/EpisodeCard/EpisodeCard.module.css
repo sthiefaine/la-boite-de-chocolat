@@ -139,7 +139,6 @@
 
 .effectglow {
   position: relative;
-  will-change: transform;
 }
 
 .cardArticle:hover .effectglow {
