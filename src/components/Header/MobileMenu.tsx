@@ -39,7 +39,11 @@ export function MobileMenu({ user }: MobileMenuProps) {
 
   if (!mounted) {
     return (
-      <button className={styles.menuButton} onClick={toggleMenu}>
+      <button
+        className={styles.menuButton}
+        onClick={toggleMenu}
+        aria-label="Ouvrir le menu"
+      >
         <Menu size={24} className={styles.menuIcon} />
         <X size={24} className={styles.closeIcon} />
       </button>
@@ -52,6 +56,8 @@ export function MobileMenu({ user }: MobileMenuProps) {
         className={styles.menuButton}
         onClick={toggleMenu}
         data-open={isOpen}
+        aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
+        aria-expanded={isOpen}
       >
         <Menu size={24} className={styles.menuIcon} />
         <X size={24} className={styles.closeIcon} />

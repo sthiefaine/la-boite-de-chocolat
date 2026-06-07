@@ -6,6 +6,7 @@ import { getUser } from "@/lib/auth/auth-server";
 import { MobileMenu } from "./MobileMenu";
 import AuthButtonClient from "./AuthButtonClient";
 import { NavLink } from "./NavLink";
+import SearchCommand from "@/components/Search/SearchCommand";
 import styles from "./Header.module.css";
 
 
@@ -42,14 +43,17 @@ export default async function Header() {
             <ProfileLinkConditional className={styles.navLink} />
           </Suspense>
           <Suspense fallback={<ButtonSkeleton className={styles.navLink} />}>
-            <AuthButtonClient 
-              className={styles.navLink} 
+            <AuthButtonClient
+              className={styles.navLink}
               isAuthenticated={!!user}
             />
           </Suspense>
         </nav>
 
-        <MobileMenu user={user} />
+        <div className={styles.headerActions}>
+          <SearchCommand />
+          <MobileMenu user={user} />
+        </div>
       </div>
     </header>
   );

@@ -334,11 +334,54 @@ export const Player = () => {
   const handleSkipForward = () => {
     const audioElement = audioRef.current;
     if (!audioElement) return;
-    
+
     const newTime = Math.min(audioElement.duration || 0, audioElement.currentTime + 10);
     audioElement.currentTime = newTime;
     setCurrentPlayTime(newTime);
   };
+
+  // Raccourcis clavier globaux (actifs uniquement quand un épisode est chargé)
+  useEffect(() => {
+    if (!episode) return;
+
+    const isTypingContext = (target: EventTarget | null) => {
+      const el = target as HTMLElement | null;
+      if (!el) return false;
+      const tag = el.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return true;
+      if (el.isContentEditable) return true;
+      return false;
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) return;
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (isTypingContext(event.target)) return;
+
+      switch (event.key) {
+        case " ":
+        case "Spacebar":
+          event.preventDefault();
+          togglePlay();
+          break;
+        case "ArrowRight":
+          event.preventDefault();
+          handleSkipForward();
+          break;
+        case "ArrowLeft":
+          event.preventDefault();
+          handleSkipBackward();
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [episode, isPlaying]);
 
   if (!episode?.url) {
     return null;

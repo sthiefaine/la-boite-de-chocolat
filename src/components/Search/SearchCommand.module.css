@@ -1,0 +1,162 @@
+/* Trigger button (dans le header) */
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--glass-bg-light, rgba(0, 0, 0, 0.04));
+  border: 1px solid var(--glass-border-light, rgba(0, 0, 0, 0.1));
+  color: var(--text-secondary, #555);
+  padding: 0.4rem 0.7rem;
+  border-radius: var(--radius-full, 9999px);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background var(--transition-fast, 0.15s ease), color var(--transition-fast, 0.15s ease);
+}
+
+.trigger:hover {
+  background: var(--glass-bg-medium, rgba(0, 0, 0, 0.08));
+  color: var(--chocolate-primary, #6b3e26);
+}
+
+.triggerLabel {
+  font-weight: 500;
+}
+
+.kbd {
+  font-family: inherit;
+  font-size: 0.72rem;
+  line-height: 1;
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--glass-bg-medium, rgba(0, 0, 0, 0.08));
+  border: 1px solid var(--glass-border-light, rgba(0, 0, 0, 0.12));
+  color: var(--text-secondary, #666);
+  white-space: nowrap;
+}
+
+/* Overlay + panel */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 12vh 1rem 1rem;
+  z-index: 10000;
+  animation: fadeIn 0.12s ease-out;
+}
+
+.panel {
+  width: 100%;
+  max-width: 600px;
+  background: var(--bg-secondary, #fff);
+  border-radius: var(--radius-xl, 16px);
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 70vh;
+  animation: slideDown 0.14s ease-out;
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--gray-200, #eee);
+}
+
+.inputIcon {
+  color: var(--text-secondary, #888);
+  flex-shrink: 0;
+}
+
+.input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 1rem;
+  color: var(--text-primary, #1a1a1a);
+}
+
+.results {
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem;
+  overflow-y: auto;
+}
+
+.empty {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  color: var(--text-secondary, #888);
+  font-size: 0.9rem;
+}
+
+.result {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.75rem;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-md, 8px);
+  cursor: pointer;
+  text-align: left;
+  color: var(--text-primary, #1a1a1a);
+  font-size: 0.95rem;
+}
+
+.resultActive {
+  background: var(--chocolate-cream, #f7f3ef);
+}
+
+.resultIcon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.resultName {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.resultType {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: var(--text-secondary, #888);
+  background: var(--glass-bg-light, rgba(0, 0, 0, 0.05));
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full, 9999px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Sur mobile, le label texte est masqué pour gagner de la place */
+@media (max-width: 600px) {
+  .triggerLabel,
+  .trigger .kbd {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .panel {
+    animation: none;
+  }
+}
