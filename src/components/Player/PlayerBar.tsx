@@ -17,6 +17,7 @@ export const PlayerBar = ({ audioRef, isPlaying }: PlayerBarProps) => {
     currentPlayTime,
     totalDuration,
     speakerSegments,
+    episode,
   } = usePlayerStore(
     useShallow((state) => ({
       setCurrentPlayTime: state.setCurrentPlayTime,
@@ -24,8 +25,17 @@ export const PlayerBar = ({ audioRef, isPlaying }: PlayerBarProps) => {
       currentPlayTime: state.currentPlayTime,
       totalDuration: state.totalDuration,
       speakerSegments: state.speakerSegments,
+      episode: state.episode,
     }))
   );
+
+  // Les segments ne colorent le waveform que s'ils appartiennent à
+  // l'épisode en cours de lecture (ils peuvent venir d'une page
+  // transcription d'un autre épisode).
+  const activeSpeakerSegments =
+    speakerSegments && episode && speakerSegments.episodeId === episode.id
+      ? speakerSegments.segments
+      : null;
 
   // Fonction utilitaire pour formater les nombres
   const padZero = (num: number) => {
@@ -116,7 +126,7 @@ export const PlayerBar = ({ audioRef, isPlaying }: PlayerBarProps) => {
         progress={progress}
         totalDuration={totalDuration}
         onProgressClick={handleProgressBarClick}
-        speakerSegments={speakerSegments}
+        speakerSegments={activeSpeakerSegments}
       />
       <div className={styles.timer_container}>
         <span className={styles.player_bar_timer}>

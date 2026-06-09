@@ -8,6 +8,7 @@ import {
   parseWithTimeMarkers,
   srtTimeToSeconds,
 } from "@/helpers/transcriptionHelpers";
+import { countWords } from "@/helpers/wordStats";
 import TranscriptionPage from "./TranscriptionPage";
 import { generateMetadata } from "./metadata";
 
@@ -74,6 +75,12 @@ export default async function TranscriptionPageServer({
         }))
       : null;
 
+  // Mots les plus dits de cet épisode (mêmes stopwords que /transcription/stats)
+  const topWords = countWords(
+    parsedEntries.map((e) => e.text).join(" "),
+    14
+  );
+
   return (
     <TranscriptionPage
       episode={episode}
@@ -81,6 +88,7 @@ export default async function TranscriptionPageServer({
       entries={parsedEntries}
       timeMarkedSections={timeMarkedSections || entriesAsSections}
       mainFilmImageUrl={mainFilmImageUrl}
+      topWords={topWords}
     />
   );
 }

@@ -68,6 +68,10 @@ export default function Footer() {
             Plan du site
           </a>
           <span className={styles.separator} aria-hidden="true">·</span>
+          <a href="/transcription/stats" className={styles.link}>
+            Les mots du podcast
+          </a>
+          <span className={styles.separator} aria-hidden="true">·</span>
           <p className={styles.text}>
             Les images de films sont fournies par{" "}
             <a

@@ -70,6 +70,13 @@ export function getSpeakerLabel(speakerId: string): string {
 const SRT_TIMESTAMP_LINE_REGEX =
   /(\d{1,2}:\d{2}:\d{2}[,.]\d{1,3})\s*-->\s*(\d{1,2}:\d{2}:\d{2}[,.]\d{1,3})/;
 
+// Le format SRT n'a pas de champ speaker structuré (contrairement au JSON
+// Whisper). Certains outils l'embarquent en préfixe texte : "Locuteur 1: ...",
+// "Speaker 2: ...". On l'extrait vers speaker_id (normalisé "speaker_N") pour
+// retrouver les couleurs/labels d'intervenants comme en JSON.
+const SRT_SPEAKER_PREFIX_REGEX =
+  /^(?:locuteur|speaker|intervenant)\s*[_-]?\s*(\d+)\s*:\s*/i;
+
 function normalizeSrtTimestamp(timestamp: string): string {
   const match = timestamp.match(/(\d{1,2}):(\d{2}):(\d{2})[,.](\d{1,3})/);
   if (!match) return timestamp;
@@ -116,12 +123,21 @@ export function parseSRT(content: string): SubtitleEntry[] {
     const timeMatch = timeLine.match(SRT_TIMESTAMP_LINE_REGEX);
     if (!timeMatch) continue;
 
-    const text = lines
+    let text = lines
       .slice(timeLineIndex + 1)
       .join(" ")
       .trim();
 
     if (!text) continue;
+
+    // Extraire un éventuel préfixe d'intervenant ("Locuteur 1: ...")
+    let speakerId: string | undefined;
+    const speakerMatch = text.match(SRT_SPEAKER_PREFIX_REGEX);
+    if (speakerMatch) {
+      speakerId = `speaker_${speakerMatch[1]}`;
+      text = text.slice(speakerMatch[0].length).trim();
+      if (!text) continue;
+    }
 
     const parsedIndex = timeLineIndex === 1 ? parseInt(lines[0], 10) : NaN;
     const id = Number.isNaN(parsedIndex) ? fallbackId : parsedIndex;
@@ -131,6 +147,7 @@ export function parseSRT(content: string): SubtitleEntry[] {
       startTime: normalizeSrtTimestamp(timeMatch[1]),
       endTime: normalizeSrtTimestamp(timeMatch[2]),
       text,
+      ...(speakerId && { speaker_id: speakerId }),
     });
 
     fallbackId = id + 1;

@@ -14,6 +14,13 @@ type EpisodeInfo = {
   age?: string | null;
 };
 
+// Segments tagués par épisode : le visualiseur ne doit colorer le waveform
+// que si les segments appartiennent à l'épisode en cours de lecture.
+type TaggedSpeakerSegments = {
+  episodeId: string;
+  segments: SpeakerSegment[];
+};
+
 type PlayerState = {
   isPlaying: boolean;
   launchPlay: boolean;
@@ -21,7 +28,7 @@ type PlayerState = {
   episode: EpisodeInfo | null;
   totalDuration: number;
   isMinimized: boolean;
-  speakerSegments: SpeakerSegment[] | null;
+  speakerSegments: TaggedSpeakerSegments | null;
 };
 
 export type PlayerActions = {
@@ -35,7 +42,7 @@ export type PlayerActions = {
   playNext: () => void;
   playPrevious: () => void;
   setRandomEpisode: (episode: EpisodeInfo) => void;
-  setSpeakerSegments: (segments: SpeakerSegment[] | null) => void;
+  setSpeakerSegments: (tagged: TaggedSpeakerSegments | null) => void;
 };
 
 export type PlayerStore = PlayerState & PlayerActions;
@@ -74,7 +81,7 @@ export const usePlayerStore = create(
       setCurrentPlayTime: (currentPlayTime: number) => set({ currentPlayTime }),
       setTotalDuration: (totalDuration: number) => set({ totalDuration }),
       setIsMinimized: (isMinimized: boolean) => set({ isMinimized }),
-      setSpeakerSegments: (segments: SpeakerSegment[] | null) => set({ speakerSegments: segments }),
+      setSpeakerSegments: (tagged: TaggedSpeakerSegments | null) => set({ speakerSegments: tagged }),
       setClearPlayerStore: () => set(defaultInitState),
       playNext: () => {
         const queueStore = useQueueStore.getState();

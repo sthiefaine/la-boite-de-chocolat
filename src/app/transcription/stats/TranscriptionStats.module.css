@@ -1,0 +1,152 @@
+.main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: calc(60px + 2.5rem) 1.5rem 4rem;
+  color: var(--text-primary);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.title {
+  font-size: 2.4rem;
+  font-weight: 900;
+  margin: 0 0 0.75rem;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.empty {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 3rem 0;
+}
+
+/* Nuage de mots */
+.cloud {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.5rem 1.1rem;
+  padding: 2rem 1rem;
+  background: var(--bg-secondary, #fff);
+  border: 1px solid var(--gray-200, #e5e5e5);
+  border-radius: var(--radius-2xl, 24px);
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.08));
+  margin-bottom: 3rem;
+  line-height: 1.15;
+}
+
+.cloudWord {
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: default;
+  transition: transform var(--transition-fast, 0.15s ease);
+}
+
+.cloudWord:hover {
+  transform: scale(1.12);
+}
+
+/* Top 20 */
+.topSection {
+  margin-bottom: 3rem;
+}
+
+.topTitle {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin: 0 0 1.25rem;
+}
+
+.topList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.topItem {
+  display: grid;
+  grid-template-columns: 2rem 9rem 1fr 3.5rem;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.topRank {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.topWord {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topBar {
+  height: 0.65rem;
+  border-radius: var(--radius-full, 9999px);
+  background: linear-gradient(
+    90deg,
+    var(--chocolate-secondary, #a67c52),
+    var(--chocolate-primary, #6b3e26)
+  );
+  min-width: 4px;
+}
+
+.topCount {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.footer {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.link {
+  color: var(--chocolate-primary, #6b3e26);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .title {
+    font-size: 1.8rem;
+  }
+
+  .cloud {
+    padding: 1.25rem 0.75rem;
+    gap: 0.35rem 0.8rem;
+  }
+
+  .topItem {
+    grid-template-columns: 1.5rem 7rem 1fr 3rem;
+    gap: 0.5rem;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .cloudWord:hover {
+    transform: none;
+  }
+}

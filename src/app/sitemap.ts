@@ -174,6 +174,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "daily" as const,
       priority: 0.5,
     },
+    {
+      url: `${baseUrl}/transcription/stats`,
+      lastModified: latestEpisodeDate,
+      changeFrequency: "weekly" as const,
+      priority: 0.5,
+    },
   ];
 
   return [

@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { countWords, type WordCount } from "@/helpers/wordStats";
 import {
   srtTimeToSeconds,
   extractTimeAndText,
@@ -62,6 +64,7 @@ interface TranscriptionPageProps {
   entries: SubtitleEntry[];
   timeMarkedSections?: Section[] | null;
   mainFilmImageUrl: string;
+  topWords?: WordCount[];
 }
 
 // --- Single line component ---
@@ -187,10 +190,12 @@ export default function TranscriptionPage({
   entries,
   timeMarkedSections,
   mainFilmImageUrl,
+  topWords,
 }: TranscriptionPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [syncWithPlayer, setSyncWithPlayer] = useState(true);
+  const [speakerFilter, setSpeakerFilter] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const { isPlaying } = usePlayerStore(
@@ -224,14 +229,60 @@ export default function TranscriptionPage({
     [allSections]
   );
 
-  // Filter by search
+  // Filter by search + speaker
   const filteredSections = useMemo(() => {
-    if (!searchQuery.trim()) return contentSections;
-    const lower = searchQuery.toLowerCase();
-    return contentSections.filter((s) =>
-      s.content.toLowerCase().includes(lower)
-    );
-  }, [contentSections, searchQuery]);
+    let sections = contentSections;
+    if (speakerFilter) {
+      sections = sections.filter((s) => s.speaker_id === speakerFilter);
+    }
+    if (searchQuery.trim()) {
+      const lower = searchQuery.toLowerCase();
+      sections = sections.filter((s) =>
+        s.content.toLowerCase().includes(lower)
+      );
+    }
+    return sections;
+  }, [contentSections, searchQuery, speakerFilter]);
+
+  // Intervenants distincts (ordre numérique) pour la légende/le filtre
+  const speakers = useMemo(() => {
+    const ids = new Set<string>();
+    for (const s of contentSections) {
+      if (s.speaker_id) ids.add(s.speaker_id);
+    }
+    return [...ids].sort((a, b) => {
+      const na = parseInt(a.match(/(\d+)/)?.[1] ?? "0", 10);
+      const nb = parseInt(b.match(/(\d+)/)?.[1] ?? "0", 10);
+      return na - nb;
+    });
+  }, [contentSections]);
+
+  const mainFilm = episode.links[0]?.film ?? null;
+
+  // Mots affichés dans l'intro : ceux de l'épisode (calculés côté serveur),
+  // ou ceux de l'intervenant sélectionné (calculés à la volée).
+  const displayedWords = useMemo(() => {
+    if (!speakerFilter) return topWords ?? [];
+    const text = contentSections
+      .filter((s) => s.speaker_id === speakerFilter)
+      .map((s) => s.content)
+      .join(" ");
+    return countWords(text, 14);
+  }, [speakerFilter, topWords, contentSections]);
+
+  // Stats de l'épisode pour le bloc d'intro
+  const introStats = useMemo(() => {
+    if (contentSections.length === 0) return null;
+    const last = contentSections[contentSections.length - 1];
+    const totalSeconds = last.endSeconds || last.startSeconds;
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.round((totalSeconds % 3600) / 60);
+    const duration =
+      hours > 0
+        ? `${hours} h ${minutes.toString().padStart(2, "0")}`
+        : `${minutes} min`;
+    return { lines: contentSections.length, duration };
+  }, [contentSections]);
 
   // Compute time markers (every 10 min)
   const timeMarkers = useMemo(() => {
@@ -247,7 +298,9 @@ export default function TranscriptionPage({
     return markers;
   }, [contentSections]);
 
-  // Push speaker segments to the player store
+  // Push speaker segments to the player store, tagués avec l'id de
+  // l'épisode : le player ne les applique que si c'est bien cet épisode
+  // qui joue. Nettoyés au démontage (sans écraser ceux d'une autre page).
   useEffect(() => {
     const hasSpeakers = entries.some((e) => e.speaker_id);
     if (!hasSpeakers) return;
@@ -260,8 +313,18 @@ export default function TranscriptionPage({
         speakerId: e.speaker_id!,
       }));
 
-    usePlayerStore.getState().setSpeakerSegments(segments);
-  }, [entries]);
+    usePlayerStore.getState().setSpeakerSegments({
+      episodeId: episode.id,
+      segments,
+    });
+
+    return () => {
+      const store = usePlayerStore.getState();
+      if (store.speakerSegments?.episodeId === episode.id) {
+        store.setSpeakerSegments(null);
+      }
+    };
+  }, [entries, episode.id]);
 
   // Focus search input when opened
   useEffect(() => {
@@ -475,6 +538,104 @@ export default function TranscriptionPage({
 
       {/* Conversation - phrase by phrase */}
       <div className={styles.conversationScroller}>
+        {/* Bloc d'intro : contexte épisode, intervenants, mots-clés */}
+        <section className={styles.intro}>
+          <div className={styles.introHeader}>
+            {mainFilmImageUrl && (
+              <Image
+                src={mainFilmImageUrl}
+                alt={mainFilm ? `Poster de ${mainFilm.title}` : episode.title}
+                width={72}
+                height={108}
+                className={styles.introPoster}
+                unoptimized
+              />
+            )}
+            <div className={styles.introMeta}>
+              {mainFilm && (
+                <p className={styles.introFilm}>
+                  {mainFilm.title}
+                  {mainFilm.year ? ` (${mainFilm.year})` : ""}
+                </p>
+              )}
+              {introStats && (
+                <p className={styles.introStats}>
+                  {introStats.lines} répliques
+                  {speakers.length > 0 &&
+                    ` · ${speakers.length} intervenant${speakers.length > 1 ? "s" : ""}`}
+                  {` · ${introStats.duration}`}
+                </p>
+              )}
+              <Link href="/transcription/stats" className={styles.introStatsLink}>
+                Voir les mots de tout le podcast
+              </Link>
+            </div>
+          </div>
+
+          {speakers.length > 1 && (
+            <div className={styles.introRow}>
+              <span className={styles.introLabel}>Intervenants</span>
+              <div className={styles.chipList}>
+                {speakers.map((id) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() =>
+                      setSpeakerFilter((prev) => (prev === id ? null : id))
+                    }
+                    className={`${styles.speakerChip} ${
+                      speakerFilter === id ? styles.speakerChipActive : ""
+                    }`}
+                    aria-pressed={speakerFilter === id}
+                  >
+                    <span
+                      className={styles.speakerChipDot}
+                      style={{ backgroundColor: getSpeakerColor(id) }}
+                      aria-hidden="true"
+                    />
+                    {getSpeakerLabel(id)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {displayedWords.length > 0 && (
+            <div className={styles.introRow}>
+              <span className={styles.introLabel}>
+                {speakerFilter
+                  ? `Les mots de ${getSpeakerLabel(speakerFilter)}`
+                  : "Les mots de cet épisode"}
+              </span>
+              <div className={styles.chipList}>
+                {displayedWords.map((w) => (
+                  <button
+                    key={w.word}
+                    type="button"
+                    onClick={() => {
+                      if (searchQuery === w.word) {
+                        setSearchQuery("");
+                        setSearchOpen(false);
+                      } else {
+                        setSearchQuery(w.word);
+                        setSearchOpen(true);
+                      }
+                    }}
+                    className={`${styles.wordChip} ${
+                      searchQuery === w.word ? styles.wordChipActive : ""
+                    }`}
+                    aria-pressed={searchQuery === w.word}
+                    title={`${w.count} occurrences — cliquer pour rechercher`}
+                  >
+                    {w.word}
+                    <span className={styles.wordChipCount}>{w.count}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+
         {renderItems.length > 0 ? (
           renderItems.map((item) =>
             item.type === "divider" ? (
@@ -497,6 +658,7 @@ export default function TranscriptionPage({
             <div>Essayez avec un autre mot-clé</div>
           </div>
         )}
+
       </div>
     </div>
   );

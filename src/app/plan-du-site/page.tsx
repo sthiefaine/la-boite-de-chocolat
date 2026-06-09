@@ -62,6 +62,7 @@ export default async function PlanDuSitePage() {
           <li><a className={styles.link} href="/sagas">Toutes les sagas</a></li>
           <li><a className={styles.link} href="/people">Toutes les personnalités</a></li>
           <li><a className={styles.link} href="/episodes/top">Top épisodes</a></li>
+          <li><a className={styles.link} href="/transcription/stats">Les mots du podcast</a></li>
           <li><a className={styles.link} href="/about">À propos</a></li>
         </ul>
       </nav>
