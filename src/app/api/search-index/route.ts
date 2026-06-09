@@ -5,8 +5,8 @@ import { getAllSagasWithStats } from "@/app/actions/saga";
 import { getAllPeople } from "@/app/actions/person";
 
 // Index de recherche compact pour la palette globale (⌘K).
-// Mis en cache 1h : il agrège plusieurs requêtes Prisma.
-export const revalidate = 3600;
+// Cache serveur 5 min : il agrège plusieurs requêtes Prisma.
+export const revalidate = 300;
 
 const isAdult = (age?: string | null) => age === "18+" || age === "adult";
 
@@ -47,7 +47,7 @@ export async function GET() {
 
     return NextResponse.json(
       { items },
-      { headers: { "Cache-Control": "public, max-age=3600, s-maxage=3600" } }
+      { headers: { "Cache-Control": "no-cache" } }
     );
   } catch (error) {
     console.error("Erreur génération index de recherche:", error);

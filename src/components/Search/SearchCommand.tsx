@@ -2,16 +2,19 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Search } from "lucide-react";
+import { Search, Mic, Clapperboard, Layers, User, type LucideIcon } from "lucide-react";
 import styles from "./SearchCommand.module.css";
 
 type IndexItem = { t: "e" | "f" | "s" | "p"; s: string; n: string };
 
-const TYPE_META: Record<IndexItem["t"], { label: string; icon: string; path: string }> = {
-  e: { label: "Épisode", icon: "🎙️", path: "/episodes" },
-  f: { label: "Film", icon: "🎬", path: "/films" },
-  s: { label: "Saga", icon: "📚", path: "/sagas" },
-  p: { label: "Personne", icon: "👤", path: "/people" },
+const TYPE_META: Record<
+  IndexItem["t"],
+  { label: string; plural: string; Icon: LucideIcon; path: string }
+> = {
+  e: { label: "Épisode", plural: "Épisodes", Icon: Mic, path: "/episodes" },
+  f: { label: "Film", plural: "Films", Icon: Clapperboard, path: "/films" },
+  s: { label: "Saga", plural: "Sagas", Icon: Layers, path: "/sagas" },
+  p: { label: "Personne", plural: "Personnes", Icon: User, path: "/people" },
 };
 
 // Normalise pour une recherche insensible aux accents et à la casse.
@@ -23,6 +26,10 @@ const normalize = (str: string) =>
 
 const MAX_RESULTS = 24;
 
+// TTL côté client : au-delà de 5 min, on re-fetch l'index
+// en gardant les items existants affichés (pas de flicker).
+const INDEX_TTL_MS = 5 * 60_000;
+
 export default function SearchCommand() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -32,17 +39,21 @@ export default function SearchCommand() {
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
+  const lastFetchRef = useRef(0);
 
-  // Charge l'index une seule fois (à la première ouverture).
+  // Charge l'index avec un TTL : re-fetch silencieux après expiration.
   const loadIndex = useCallback(async () => {
-    if (items || loading) return;
+    if (loading) return;
+    if (items && Date.now() - lastFetchRef.current < INDEX_TTL_MS) return;
     setLoading(true);
     try {
-      const res = await fetch("/api/search-index");
+      const res = await fetch("/api/search-index", { cache: "no-store" });
       const data = await res.json();
       setItems(Array.isArray(data.items) ? data.items : []);
+      lastFetchRef.current = Date.now();
     } catch {
-      setItems([]);
+      // En cas d'échec, on conserve les items existants s'il y en a.
+      setItems((prev) => prev ?? []);
     } finally {
       setLoading(false);
     }
@@ -74,6 +85,19 @@ export default function SearchCommand() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [loadIndex]);
 
+  // Échap ferme la palette quel que soit l'élément focusé.
+  useEffect(() => {
+    if (!open) return;
+    const onEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closePalette();
+      }
+    };
+    window.addEventListener("keydown", onEscape);
+    return () => window.removeEventListener("keydown", onEscape);
+  }, [open, closePalette]);
+
   // Focus l'input à l'ouverture + bloque le scroll du body.
   useEffect(() => {
     if (open) {
@@ -101,6 +125,21 @@ export default function SearchCommand() {
       })
       .slice(0, MAX_RESULTS);
   }, [items, query]);
+
+  // Groupe les résultats par type pour l'affichage en sections,
+  // en conservant l'index plat pour la navigation clavier.
+  const sections = useMemo(() => {
+    const out: Array<{ type: IndexItem["t"]; entries: Array<{ item: IndexItem; idx: number }> }> = [];
+    results.forEach((item, idx) => {
+      const last = out[out.length - 1];
+      if (last && last.type === item.t) {
+        last.entries.push({ item, idx });
+      } else {
+        out.push({ type: item.t, entries: [{ item, idx }] });
+      }
+    });
+    return out;
+  }, [results]);
 
   useEffect(() => {
     setActiveIndex(0);
@@ -184,23 +223,32 @@ export default function SearchCommand() {
                   {query.trim() ? "Aucun résultat" : "Commence à taper…"}
                 </li>
               )}
-              {results.map((item, idx) => {
-                const meta = TYPE_META[item.t];
+              {sections.map((section) => {
+                const meta = TYPE_META[section.type];
                 return (
-                  <li key={`${item.t}-${item.s}`}>
-                    <button
-                      type="button"
-                      data-idx={idx}
-                      className={`${styles.result} ${idx === activeIndex ? styles.resultActive : ""}`}
-                      onMouseEnter={() => setActiveIndex(idx)}
-                      onClick={() => go(item)}
-                      role="option"
-                      aria-selected={idx === activeIndex}
-                    >
-                      <span className={styles.resultIcon} aria-hidden="true">{meta.icon}</span>
-                      <span className={styles.resultName}>{item.n}</span>
-                      <span className={styles.resultType}>{meta.label}</span>
-                    </button>
+                  <li key={section.type} className={styles.section}>
+                    <div className={styles.sectionHeader} aria-hidden="true">
+                      <span>{meta.plural}</span>
+                      <span className={styles.sectionCount}>{section.entries.length}</span>
+                    </div>
+                    <ul className={styles.sectionList}>
+                      {section.entries.map(({ item, idx }) => (
+                        <li key={`${item.t}-${item.s}`}>
+                          <button
+                            type="button"
+                            data-idx={idx}
+                            className={`${styles.result} ${idx === activeIndex ? styles.resultActive : ""}`}
+                            onMouseEnter={() => setActiveIndex(idx)}
+                            onClick={() => go(item)}
+                            role="option"
+                            aria-selected={idx === activeIndex}
+                          >
+                            <meta.Icon size={16} className={styles.resultIcon} aria-hidden="true" />
+                            <span className={styles.resultName}>{item.n}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
                   </li>
                 );
               })}

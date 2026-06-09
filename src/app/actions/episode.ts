@@ -566,6 +566,7 @@ export async function linkEpisodeToFilm(episodeId: string, filmId: string) {
     revalidatePath("/episodes/budget");
     revalidatePath("/episodes/sagas");
     revalidatePath("/");
+    revalidatePath("/api/search-index");
 
     return { success: true, link: newLink };
   } catch (error) {
@@ -595,6 +596,7 @@ export async function unlinkEpisodeFromFilm(episodeId: string, filmId: string) {
     revalidatePath("/episodes/budget");
     revalidatePath("/episodes/sagas");
     revalidatePath("/");
+    revalidatePath("/api/search-index");
 
     return { success: true };
   } catch (error) {
@@ -739,6 +741,7 @@ export async function updateEpisode(
     revalidatePath(`/episodes/${updatedEpisode.slug}`);
     revalidatePath("/episodes");
     revalidatePath("/");
+    revalidatePath("/api/search-index");
 
     return { success: true, data: updatedEpisode };
   } catch (error) {
@@ -764,6 +767,7 @@ export async function deleteEpisodeLink(linkId: string) {
     revalidatePath("/episodes/budget");
     revalidatePath("/episodes/sagas");
     revalidatePath("/");
+    revalidatePath("/api/search-index");
 
     return { success: true };
   } catch (error) {

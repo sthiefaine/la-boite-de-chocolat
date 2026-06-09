@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { uploadTranscription, deleteTranscription, getTranscription } from '@/app/actions/transcription';
 import { isSupportedFileType, formatFileSize } from '@/helpers/transcriptionHelpers';
 import styles from './TranscriptionUpload.module.css';
@@ -10,6 +11,7 @@ interface TranscriptionUploadProps {
 }
 
 export default function TranscriptionUpload({ episodeId }: TranscriptionUploadProps) {
+  const router = useRouter();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [existingTranscription, setExistingTranscription] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -73,6 +75,10 @@ export default function TranscriptionUpload({ episodeId }: TranscriptionUploadPr
         if (existingResult.success && existingResult.transcription) {
           setExistingTranscription(existingResult.transcription);
         }
+
+        // Purge le Router Cache client pour que la page publique
+        // affiche le bouton Transcription sans rechargement complet
+        router.refresh();
       }
     } catch (error) {
       setUploadState({ success: false, error: 'Erreur lors de l\'upload' });
@@ -91,6 +97,7 @@ export default function TranscriptionUpload({ episodeId }: TranscriptionUploadPr
       const result = await deleteTranscription(episodeId);
       if (result.success) {
         setExistingTranscription(null);
+        router.refresh();
         alert(result.message);
       } else {
         alert(result.error);

@@ -67,36 +67,73 @@ export function getSpeakerLabel(speakerId: string): string {
   return match ? `Intervenant ${match[1]}` : speakerId;
 }
 
+const SRT_TIMESTAMP_LINE_REGEX =
+  /(\d{1,2}:\d{2}:\d{2}[,.]\d{1,3})\s*-->\s*(\d{1,2}:\d{2}:\d{2}[,.]\d{1,3})/;
+
+function normalizeSrtTimestamp(timestamp: string): string {
+  const match = timestamp.match(/(\d{1,2}):(\d{2}):(\d{2})[,.](\d{1,3})/);
+  if (!match) return timestamp;
+
+  const hours = match[1].padStart(2, "0");
+  const milliseconds = match[4].padEnd(3, "0");
+
+  return `${hours}:${match[2]}:${match[3]},${milliseconds}`;
+}
+
 export function parseSRT(content: string): SubtitleEntry[] {
-  const entries: SubtitleEntry[] = [];
+  const cleanContent = content
+    .replace(/^﻿/, "")
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n")
+    .trim();
 
-  const cleanContent = content.trim();
-
-  if (cleanContent.includes("-->")) {
+  // Actual VTT content (e.g. a .vtt file routed here): delegate to the VTT parser
+  if (cleanContent.startsWith("WEBVTT")) {
     return parseVTT(cleanContent);
   }
 
-  const blocks = cleanContent.split("\n\n");
+  const entries: SubtitleEntry[] = [];
+  const blocks = cleanContent.split(/\n{2,}/);
+  let fallbackId = 1;
 
   for (const block of blocks) {
-    const lines = block.split("\n").filter((line) => line.trim());
-    if (lines.length >= 3) {
-      const id = parseInt(lines[0]);
-      const timeLine = lines[1];
-      const text = lines.slice(2).join("\n");
+    const lines = block
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0);
 
-      const timeMatch = timeLine.match(
-        /(\d{2}:\d{2}:\d{2},\d{3}) --> (\d{2}:\d{2}:\d{2},\d{3})/
-      );
-      if (timeMatch) {
-        entries.push({
-          id,
-          startTime: timeMatch[1],
-          endTime: timeMatch[2],
-          text,
-        });
-      }
+    if (lines.length === 0) continue;
+
+    // Optional numeric index line before the timestamp line
+    let timeLineIndex = 0;
+    if (/^\d+$/.test(lines[0]) && !lines[0].includes("-->")) {
+      timeLineIndex = 1;
     }
+
+    const timeLine = lines[timeLineIndex];
+    if (!timeLine) continue;
+
+    const timeMatch = timeLine.match(SRT_TIMESTAMP_LINE_REGEX);
+    if (!timeMatch) continue;
+
+    const text = lines
+      .slice(timeLineIndex + 1)
+      .join(" ")
+      .trim();
+
+    if (!text) continue;
+
+    const parsedIndex = timeLineIndex === 1 ? parseInt(lines[0], 10) : NaN;
+    const id = Number.isNaN(parsedIndex) ? fallbackId : parsedIndex;
+
+    entries.push({
+      id,
+      startTime: normalizeSrtTimestamp(timeMatch[1]),
+      endTime: normalizeSrtTimestamp(timeMatch[2]),
+      text,
+    });
+
+    fallbackId = id + 1;
   }
 
   return entries;
@@ -199,23 +236,27 @@ export function parseJSON(content: string): SubtitleEntry[] {
 }
 
 export function parseTranscription(content: string): SubtitleEntry[] {
-  const trimmed = content.trim();
+  const trimmed = content.replace(/^﻿/, "").trim();
 
   if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
     return parseJSON(trimmed);
+  }
+
+  if (trimmed.startsWith("WEBVTT")) {
+    return parseVTT(trimmed);
   }
 
   return parseSRT(trimmed);
 }
 
 export function srtTimeToSeconds(time: string): number {
-  const match = time.match(/(\d{2}):(\d{2}):(\d{2}),(\d{3})/);
+  const match = time.match(/(\d{1,2}):(\d{2}):(\d{2})[,.](\d{1,3})/);
   if (!match) return 0;
 
-  const hours = parseInt(match[1]);
-  const minutes = parseInt(match[2]);
-  const seconds = parseInt(match[3]);
-  const milliseconds = parseInt(match[4]);
+  const hours = parseInt(match[1], 10);
+  const minutes = parseInt(match[2], 10);
+  const seconds = parseInt(match[3], 10);
+  const milliseconds = parseInt(match[4].padEnd(3, "0"), 10);
 
   return hours * 3600 + minutes * 60 + seconds + milliseconds / 1000;
 }

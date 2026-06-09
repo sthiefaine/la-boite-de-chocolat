@@ -116,8 +116,8 @@
 }
 
 .resultIcon {
-  font-size: 1.1rem;
   flex-shrink: 0;
+  color: var(--chocolate-secondary, #a67c52);
 }
 
 .resultName {
@@ -127,13 +127,35 @@
   white-space: nowrap;
 }
 
-.resultType {
-  flex-shrink: 0;
-  font-size: 0.75rem;
+/* Sections (Épisodes / Films / Sagas / Personnes) */
+.section {
+  margin-bottom: 0.35rem;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: var(--text-secondary, #888);
+}
+
+.sectionCount {
+  margin-left: auto;
+  font-weight: 500;
   background: var(--glass-bg-light, rgba(0, 0, 0, 0.05));
-  padding: 0.15rem 0.5rem;
+  padding: 0.1rem 0.45rem;
   border-radius: var(--radius-full, 9999px);
+}
+
+.sectionList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 @keyframes fadeIn {

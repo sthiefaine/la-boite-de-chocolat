@@ -114,6 +114,8 @@ export async function uploadTranscription(formData: FormData) {
     });
 
     revalidatePath(`/episodes/${episode.slug}`);
+    revalidatePath(`/episodes/${episode.slug}/transcription`);
+    revalidatePath("/episodes");
     revalidatePath(`/admin/episode/${episodeId}/edit`);
 
     return {
@@ -151,6 +153,8 @@ export async function deleteTranscription(episodeId: string) {
     });
 
     revalidatePath(`/episodes/${transcription.episode.slug}`);
+    revalidatePath(`/episodes/${transcription.episode.slug}/transcription`);
+    revalidatePath("/episodes");
     revalidatePath(`/admin/episode/${episodeId}/edit`);
 
     return {

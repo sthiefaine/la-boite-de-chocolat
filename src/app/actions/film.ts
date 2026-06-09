@@ -477,6 +477,7 @@ export async function createFilmFromTMDB(
     revalidatePath("/episodes/budget");
     revalidatePath("/episodes/sagas");
     revalidatePath("/");
+    revalidatePath("/api/search-index");
 
     return { success: true, film };
   } catch (error) {
@@ -598,6 +599,7 @@ export async function createFilmManually(data: {
     revalidatePath("/episodes/budget");
     revalidatePath("/episodes/sagas");
     revalidatePath("/");
+    revalidatePath("/api/search-index");
 
     return { success: true, film };
   } catch (error) {

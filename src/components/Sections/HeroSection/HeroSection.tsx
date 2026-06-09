@@ -7,9 +7,9 @@ import { Episode } from "@/app/page";
 import { PODCAST_URLS } from "@/helpers/config";
 
 const LISTEN_LINKS = [
-  { label: "Spotify", href: PODCAST_URLS.spotify, icon: "🎵" },
-  { label: "Apple Podcasts", href: PODCAST_URLS.apple, icon: "🍎" },
-  { label: "Deezer", href: PODCAST_URLS.deezer, icon: "🎶" },
+  { label: "Spotify", href: PODCAST_URLS.spotify },
+  { label: "Apple Podcasts", href: PODCAST_URLS.apple },
+  { label: "Deezer", href: PODCAST_URLS.deezer },
 ] as const;
 
 interface HeroSectionProps {
@@ -62,9 +62,6 @@ export default function HeroSection({ episodes }: HeroSectionProps) {
                     className={styles.listenLink}
                     aria-label={`Écouter La Boîte de Chocolat sur ${link.label} (nouvel onglet)`}
                   >
-                    <span className={styles.listenIcon} aria-hidden="true">
-                      {link.icon}
-                    </span>
                     {link.label}
                   </a>
                 ))}
