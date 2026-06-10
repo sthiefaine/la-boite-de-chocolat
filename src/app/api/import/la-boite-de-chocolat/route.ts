@@ -7,9 +7,20 @@ import {
   parseEpisodeTitle,
   type AutoLinkResult,
 } from "@/lib/import/autoLinkFilm";
+import {
+  autoTranscribeEpisode,
+  isAutoTranscribeEnabled,
+  getAutoTranscribeMaxAgeDays,
+  getAutoTranscribeMonthlyLimit,
+  countAutoTranscriptionsThisMonth,
+  type AutoTranscribeResult,
+} from "@/lib/import/autoTranscribe";
 
 // Nombre max d'épisodes auto-liés par run (limite les appels TMDB/upload).
 const AUTO_LINK_BATCH_SIZE = 10;
+// Transcription : 1 épisode par run (l'appel Mistral prend plusieurs minutes
+// et est facturé à la minute d'audio). Le backlog se vide au fil des runs.
+const AUTO_TRANSCRIBE_BATCH_SIZE = 1;
 
 const parser = new Parser();
 
@@ -199,11 +210,77 @@ export async function GET(request: Request) {
         .map((r) => `${r.episodeTitle} → ${r.filmTitle}`),
     };
 
+    // Auto-transcription Mistral — DÉSACTIVÉE par défaut.
+    // Activation : AUTO_TRANSCRIBE_ENABLED="true" + MISTRAL_API_KEY dans l'env.
+    let autoTranscribe: {
+      enabled: boolean;
+      processed?: number;
+      transcribed?: string[];
+      errors?: Array<{ episode: string; error?: string }>;
+      monthlyUsage?: string;
+      skippedReason?: string;
+    } = { enabled: false };
+
+    if (isAutoTranscribeEnabled()) {
+      const monthlyLimit = getAutoTranscribeMonthlyLimit();
+      const usedThisMonth = await countAutoTranscriptionsThisMonth();
+      const maxAgeDays = getAutoTranscribeMaxAgeDays();
+
+      if (usedThisMonth >= monthlyLimit) {
+        // Garde-fou budget : plafond mensuel atteint, on ne dépense plus.
+        autoTranscribe = {
+          enabled: true,
+          processed: 0,
+          monthlyUsage: `${usedThisMonth}/${monthlyLimit}`,
+          skippedReason: `Plafond mensuel atteint (${usedThisMonth}/${monthlyLimit}) — augmenter AUTO_TRANSCRIBE_MONTHLY_LIMIT si besoin`,
+        };
+      } else {
+        // Garde-fou backlog : uniquement les épisodes récents.
+        const minPubDate = new Date(
+          Date.now() - maxAgeDays * 24 * 60 * 60 * 1000
+        );
+
+        const untranscribed = await prisma.podcastEpisode.findMany({
+          where: {
+            rssFeedId: rssFeed.id,
+            transcription: null,
+            genre: null, // exclut les annonces et les épisodes classés à la main
+            pubDate: { gte: minPubDate },
+          },
+          select: { id: true, title: true, slug: true, audioUrl: true },
+          orderBy: { pubDate: "desc" },
+          take: Math.min(AUTO_TRANSCRIBE_BATCH_SIZE, monthlyLimit - usedThisMonth),
+        });
+
+        const results: AutoTranscribeResult[] = [];
+        for (const ep of untranscribed) {
+          results.push(await autoTranscribeEpisode(ep));
+        }
+
+        autoTranscribe = {
+          enabled: true,
+          processed: results.length,
+          monthlyUsage: `${usedThisMonth + results.filter((r) => r.status === "transcribed").length}/${monthlyLimit}`,
+          transcribed: results
+            .filter((r) => r.status === "transcribed")
+            .map((r) =>
+              r.audioMinutes
+                ? `${r.episodeTitle} (${r.audioMinutes} min)`
+                : r.episodeTitle
+            ),
+          errors: results
+            .filter((r) => r.status === "error")
+            .map((r) => ({ episode: r.episodeTitle, error: r.error })),
+        };
+      }
+    }
+
     return Response.json({
       message: `Import terminé${force ? ' (forcé)' : ''}`,
       imported,
       updated,
       autoLink,
+      autoTranscribe,
       currentTime: new Date().toISOString(),
       shouldRun: true,
       force: force,
