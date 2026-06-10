@@ -2,6 +2,14 @@ import Parser from "rss-parser";
 import { prisma } from "@/lib/prisma";
 import { generateSlug } from "@/helpers/podcastHelpers";
 import { allowedHours, shouldRunImport } from "@/helpers/timeHelpers";
+import {
+  autoLinkFilmToEpisode,
+  parseEpisodeTitle,
+  type AutoLinkResult,
+} from "@/lib/import/autoLinkFilm";
+
+// Nombre max d'épisodes auto-liés par run (limite les appels TMDB/upload).
+const AUTO_LINK_BATCH_SIZE = 10;
 
 const parser = new Parser();
 
@@ -107,6 +115,10 @@ export async function GET(request: Request) {
         counter++;
       }
 
+      // Épisodes adultes ("p0rno - ...") et annonces ("- ... -") détectés
+      // depuis le titre RSS
+      const { isAdult, isAnnouncement } = parseEpisodeTitle(item.title || "");
+
       await prisma.podcastEpisode.upsert({
         where: { audioUrl: item.enclosure.url },
         update: {
@@ -116,6 +128,7 @@ export async function GET(request: Request) {
           duration: duration,
           season: season ?? undefined,
           episode: episode ?? undefined,
+          ...(isAdult && { age: "18+" }),
         },
         create: {
           rssFeedId: rssFeed.id,
@@ -127,6 +140,8 @@ export async function GET(request: Request) {
           slug: finalSlug,
           season: season ?? undefined,
           episode: episode ?? undefined,
+          ...(isAdult && { age: "18+" }),
+          ...(isAnnouncement && { genre: "Annonce" }),
         },
       });
 
@@ -142,10 +157,53 @@ export async function GET(request: Request) {
         imported++;
       }
     }
+    // Auto-liaison film TMDB : traite les épisodes sans aucun lien film
+    // (les nouveaux ET les anciens ratés -> le cron est auto-réparant).
+    // Les épisodes avec un genre (annonces marquées, ou classés à la main)
+    // sont définitivement hors du pipeline.
+    const unlinkedEpisodes = await prisma.podcastEpisode.findMany({
+      where: {
+        rssFeedId: rssFeed.id,
+        links: { none: {} },
+        genre: null,
+      },
+      select: { id: true, title: true },
+      orderBy: { pubDate: "desc" },
+      take: AUTO_LINK_BATCH_SIZE,
+    });
+
+    const autoLinkResults: AutoLinkResult[] = [];
+    for (const ep of unlinkedEpisodes) {
+      // Séquentiel volontairement : ménage TMDB et le serveur d'upload.
+      autoLinkResults.push(await autoLinkFilmToEpisode(ep));
+    }
+
+    const autoLink = {
+      processed: autoLinkResults.length,
+      linked: autoLinkResults.filter((r) => r.status === "linked").length,
+      alreadyLinked: autoLinkResults.filter((r) => r.status === "already").length,
+      skippedAnnouncements: autoLinkResults
+        .filter((r) => r.status === "skipped_announcement")
+        .map((r) => r.episodeTitle),
+      lowConfidence: autoLinkResults
+        .filter((r) => r.status === "low_confidence")
+        .map((r) => r.episodeTitle),
+      noMatch: autoLinkResults
+        .filter((r) => r.status === "no_match")
+        .map((r) => r.episodeTitle),
+      errors: autoLinkResults
+        .filter((r) => r.status === "error")
+        .map((r) => ({ episode: r.episodeTitle, error: r.error })),
+      details: autoLinkResults
+        .filter((r) => r.status === "linked")
+        .map((r) => `${r.episodeTitle} → ${r.filmTitle}`),
+    };
+
     return Response.json({
       message: `Import terminé${force ? ' (forcé)' : ''}`,
       imported,
       updated,
+      autoLink,
       currentTime: new Date().toISOString(),
       shouldRun: true,
       force: force,
