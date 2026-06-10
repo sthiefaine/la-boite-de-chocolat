@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { getUploadServerUrl } from "@/helpers/imageConfig";
+import { getFilmPosterUrl } from "@/helpers/imageConfig";
 import {
   formatBudgetShort,
   convertUsdToEur,
@@ -18,6 +18,7 @@ interface BudgetCardProps {
     filmTitle: string;
     year: number | null;
     imgFileName: string | null;
+    tmdbId?: number | null;
     budget: number;
     revenue: number | null;
   };
@@ -33,9 +34,10 @@ export default function BudgetCard({
 }: BudgetCardProps) {
   const [isVisible, setIsVisible] = useState(false);
 
-  const imageUrl = item.imgFileName
-    ? getUploadServerUrl(item.imgFileName)
-    : null;
+  const imageUrl =
+    item.imgFileName || item.tmdbId
+      ? getFilmPosterUrl({ tmdbId: item.tmdbId, imgFileName: item.imgFileName })
+      : null;
 
   const roi =
     item.revenue && item.budget > 0

@@ -1,7 +1,11 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { getUploadServerUrl } from "@/helpers/imageConfig";
+import {
+  getUploadServerUrl,
+  getFilmPosterUrl,
+  getMaskedFilmPosterUrl,
+} from "@/helpers/imageConfig";
 
 export interface PodcastImage {
   id: string;
@@ -14,6 +18,7 @@ export interface PodcastImage {
       id: string;
       title: string;
       imgFileName: string | null;
+      tmdbId: number | null;
       age: string | null;
     } | null;
   }>;
@@ -53,6 +58,7 @@ export async function getLatestPodcastImages(): Promise<PodcastImage[]> {
                 id: true,
                 title: true,
                 imgFileName: true,
+                tmdbId: true,
                 age: true,
               },
             },
@@ -114,6 +120,7 @@ export async function getPodcastImagesByFeed(
                 id: true,
                 title: true,
                 imgFileName: true,
+                tmdbId: true,
                 age: true,
               },
             },
@@ -153,18 +160,20 @@ export async function getPodcastImageUrls(
       // Collecter les images de TOUS les films lies (pas seulement le premier)
       for (const link of episode.links) {
         const film = link.film;
-        if (film?.imgFileName && !seen.has(film.imgFileName)) {
-          seen.add(film.imgFileName);
-          const isAdult = film.age === "18+" || film.age === "adult";
-          if (isAdult) {
-            urls.push(
-              `${
-                process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-              }/api/image/masked/${film.imgFileName}`
-            );
-          } else {
-            urls.push(getUploadServerUrl(film.imgFileName, "films"));
-          }
+        if (!film) continue;
+        const key =
+          film.imgFileName ?? (film.tmdbId ? `film-${film.tmdbId}` : null);
+        if (!key || seen.has(key)) continue;
+        seen.add(key);
+        const isAdult = film.age === "18+" || film.age === "adult";
+        if (isAdult) {
+          urls.push(
+            `${
+              process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+            }${getMaskedFilmPosterUrl(film)}`
+          );
+        } else {
+          urls.push(getFilmPosterUrl(film));
         }
       }
 

@@ -1,7 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getEpisodeBySlugCached } from "@/app/actions/episode";
-import { getMaskedImageUrl } from "@/app/actions/image";
-import { getUploadServerUrl } from "@/helpers/imageConfig";
+import { getFilmPosterUrlWithAge } from "@/helpers/imageConfig";
 
 export const size = {
   width: 1200,
@@ -55,13 +54,11 @@ export default async function Image({
 
   // Image de fond
   let backgroundImage = "";
-  if (isAdultContent && mainFilm?.imgFileName) {
-    backgroundImage = await getMaskedImageUrl(
-      mainFilm.imgFileName,
-      mainFilm.age || null
+  if (mainFilm && (mainFilm.imgFileName || mainFilm.tmdbId)) {
+    backgroundImage = getFilmPosterUrlWithAge(
+      mainFilm,
+      isAdultContent ? "18+" : mainFilm.age
     );
-  } else if (mainFilm?.imgFileName) {
-    backgroundImage = getUploadServerUrl(mainFilm.imgFileName);
   }
 
   return new ImageResponse(

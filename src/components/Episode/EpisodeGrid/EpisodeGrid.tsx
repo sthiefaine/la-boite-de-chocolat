@@ -53,6 +53,7 @@ interface Film {
   slug: string;
   year: number | null;
   imgFileName: string | null;
+  tmdbId?: number | null;
   age: string | null;
   saga: {
     name: string;

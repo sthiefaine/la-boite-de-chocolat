@@ -18,6 +18,7 @@ const episodeWithFilmSelect = {
           slug: true,
           year: true,
           imgFileName: true,
+          tmdbId: true,
           age: true,
           saga: { select: { name: true, id: true } },
         },

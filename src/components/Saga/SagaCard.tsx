@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getUploadServerUrl } from "@/helpers/imageConfig";
+import { getSagaPosterUrl, getFilmPosterUrl } from "@/helpers/imageConfig";
 import styles from "./SagaCard.module.css";
 
 interface SagaCardProps {
@@ -9,11 +9,13 @@ interface SagaCardProps {
     name: string;
     slug: string;
     imgFileName?: string | null;
+    tmdbId?: number | null;
     films: Array<{
       id: string;
       title: string;
       year?: number | null;
       imgFileName?: string | null;
+      tmdbId?: number | null;
     }>;
     episodeCount: number;
   };
@@ -21,11 +23,13 @@ interface SagaCardProps {
 }
 
 export default function SagaCard({ saga, variant = "carousel" }: SagaCardProps) {
-  const imageUrl = saga.imgFileName
-    ? getUploadServerUrl(saga.imgFileName, "sagas")
-    : saga.films[0]?.imgFileName
-    ? getUploadServerUrl(saga.films[0].imgFileName, "films")
-    : null;
+  const firstFilm = saga.films[0];
+  const imageUrl =
+    saga.imgFileName || saga.tmdbId
+      ? getSagaPosterUrl({ tmdbId: saga.tmdbId, imgFileName: saga.imgFileName })
+      : firstFilm && (firstFilm.imgFileName || firstFilm.tmdbId)
+      ? getFilmPosterUrl({ tmdbId: firstFilm.tmdbId, imgFileName: firstFilm.imgFileName })
+      : null;
 
   // Calculer la plage d'années pour la timeline simplifiée
   const filmsWithYears = [...saga.films]

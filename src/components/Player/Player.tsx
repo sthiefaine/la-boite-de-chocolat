@@ -38,9 +38,12 @@ const useBackgroundColor = (episodeImg?: string) => {
         let imageUrl: string;
 
         if (episodeImg) {
-          imageUrl = episodeImg.startsWith("http")
-            ? episodeImg
-            : getUploadServerUrl(episodeImg);
+          // URL complète ou chemin absolu (ex: /api/image/masked/…) : tel quel.
+          // Sinon, legacy : nom de fichier brut persisté dans le store.
+          imageUrl =
+            episodeImg.startsWith("http") || episodeImg.startsWith("/")
+              ? episodeImg
+              : getUploadServerUrl(episodeImg);
         } else {
           imageUrl = "/images/navet.png";
         }
@@ -62,11 +65,12 @@ const useBackgroundColor = (episodeImg?: string) => {
 const useMediaSession = (episode: any) => {
   useEffect(() => {
     if ("mediaSession" in navigator && episode) {
-      const imageUrl = episode.img.startsWith("http")
-        ? episode.img
-        : episode.img
-        ? getUploadServerUrl(episode.img)
-        : "/images/navet.png";
+      const imageUrl =
+        episode.img.startsWith("http") || episode.img.startsWith("/")
+          ? episode.img
+          : episode.img
+          ? getUploadServerUrl(episode.img)
+          : "/images/navet.png";
 
       navigator.mediaSession.metadata = new MediaMetadata({
         title: episode.title,

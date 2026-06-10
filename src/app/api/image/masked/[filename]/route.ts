@@ -1,6 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUploadServerUrl } from "@/helpers/imageConfig";
+import {
+  getUploadServerUrl,
+  getCanonicalMediaUrl,
+  IMAGE_CONFIG,
+  MEDIA_FOLDER,
+} from "@/helpers/imageConfig";
 import sharp from "sharp";
+
+// Résout le fichier source selon le nommage :
+// - "{tmdbId}.jpg" (que des chiffres) -> média canonique partagé media/films/
+// - "custom-..."                       -> override custom media/films/custom/
+// - sinon                              -> ancien dossier films/ (legacy)
+function resolveSourceUrl(filename: string): string {
+  const canonicalMatch = filename.match(/^(\d+)\.(jpg|jpeg|png|webp)$/i);
+  if (canonicalMatch) {
+    return getCanonicalMediaUrl("films", parseInt(canonicalMatch[1], 10));
+  }
+  if (filename.startsWith("custom-")) {
+    return `${IMAGE_CONFIG.domains.uploadReadServer}/${MEDIA_FOLDER}/films/custom/${filename}`;
+  }
+  return getUploadServerUrl(filename, "films");
+}
 
 export async function GET(
   request: NextRequest,
@@ -13,7 +33,7 @@ export async function GET(
       return new NextResponse("Nom de fichier requis", { status: 400 });
     }
 
-    const originalImageUrl = getUploadServerUrl(filename, "films");
+    const originalImageUrl = resolveSourceUrl(filename);
 
     const imageResponse = await fetch(originalImageUrl);
     if (!imageResponse.ok) {

@@ -89,7 +89,7 @@ export default async function EpisodeHeader({
           <div className={styles.backgroundOverlay}></div>
         </div>
       ) : (
-        mainFilm?.imgFileName && (
+        (mainFilm?.imgFileName || mainFilm?.tmdbId) && (
           <div className={styles.backgroundPoster}>
             <Image
               placeholder="blur"

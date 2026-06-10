@@ -5,8 +5,7 @@ import { revalidatePath } from "next/cache";
 import { PODCAST_CATEGORIES } from "@/helpers/helpers";
 import { prisma } from "@/lib/prisma";
 import { uploadPodcastFile } from "@/helpers/uploadHelpers";
-import { getMaskedImageUrl } from "@/app/actions/image";
-import { getUploadServerUrl } from "@/helpers/imageConfig";
+import { getFilmPosterUrlWithAge, PLACEHOLDER_IMAGE } from "@/helpers/imageConfig";
 import { scrapeAndSaveFilmPeople } from "@/app/actions/film";
 
 export async function getEpisodeBySlug(slug: string) {
@@ -31,6 +30,7 @@ export async function getEpisodeBySlug(slug: string) {
                     name: true,
                     description: true,
                     imgFileName: true,
+                    tmdbId: true,
                     films: {
                       select: {
                         id: true,
@@ -38,6 +38,7 @@ export async function getEpisodeBySlug(slug: string) {
                         year: true,
                         slug: true,
                         imgFileName: true,
+                        tmdbId: true,
                         age: true,
                         director: true,
                       },
@@ -60,14 +61,9 @@ export async function getEpisodeBySlug(slug: string) {
       episode.age === "18+" || episode.age === "adult" ||
       mainFilm?.age === "18+" || mainFilm?.age === "adult";
 
-    const mainFilmImageUrl = isAdultContent
-      ? await getMaskedImageUrl(
-          mainFilm?.imgFileName || null,
-          "18+"
-        )
-      : mainFilm?.imgFileName
-      ? getUploadServerUrl(mainFilm.imgFileName)
-      : "/images/navet.png";
+    const mainFilmImageUrl = mainFilm
+      ? getFilmPosterUrlWithAge(mainFilm, isAdultContent ? "18+" : mainFilm.age)
+      : PLACEHOLDER_IMAGE;
 
     return {
       episode,
@@ -110,6 +106,7 @@ export const getEpisodeBySlugCached = cache(async (slug: string) => {
                     name: true,
                     description: true,
                     imgFileName: true,
+                    tmdbId: true,
                     slug: true,
                     films: {
                       select: {
@@ -118,6 +115,7 @@ export const getEpisodeBySlugCached = cache(async (slug: string) => {
                         year: true,
                         slug: true,
                         imgFileName: true,
+                        tmdbId: true,
                         age: true,
                         director: true,
                       },
@@ -149,14 +147,9 @@ export const getEpisodeBySlugCached = cache(async (slug: string) => {
       episode.age === "18+" || episode.age === "adult" ||
       mainFilm?.age === "18+" || mainFilm?.age === "adult";
 
-    const mainFilmImageUrl = isAdultContent
-      ? await getMaskedImageUrl(
-          mainFilm?.imgFileName || null,
-          "18+"
-        )
-      : mainFilm?.imgFileName
-      ? getUploadServerUrl(mainFilm.imgFileName)
-      : "/images/navet.png";
+    const mainFilmImageUrl = mainFilm
+      ? getFilmPosterUrlWithAge(mainFilm, isAdultContent ? "18+" : mainFilm.age)
+      : PLACEHOLDER_IMAGE;
 
     return {
       episode,
@@ -373,12 +366,14 @@ export async function getEpisodesWithFilms() {
                 slug: true,
                 year: true,
                 imgFileName: true,
+                tmdbId: true,
                 age: true,
                 saga: {
                   select: {
                     id: true,
                     name: true,
                     imgFileName: true,
+                    tmdbId: true,
                     slug: true,
                   },
                 },
@@ -484,6 +479,7 @@ export async function getLatestEpisode() {
                 title: true,
                 year: true,
                 imgFileName: true,
+                tmdbId: true,
                 age: true,
               },
             },
@@ -540,6 +536,7 @@ export async function linkEpisodeToFilm(episodeId: string, filmId: string) {
             year: true,
             director: true,
             imgFileName: true,
+            tmdbId: true,
             saga: {
               select: {
                 name: true,
@@ -641,6 +638,7 @@ export async function getRandomEpisode() {
             film: {
               select: {
                 imgFileName: true,
+                tmdbId: true,
               },
             },
           },
@@ -806,6 +804,7 @@ export async function getEpisodesWithBudgetStats() {
                 slug: true,
                 year: true,
                 imgFileName: true,
+                tmdbId: true,
                 budget: true,
                 revenue: true,
               },
@@ -830,6 +829,7 @@ export async function getEpisodesWithBudgetStats() {
           filmSlug: link.film.slug,
           year: link.film.year,
           imgFileName: link.film.imgFileName,
+          tmdbId: link.film.tmdbId,
           budget: Number(link.film.budget),
           revenue: link.film.revenue ? Number(link.film.revenue) : null,
         }))

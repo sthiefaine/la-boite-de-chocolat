@@ -44,7 +44,10 @@ model Film {
   title       String
   slug        String            @unique
   year        Int?
+  // Override custom uniquement ; null = image canonique media/films/{tmdbId}.jpg
   imgFileName String?
+  // Chemin du poster TMDB d'origine (ex. "/abc123.jpg")
+  posterPath  String?
   sagaId      String?
   director    String?
   alloCineId  Int?              @unique
@@ -65,7 +68,10 @@ model Saga {
   name        String
   description String?
   filmsOrder  String[]
+  // Override custom uniquement ; null = image canonique media/sagas/{tmdbId}.jpg
   imgFileName String?
+  // Chemin du poster TMDB de la collection (ex. "/abc123.jpg")
+  posterPath  String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   tmdbId      Int?     @unique
@@ -203,7 +209,10 @@ model Person {
   name         String
   slug         String?        @unique
   tmdbId       Int            @unique
+  // Override custom uniquement ; null = image canonique media/people/{tmdbId}.jpg
   photoFileName String?
+  // Chemin de la photo TMDB d'origine (ex. "/abc123.jpg")
+  profilePath  String?
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   directorOf   FilmDirector[]

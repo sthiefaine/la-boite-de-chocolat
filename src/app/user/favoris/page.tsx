@@ -73,6 +73,7 @@ export default async function FavorisPage() {
                           slug: film.slug,
                           year: film.year,
                           imgFileName: film.imgFileName,
+                          tmdbId: film.tmdbId,
                           age: film.age,
                           saga: film.saga,
                         }

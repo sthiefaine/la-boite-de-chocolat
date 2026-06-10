@@ -2,12 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { IMAGE_CONFIG } from "@/helpers/imageConfig";
+import { IMAGE_CONFIG, getSagaPosterUrl } from "@/helpers/imageConfig";
 import styles from "./SagaCard.module.css";
-
-const getStaticImageUrl = (imgFileName: string) => {
-  return `${IMAGE_CONFIG.domains.uploadReadServer}/sagas/${imgFileName}`;
-};
 
 interface SagaCardProps {
   saga: {
@@ -16,6 +12,7 @@ interface SagaCardProps {
     slug: string;
     description?: string | null;
     imgFileName?: string | null;
+    tmdbId?: number | null;
     episodeCount?: number;
     films: Array<{
       id: string;
@@ -34,9 +31,9 @@ export default function SagaCard({ saga, variant = "default" }: SagaCardProps) {
     <Link href={`/sagas/${saga.slug}`} className={styles.cardLink}>
       <article className={`${styles.cardSaga} ${isCompact ? styles.cardSagaCompact : ""}`}>
         <span className={styles.cardImageContainer}>
-          {saga.imgFileName ? (
+          {saga.imgFileName || saga.tmdbId ? (
             <Image
-              src={getStaticImageUrl(saga.imgFileName)}
+              src={getSagaPosterUrl({ tmdbId: saga.tmdbId, imgFileName: saga.imgFileName })}
               alt={`Poster de la saga ${saga.name}`}
               fill
               className={styles.cardImage}

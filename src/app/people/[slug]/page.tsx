@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import styles from "./PersonPage.module.css";
 import { getAllPersonSlugs, getPersonBySlug } from "@/app/actions/person";
-import { getUploadServerUrl, IMAGE_CONFIG } from "@/helpers/imageConfig";
+import { getPersonPhotoUrl, IMAGE_CONFIG } from "@/helpers/imageConfig";
 import { generateMetadata } from "./metadata";
 import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
 import FilmCard from "@/components/Cards/FilmCard/FilmCard";
@@ -53,10 +53,10 @@ export default async function PersonPage({ params }: PersonPageProps) {
       {/* Hero Section */}
       <section className={styles.hero}>
         <div className={styles.heroContent}>
-          {person.photoFileName && (
+          {(person.photoFileName || person.tmdbId) && (
             <div className={styles.profileImage}>
               <Image
-                src={getUploadServerUrl(person.photoFileName, "people")}
+                src={getPersonPhotoUrl(person)}
                 alt={person.name}
                 width={200}
                 height={200}
@@ -104,6 +104,7 @@ export default async function PersonPage({ params }: PersonPageProps) {
                     slug: film.slug,
                     year: film.year || null,
                     imgFileName: film.imgFileName,
+                    tmdbId: film.tmdbId,
                     age: film.age,
                     director: film.director || null,
                   }}
@@ -136,6 +137,7 @@ export default async function PersonPage({ params }: PersonPageProps) {
                       slug: film.slug,
                       year: film.year || null,
                       imgFileName: film.imgFileName,
+                      tmdbId: film.tmdbId,
                       age: film.age,
                       director: film.director || null,
                     }}

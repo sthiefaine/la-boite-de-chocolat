@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import styles from "./FilmsSection.module.css";
-import { getUploadServerUrl } from "@/helpers/imageConfig";
+import { getFilmPosterUrl } from "@/helpers/imageConfig";
 
 interface Film {
   id: string;
@@ -10,6 +10,7 @@ interface Film {
   year: number | null;
   director: string | null;
   imgFileName: string | null;
+  tmdbId?: number | null;
   saga?: {
     name: string;
   } | null;
@@ -64,9 +65,9 @@ export default function FilmsSection({
           {episodeLinks.map((link) => (
             <div key={link.id} className={styles.filmCard}>
               <div className={styles.filmImage}>
-                {link.film.imgFileName ? (
+                {link.film.imgFileName || link.film.tmdbId ? (
                   <Image
-                    src={getUploadServerUrl(link.film.imgFileName, "films")}
+                    src={getFilmPosterUrl(link.film)}
                     alt={link.film.title}
                     width={80}
                     height={120}

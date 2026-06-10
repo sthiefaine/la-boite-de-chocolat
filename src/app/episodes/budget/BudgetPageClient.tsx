@@ -15,6 +15,7 @@ type BudgetItem = {
   filmTitle: string;
   year: number | null;
   imgFileName: string | null;
+  tmdbId?: number | null;
   budget: number;
   revenue: number | null;
 };

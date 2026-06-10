@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { getPersonBySlug } from "@/app/actions/person";
 import { SITE_URL } from "@/helpers/config";
+import { getPersonPhotoUrl } from "@/helpers/imageConfig";
 
 interface PersonPageProps {
   params: Promise<{ slug: string }>;
@@ -72,26 +73,26 @@ export async function generateMetadata({
       type: "profile",
       url: canonicalUrl,
       siteName: "La Boîte de Chocolat",
-      images: person.photoFileName
-        ? [
-            {
-              url: `https://uploadfiles.clairdev.com/api/display/podcasts/people/${person.photoFileName}`,
-              width: 400,
-              height: 400,
-              alt: person.name,
-            },
-          ]
-        : [],
+      images:
+        person.photoFileName || person.tmdbId
+          ? [
+              {
+                url: getPersonPhotoUrl(person),
+                width: 400,
+                height: 400,
+                alt: person.name,
+              },
+            ]
+          : [],
     },
     twitter: {
       card: "summary",
       title: `${person.name} | La Boîte de Chocolat`,
       description,
-      images: person.photoFileName
-        ? [
-            `https://uploadfiles.clairdev.com/api/display/podcasts/people/${person.photoFileName}`,
-          ]
-        : [],
+      images:
+        person.photoFileName || person.tmdbId
+          ? [getPersonPhotoUrl(person)]
+          : [],
     },
   };
 }

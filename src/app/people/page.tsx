@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { getAllPeople } from "@/app/actions/person";
-import { getUploadServerUrl, IMAGE_CONFIG } from "@/helpers/imageConfig";
+import { getPersonPhotoUrl, IMAGE_CONFIG } from "@/helpers/imageConfig";
 import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
 import { SITE_URL } from "@/helpers/config";
 import styles from "./PeoplePage.module.css";
@@ -49,9 +49,9 @@ export default async function PeoplePage() {
                 className={styles.personCard}
               >
                 <div className={styles.profileImage}>
-                  {person.photoFileName ? (
+                  {person.photoFileName || person.tmdbId ? (
                     <Image
-                      src={getUploadServerUrl(person.photoFileName, "people")}
+                      src={getPersonPhotoUrl(person)}
                       alt={person.name}
                       width={72}
                       height={72}

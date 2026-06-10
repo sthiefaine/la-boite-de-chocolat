@@ -38,6 +38,7 @@ export const getAllPeople = cache(async () => {
         name: true,
         slug: true,
         photoFileName: true,
+        tmdbId: true,
         _count: {
           select: {
             directorOf: true,
@@ -57,6 +58,7 @@ export const getAllPeople = cache(async () => {
         name: p.name,
         slug: p.slug!,
         photoFileName: p.photoFileName,
+        tmdbId: p.tmdbId,
         filmsAsDirector: p._count.directorOf,
         filmsAsActor: p._count.actorIn,
       })),
@@ -84,6 +86,7 @@ export const getPersonBySlug = cache(async (slug: string) => {
                 slug: true,
                 year: true,
                 imgFileName: true,
+                tmdbId: true,
                 age: true,
                 director: true,
                 links: {
@@ -121,6 +124,7 @@ export const getPersonBySlug = cache(async (slug: string) => {
                 slug: true,
                 year: true,
                 imgFileName: true,
+                tmdbId: true,
                 age: true,
                 director: true,
                 links: {

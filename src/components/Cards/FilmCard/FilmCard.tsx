@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { IMAGE_CONFIG } from "@/helpers/imageConfig";
+import { IMAGE_CONFIG, getFilmPosterUrlWithAge } from "@/helpers/imageConfig";
 import ListenedButton from "@/components/Listened/ListenedButton";
 import styles from "./FilmCard.module.css";
 
@@ -25,6 +25,7 @@ interface FilmCardProps {
     slug: string;
     year: number | null;
     imgFileName: string | null;
+    tmdbId?: number | null;
     age: string | null;
     director?: string | null;
     saga?: {
@@ -36,13 +37,6 @@ interface FilmCardProps {
   episode?: EpisodeData;
   imageConfig?: ImageConfig;
 }
-
-const getStaticImageUrl = (imgFileName: string, age: string | null): string => {
-  const isAdult = age === "18+" || age === "adult";
-  return isAdult
-    ? `/api/image/masked/${imgFileName}`
-    : `${IMAGE_CONFIG.domains.uploadReadServer}/films/${imgFileName}`;
-};
 
 const isAdultContent = (age: string | null): boolean => {
   return age === "18+" || age === "adult";
@@ -58,7 +52,8 @@ export default function FilmCard({
     priority: false,
   },
 }: FilmCardProps) {
-  const { title, imgFileName, age, year, director } = film;
+  const { title, imgFileName, tmdbId, age, year, director } = film;
+  const hasPoster = Boolean(imgFileName || tmdbId);
   const shouldBlur = isAdultContent(age);
   const isDisabled = !episode;
 
@@ -70,7 +65,7 @@ export default function FilmCard({
     >
       <div className={styles.filmContent}>
         <span className={styles.filmImageContainer}>
-          {imgFileName ? (
+          {hasPoster ? (
             <>
               <Image
                 alt={`Poster de ${title}`}
@@ -83,7 +78,7 @@ export default function FilmCard({
                 className={`${styles.filmImage} ${
                   shouldBlur ? styles.blurredImage : ""
                 } ${isDisabled ? styles.disabledImage : ""}`}
-                src={getStaticImageUrl(imgFileName, age)}
+                src={getFilmPosterUrlWithAge({ tmdbId, imgFileName }, age)}
                 priority={imageConfig.priority}
                 loading={imageConfig.lazy ? "lazy" : "eager"}
                 quality={imageConfig.quality}

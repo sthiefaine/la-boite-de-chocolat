@@ -10,6 +10,7 @@ interface Film {
   slug: string;
   year: number | null;
   imgFileName: string | null;
+  tmdbId?: number | null;
   age: string | null;
   director: string | null;
 }
@@ -19,6 +20,7 @@ interface Saga {
   name: string;
   films: (Film | undefined)[];
   slug: string;
+  tmdbId?: number | null;
 }
 
 interface EpisodeSagaProps {
@@ -61,6 +63,7 @@ export default async function EpisodeSaga({ saga, sagaResult }: EpisodeSagaProps
                       slug: film.slug,
                       year: film.year || null,
                       imgFileName: film.imgFileName,
+                      tmdbId: film.tmdbId,
                       age: film.age,
                       director: film.director || null,
                       saga: {

@@ -1,4 +1,5 @@
 import { SITE_URL } from "@/helpers/config";
+import { getFilmPosterUrl } from "@/helpers/imageConfig";
 
 interface Film {
   id: string;
@@ -29,9 +30,8 @@ interface FilmJsonLdProps {
 export async function FilmJsonLd({ film }: FilmJsonLdProps) {
   const isAdult = film.age === "18+" || film.age === "adult";
 
-  const imageUrl = film.imgFileName
-    ? `https://uploadfiles.clairdev.com/api/display/podcasts/films/${film.imgFileName}`
-    : undefined;
+  const imageUrl =
+    film.imgFileName || film.tmdbId ? getFilmPosterUrl(film) : undefined;
 
   const podcastEpisodes = film.links
     .filter((link) => link.podcast.slug)

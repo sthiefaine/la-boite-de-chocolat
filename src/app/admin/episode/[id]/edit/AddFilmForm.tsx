@@ -10,7 +10,7 @@ import {
   getMovieCollection,
   checkFilmExists,
 } from "@/app/actions/film";
-import { getUploadServerUrl } from "@/helpers/imageConfig";
+import { getFilmPosterUrl } from "@/helpers/imageConfig";
 import { AGE_RATINGS } from "@/helpers/helpers";
 import styles from "./AddFilmForm.module.css";
 
@@ -326,12 +326,11 @@ export default function AddFilmForm({
 
                     <div className={styles.existingFilmDetails}>
                       <div className={styles.existingFilmCard}>
-                        {filmExists.film.imgFileName && (
+                        {(filmExists.film.imgFileName ||
+                          filmExists.film.tmdbId) && (
                           <div className={styles.existingFilmPoster}>
                             <Image
-                              src={getUploadServerUrl(
-                                filmExists.film.imgFileName
-                              )}
+                              src={getFilmPosterUrl(filmExists.film)}
                               alt={filmExists.film.title}
                               width={60}
                               height={90}

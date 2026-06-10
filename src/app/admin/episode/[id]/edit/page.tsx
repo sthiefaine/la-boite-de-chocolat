@@ -42,6 +42,7 @@ async function getEpisode(id: string) {
               year: true,
               director: true,
               imgFileName: true,
+              tmdbId: true,
               saga: {
                 select: {
                   name: true,
@@ -74,6 +75,7 @@ async function getFilms() {
       year: true,
       director: true,
       imgFileName: true,
+      tmdbId: true,
       saga: {
         select: {
           name: true,

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Link } from "next-view-transitions";
 import { formatDuration } from "@/helpers/podcastHelpers";
-import { IMAGE_CONFIG } from "@/helpers/imageConfig";
+import { IMAGE_CONFIG, getFilmPosterUrlWithAge } from "@/helpers/imageConfig";
 import FavoriteButton from "@/components/Favorite/FavoriteButton";
 import ListenedButton from "@/components/Listened/ListenedButton";
 import styles from "./EpisodeCard.module.css";
@@ -20,6 +20,7 @@ interface EpisodeCardProps {
     slug: string;
     year: number | null;
     imgFileName: string | null;
+    tmdbId?: number | null;
     age: string | null;
     saga: {
       name: string;
@@ -37,13 +38,6 @@ interface EpisodeCardProps {
   imageConfig?: ImageConfig;
   effect?: "none" | "prism" | "holo" | "glow";
 }
-
-const getStaticImageUrl = (imgFileName: string, age: string | null): string => {
-  const isAdult = age === "18+" || age === "adult";
-  return isAdult
-    ? `/api/image/masked/${imgFileName}`
-    : `${IMAGE_CONFIG.domains.uploadReadServer}/films/${imgFileName}`;
-};
 
 export default function EpisodeCard({
   episodeId,
@@ -65,7 +59,7 @@ export default function EpisodeCard({
 }: EpisodeCardProps) {
 
   const displayTitle = film ? film.title : episodeTitle || "Épisode sans titre";
-  const displayImage = film?.imgFileName || null;
+  const hasPoster = Boolean(film && (film.imgFileName || film.tmdbId));
   const displayAge = film?.age || null;
   const shouldBlur =
     displayAge === "18+" || displayAge === "adult" ||
@@ -123,7 +117,7 @@ export default function EpisodeCard({
         scroll={true}
       >
         <div className={`${styles.cardImageContainer} ${effectClass}`}>
-          {displayImage ? (
+          {film && hasPoster ? (
             <>
               <Image
                 alt={altText}
@@ -132,7 +126,10 @@ export default function EpisodeCard({
                 className={`${styles.cardImage} ${
                   shouldBlur ? styles.blurredImage : ""
                 }`}
-                src={getStaticImageUrl(displayImage, displayAge)}
+                src={getFilmPosterUrlWithAge(
+                  { tmdbId: film.tmdbId, imgFileName: film.imgFileName },
+                  displayAge
+                )}
                 priority={imageConfig.priority}
                 loading={imageConfig.lazy ? "lazy" : "eager"}
                 quality={imageConfig.quality}

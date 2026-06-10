@@ -4,7 +4,7 @@ import { getSagaWithFilmsAndEpisodes } from "../../actions/saga";
 import { notFound } from "next/navigation";
 import FilmCard from "@/components/Cards/FilmCard/FilmCard";
 import Image from "next/image";
-import { getUploadServerUrl } from "@/helpers/imageConfig";
+import { getSagaPosterUrl } from "@/helpers/imageConfig";
 import { SITE_URL } from "@/helpers/config";
 import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
 import { SagaJsonLd } from "./json-ld";
@@ -95,9 +95,9 @@ export default async function SagaDetailPage({ params }: SagaDetailPageProps) {
         />
         <div className={styles.header}>
           <div className={styles.headerImageContainer}>
-            {saga.imgFileName && (
+            {(saga.imgFileName || saga.tmdbId) && (
               <Image
-                src={getUploadServerUrl(saga.imgFileName, "sagas")}
+                src={getSagaPosterUrl(saga)}
                 alt={`${saga.name} - Saga`}
                 width={120}
                 height={180}
@@ -170,6 +170,7 @@ export default async function SagaDetailPage({ params }: SagaDetailPageProps) {
                         slug: film.slug,
                         year: film.year || null,
                         imgFileName: film.imgFileName,
+                        tmdbId: film.tmdbId,
                         age: film.age,
                         director: film.director || null,
                         saga: {

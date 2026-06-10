@@ -5,6 +5,7 @@ import { PODCAST_URLS, SOCIAL_URLS, CONTACT_URLS } from "../../helpers/config";
 import styles from "./ChocolateBox.module.css";
 import { usePlayerStore } from "@/lib/store/player";
 import { useShallow } from "zustand/shallow";
+import { getFilmPosterUrlWithAge } from "@/helpers/imageConfig";
 
 interface Episode {
   id: string;
@@ -21,6 +22,7 @@ interface Episode {
       slug: string;
       year: number | null;
       imgFileName: string | null;
+      tmdbId?: number | null;
       age: string | null;
       saga: {
         name: string;
@@ -79,7 +81,7 @@ export default function ChocolateBox({
       id: selectedEpisode.id,
       title: selectedEpisode.title,
       url: selectedEpisode.audioUrl,
-      img: mainFilm?.imgFileName ?? "",
+      img: mainFilm ? getFilmPosterUrlWithAge(mainFilm, mainFilm.age) : "",
       slug: selectedEpisode.slug ?? "",
       artist: "La Boîte de Chocolat",
       age: mainFilm?.age || null,

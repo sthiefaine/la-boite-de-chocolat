@@ -18,6 +18,7 @@ interface Film {
   year: number | null;
   director: string | null;
   imgFileName: string | null;
+  tmdbId?: number | null;
   saga?: {
     name: string;
   } | null;

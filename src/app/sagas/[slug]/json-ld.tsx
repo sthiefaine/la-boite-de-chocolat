@@ -1,4 +1,5 @@
 import { SITE_URL } from "@/helpers/config";
+import { getSagaPosterUrl } from "@/helpers/imageConfig";
 
 interface SagaFilm {
   id: string;
@@ -25,9 +26,8 @@ interface SagaJsonLdProps {
 }
 
 export function SagaJsonLd({ saga }: SagaJsonLdProps) {
-  const imageUrl = saga.imgFileName
-    ? `https://uploadfiles.clairdev.com/api/display/podcasts/sagas/${saga.imgFileName}`
-    : undefined;
+  const imageUrl =
+    saga.imgFileName || saga.tmdbId ? getSagaPosterUrl(saga) : undefined;
 
   const jsonLd: Record<string, unknown> = {
     "@context": "https://schema.org",

@@ -1,4 +1,5 @@
 import { SITE_URL } from "@/helpers/config";
+import { getPersonPhotoUrl } from "@/helpers/imageConfig";
 
 interface PersonJsonLdProps {
   person: {
@@ -25,9 +26,10 @@ interface PersonJsonLdProps {
 
 export function PersonJsonLd({ person }: PersonJsonLdProps) {
   const personUrl = `${SITE_URL}/people/${person.slug}`;
-  const photoUrl = person.photoFileName
-    ? `https://uploadfiles.clairdev.com/api/display/podcasts/people/${person.photoFileName}`
-    : undefined;
+  const photoUrl =
+    person.photoFileName || person.tmdbId
+      ? getPersonPhotoUrl(person)
+      : undefined;
 
   const isDirector = person.directedFilms.length > 0;
   const isActor = person.actedFilms.length > 0;

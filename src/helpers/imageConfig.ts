@@ -79,6 +79,81 @@ export function getTMDBUrl(posterPath: string, size: string = "w342"): string {
   return `https://${IMAGE_CONFIG.domains.tmdb}/t/p/${size}${posterPath}`;
 }
 
+// ---------------------------------------------------------------------------
+// Médias canoniques partagés entre sites (laboitedechocolat, scene2films,
+// agrégateur…). Convention : une image TMDB est stockée UNE SEULE FOIS sur le
+// serveur d'upload, sous un chemin déterministe dérivé du tmdbId :
+//   media/films/{tmdbId}.jpg · media/people/{tmdbId}.jpg · media/sagas/{tmdbId}.jpg
+// Les images custom (hors TMDB) vivent dans media/{kind}/custom/ et sont
+// référencées par imgFileName/photoFileName, qui agit comme un OVERRIDE :
+// s'il est non nul on le sert, sinon on sert l'URL canonique.
+// ---------------------------------------------------------------------------
+
+export type MediaKind = "films" | "people" | "sagas";
+
+export const MEDIA_FOLDER = "media";
+
+export const PLACEHOLDER_IMAGE = "/images/navet.png";
+
+// URL canonique d'une image partagée, fonction pure du tmdbId.
+export function getCanonicalMediaUrl(kind: MediaKind, tmdbId: number): string {
+  return `${IMAGE_CONFIG.domains.uploadReadServer}/${MEDIA_FOLDER}/${kind}/${tmdbId}.jpg`;
+}
+
+type FilmImageRef = {
+  tmdbId?: number | null;
+  imgFileName?: string | null;
+};
+
+type PersonImageRef = {
+  tmdbId?: number | null;
+  photoFileName?: string | null;
+};
+
+// Résolution unique des images : override custom > canonique tmdbId > placeholder.
+export function getFilmPosterUrl(film: FilmImageRef): string {
+  if (film.imgFileName) {
+    return film.imgFileName.startsWith("custom-")
+      ? `${IMAGE_CONFIG.domains.uploadReadServer}/${MEDIA_FOLDER}/films/custom/${film.imgFileName}`
+      : getUploadServerUrl(film.imgFileName, "films");
+  }
+  if (film.tmdbId) return getCanonicalMediaUrl("films", film.tmdbId);
+  return PLACEHOLDER_IMAGE;
+}
+
+export function getPersonPhotoUrl(person: PersonImageRef): string {
+  if (person.photoFileName) {
+    return getUploadServerUrl(person.photoFileName, "people");
+  }
+  if (person.tmdbId) return getCanonicalMediaUrl("people", person.tmdbId);
+  return PLACEHOLDER_IMAGE;
+}
+
+export function getSagaPosterUrl(saga: FilmImageRef): string {
+  if (saga.imgFileName) {
+    return getUploadServerUrl(saga.imgFileName, "sagas");
+  }
+  if (saga.tmdbId) return getCanonicalMediaUrl("sagas", saga.tmdbId);
+  return PLACEHOLDER_IMAGE;
+}
+
+// Version floutée (18+) : la route /api/image/masked résout elle-même
+// canonique ({tmdbId}.jpg), custom (custom-…) et legacy.
+export function getMaskedFilmPosterUrl(film: FilmImageRef): string {
+  const filename = film.imgFileName ?? (film.tmdbId ? `${film.tmdbId}.jpg` : null);
+  if (!filename) return PLACEHOLDER_IMAGE;
+  return `/api/image/masked/${encodeURIComponent(filename)}`;
+}
+
+// Helper combiné : floutée si contenu adulte, normale sinon.
+export function getFilmPosterUrlWithAge(
+  film: FilmImageRef,
+  age: string | null | undefined
+): string {
+  const isAdult = age === "18+" || age === "adult";
+  return isAdult ? getMaskedFilmPosterUrl(film) : getFilmPosterUrl(film);
+}
+
 // Fonction utilitaire pour construire l'URL d'image Open Graph optimisée
 export function getOpenGraphImageUrl(filename: string): string {
   return `/api/image/og/${filename}`;

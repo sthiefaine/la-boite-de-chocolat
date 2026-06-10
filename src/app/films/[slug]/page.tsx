@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { getFilmBySlug } from "@/app/actions/film";
-import { IMAGE_CONFIG } from "@/helpers/imageConfig";
+import { getFilmPosterUrlWithAge } from "@/helpers/imageConfig";
 import EpisodeCard from "@/components/Cards/EpisodeCard/EpisodeCard";
 import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
 import { SITE_URL } from "@/helpers/config";
@@ -60,11 +60,10 @@ export default async function FilmPage({ params }: FilmPageProps) {
 
   const film = result.film;
   const isAdult = film.age === "18+" || film.age === "adult";
-  const imageUrl = film.imgFileName
-    ? isAdult
-      ? `/api/image/masked/${film.imgFileName}`
-      : `${IMAGE_CONFIG.domains.uploadReadServer}/films/${film.imgFileName}`
-    : null;
+  const imageUrl =
+    film.imgFileName || film.tmdbId
+      ? getFilmPosterUrlWithAge(film, film.age)
+      : null;
 
   const budget = formatBudget(film.budget);
   const revenue = formatBudget(film.revenue);
@@ -182,6 +181,7 @@ export default async function FilmPage({ params }: FilmPageProps) {
                       slug: film.slug,
                       year: film.year,
                       imgFileName: film.imgFileName,
+                      tmdbId: film.tmdbId,
                       age: film.age,
                       saga: film.saga,
                     }}

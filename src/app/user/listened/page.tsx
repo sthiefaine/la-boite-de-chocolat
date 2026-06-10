@@ -70,6 +70,7 @@ export default async function ListenedPage() {
                           slug: film.slug,
                           year: film.year,
                           imgFileName: film.imgFileName,
+                          tmdbId: film.tmdbId,
                           age: film.age,
                           saga: film.saga,
                         }

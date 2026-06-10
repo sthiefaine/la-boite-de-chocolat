@@ -45,6 +45,9 @@ export default async function FilmsPage() {
                 slug: film.slug,
                 year: film.year,
                 imgFileName: film.imgFileName,
+                // getAllFilms (actions/film.ts) ne sélectionne pas encore tmdbId ;
+                // accès tolérant pour que l'URL canonique fonctionne dès qu'il sera ajouté.
+                tmdbId: (film as { tmdbId?: number | null }).tmdbId ?? null,
                 age: film.age,
                 director: film.director,
                 saga: film.saga ? { id: film.saga.id, name: film.saga.name } : null,

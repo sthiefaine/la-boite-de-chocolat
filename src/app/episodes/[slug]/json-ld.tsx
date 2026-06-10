@@ -1,6 +1,6 @@
 "use server";
 import { SITE_URL, PODCAST_URLS } from "@/helpers/config";
-import { getMaskedImageUrl } from "@/app/actions/image";
+import { getFilmPosterUrlWithAge } from "@/helpers/imageConfig";
 
 export interface Episode {
   id: string;
@@ -105,12 +105,10 @@ export async function PodcastJsonLd({ episode, canonicalUrl }: JsonLdProps) {
           contentRating: isAdult ? "18+" : "General",
           ...(mainFilm.saga ? { isPartOf: { "@type": "CreativeWorkSeries", name: mainFilm.saga.name } } : {}),
           ...(mainFilm.tmdbId ? { sameAs: `https://www.themoviedb.org/movie/${mainFilm.tmdbId}` } : {}),
-          image: mainFilm.imgFileName
-            ? await getMaskedImageUrl(
-                mainFilm.imgFileName,
-                mainFilm.age || null
-              )
-            : undefined,
+          image:
+            mainFilm.imgFileName || mainFilm.tmdbId
+              ? getFilmPosterUrlWithAge(mainFilm, mainFilm.age || null)
+              : undefined,
         }
       : undefined,
     creator: {

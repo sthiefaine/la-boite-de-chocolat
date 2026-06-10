@@ -2,7 +2,11 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath, unstable_cache } from "next/cache";
-import { uploadToServer, uploadImageFromUrl } from "@/helpers/uploadHelpers";
+import {
+  uploadToServer,
+  uploadImageFromUrl,
+  uploadCanonicalMediaFromTMDB,
+} from "@/helpers/uploadHelpers";
 import { generateSlug } from "@/helpers/podcastHelpers";
 
 interface TMDBMovie {
@@ -172,14 +176,18 @@ export async function getOrCreateSagaFromTMDB(
       },
     });
 
-    let imgFileName: string | undefined;
-    if (collectionPosterPath && (!saga || !saga.imgFileName)) {
-      const uploadResult = await uploadSagaPosterFromTMDB(
-        collectionPosterPath,
-        collectionName
+    // Poster canonique partagé (media/sagas/{tmdbId}.jpg), idempotent.
+    if (collectionPosterPath && tmdbId) {
+      const uploadResult = await uploadCanonicalMediaFromTMDB(
+        "sagas",
+        tmdbId,
+        collectionPosterPath
       );
-      if (uploadResult.success) {
-        imgFileName = uploadResult.filename;
+      if (!uploadResult.success) {
+        console.error(
+          `⚠️ Upload poster saga canonique échoué pour ${collectionName}:`,
+          uploadResult.error
+        );
       }
     }
 
@@ -189,15 +197,19 @@ export async function getOrCreateSagaFromTMDB(
           name: collectionName,
           slug: generateSlug(collectionName),
           ...(tmdbId && { tmdbId: tmdbId }),
-          ...(imgFileName && { imgFileName: imgFileName }),
+          ...(collectionPosterPath && { posterPath: collectionPosterPath }),
         },
       });
-    } else if ((tmdbId && !saga.tmdbId) || (imgFileName && !saga.imgFileName)) {
+    } else if (
+      (tmdbId && !saga.tmdbId) ||
+      (collectionPosterPath && !saga.posterPath)
+    ) {
       saga = await prisma.saga.update({
         where: { id: saga.id },
         data: {
           ...(tmdbId && !saga.tmdbId && { tmdbId: tmdbId }),
-          ...(imgFileName && !saga.imgFileName && { imgFileName: imgFileName }),
+          ...(collectionPosterPath &&
+            !saga.posterPath && { posterPath: collectionPosterPath }),
         },
       });
     }
@@ -364,15 +376,19 @@ export async function createFilmFromTMDB(
       ? new Date(tmdbMovie.release_date).getFullYear()
       : null;
 
-    // Upload du poster si disponible
-    let imgFileName: string | undefined;
+    // Poster : upload canonique partagé (media/films/{tmdbId}.jpg),
+    // idempotent — aucun upload si l'image a déjà été posée par un site.
     if (tmdbMovie.poster_path) {
-      const uploadResult = await uploadPosterFromTMDB(
-        tmdbMovie.poster_path,
-        tmdbMovie.title
+      const uploadResult = await uploadCanonicalMediaFromTMDB(
+        "films",
+        tmdbId,
+        tmdbMovie.poster_path
       );
-      if (uploadResult.success) {
-        imgFileName = uploadResult.filename;
+      if (!uploadResult.success) {
+        console.error(
+          `⚠️ Upload poster canonique échoué pour ${tmdbMovie.title}:`,
+          uploadResult.error
+        );
       }
     }
 
@@ -446,14 +462,17 @@ export async function createFilmFromTMDB(
         ? BigInt(tmdbMovie.revenue)
         : null;
 
-    // Créer le film en base
+    // Créer le film en base. imgFileName reste null : l'image est servie
+    // depuis l'URL canonique media/films/{tmdbId}.jpg (imgFileName = override
+    // custom uniquement).
     const film = await prisma.film.create({
       data: {
         title: tmdbMovie.title,
         slug: finalSlug,
         year: year,
         director: director,
-        imgFileName: imgFileName || null,
+        imgFileName: null,
+        posterPath: tmdbMovie.poster_path || null,
         tmdbId: tmdbId,
         sagaId: finalSagaId || null,
         age: age || null,
@@ -622,6 +641,7 @@ export async function getAllFilms() {
         year: true,
         director: true,
         imgFileName: true,
+        tmdbId: true,
         age: true,
         saga: {
           select: {
@@ -802,10 +822,20 @@ async function getOrCreatePerson(
     slug = `${slug}-${tmdbId}`;
   }
 
-  // Uploader la photo si disponible
-  let photoFileName: string | null = null;
+  // Photo canonique partagée (media/people/{tmdbId}.jpg), idempotente.
+  // photoFileName reste null : il est réservé aux overrides custom.
   if (profilePath) {
-    photoFileName = await uploadProfilePhotoFromTMDB(profilePath, name, tmdbId);
+    const uploadResult = await uploadCanonicalMediaFromTMDB(
+      "people",
+      tmdbId,
+      profilePath
+    );
+    if (!uploadResult.success) {
+      console.error(
+        `⚠️ Upload photo canonique échoué pour ${name}:`,
+        uploadResult.error
+      );
+    }
   }
 
   // Créer la personne avec le slug
@@ -814,7 +844,8 @@ async function getOrCreatePerson(
       name,
       slug,
       tmdbId,
-      photoFileName,
+      photoFileName: null,
+      profilePath: profilePath || null,
     },
   });
 
@@ -935,6 +966,7 @@ export const getFilmCredits = unstable_cache(
                   name: true,
                   slug: true,
                   photoFileName: true,
+                  tmdbId: true,
                 },
               },
             },
@@ -946,6 +978,7 @@ export const getFilmCredits = unstable_cache(
                   name: true,
                   slug: true,
                   photoFileName: true,
+                  tmdbId: true,
                 },
               },
             },
@@ -965,6 +998,7 @@ export const getFilmCredits = unstable_cache(
               name: film.directors[0].person.name,
               slug: film.directors[0].person.slug,
               photoFileName: film.directors[0].person.photoFileName,
+              tmdbId: film.directors[0].person.tmdbId,
             }
           : null;
 
@@ -973,6 +1007,7 @@ export const getFilmCredits = unstable_cache(
         slug: c.person.slug,
         character: c.character || "",
         photoFileName: c.person.photoFileName,
+        tmdbId: c.person.tmdbId,
       }));
 
       return {

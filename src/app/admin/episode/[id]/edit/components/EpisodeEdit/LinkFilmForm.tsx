@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { getUploadServerUrl } from "@/helpers/imageConfig";
+import { getFilmPosterUrl } from "@/helpers/imageConfig";
 import { getAllFilms } from "@/app/actions/film";
 import { linkEpisodeToFilm } from "@/app/actions/episode";
 import styles from "./LinkFilmForm.module.css";
@@ -13,6 +13,7 @@ interface Film {
   year: number | null;
   director: string | null;
   imgFileName: string | null;
+  tmdbId?: number | null;
   saga?: {
     name: string;
   } | null;
@@ -164,9 +165,9 @@ export default function LinkFilmForm({
                 onClick={() => setSelectedFilm(film)}
               >
                 <div className={styles.filmImage}>
-                  {film.imgFileName ? (
+                  {film.imgFileName || film.tmdbId ? (
                     <Image
-                      src={getUploadServerUrl(film.imgFileName, "films")}
+                      src={getFilmPosterUrl(film)}
                       alt={film.title}
                       width={60}
                       height={90}

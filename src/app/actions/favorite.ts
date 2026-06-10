@@ -104,6 +104,7 @@ export async function getUserFavorites(userId: string) {
                     slug: true,
                     year: true,
                     imgFileName: true,
+                    tmdbId: true,
                     age: true,
                     director: true,
                     saga: {

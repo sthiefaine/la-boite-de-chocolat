@@ -1,6 +1,11 @@
 // Helper pour les uploads vers uploadfiles.clairdev.com
 
-import { IMAGE_CONFIG } from "./imageConfig";
+import {
+  IMAGE_CONFIG,
+  MEDIA_FOLDER,
+  getCanonicalMediaUrl,
+  type MediaKind,
+} from "./imageConfig";
 
 interface UploadResponse {
   success: boolean;
@@ -156,7 +161,8 @@ export async function uploadPodcastFile(
 export async function uploadImageFromUrl(
   imageUrl: string,
   fileName: string,
-  folder: string = "films"
+  folder: string = "films",
+  keepName: boolean = false
 ): Promise<UploadResponse> {
   try {
     const uploadUrl = IMAGE_CONFIG.domains.uploadServer;
@@ -182,6 +188,10 @@ export async function uploadImageFromUrl(
     const formData = new FormData();
     formData.append('folder', 'podcasts/' + folder);
     formData.append('files', imageBlob, fileName);
+    if (keepName) {
+      // Nom déterministe conservé tel quel (médias canoniques partagés)
+      formData.append('keepName', 'true');
+    }
 
     const response = await fetch(uploadUrl, {
       method: 'POST',
@@ -235,3 +245,58 @@ export async function uploadImageFromUrl(
     };
   }
 } 
+// ---------------------------------------------------------------------------
+// Médias canoniques partagés (convention multi-sites, voir docs/media-convention.md)
+// Upload idempotent : si l'image canonique media/{kind}/{tmdbId}.jpg existe
+// déjà sur le serveur (posée par n'importe quel site), on ne fait rien.
+// ---------------------------------------------------------------------------
+
+export async function canonicalMediaExists(
+  kind: MediaKind,
+  tmdbId: number
+): Promise<boolean> {
+  try {
+    const response = await fetch(getCanonicalMediaUrl(kind, tmdbId), {
+      method: "HEAD",
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+const TMDB_SIZE_BY_KIND: Record<MediaKind, string> = {
+  films: "w1280",
+  sagas: "w1280",
+  people: "w300",
+};
+
+export async function uploadCanonicalMediaFromTMDB(
+  kind: MediaKind,
+  tmdbId: number,
+  tmdbPath: string
+): Promise<{ success: boolean; existed?: boolean; error?: string }> {
+  try {
+    if (await canonicalMediaExists(kind, tmdbId)) {
+      return { success: true, existed: true };
+    }
+
+    const imageUrl = `https://image.tmdb.org/t/p/${TMDB_SIZE_BY_KIND[kind]}${tmdbPath}`;
+    const result = await uploadImageFromUrl(
+      imageUrl,
+      `${tmdbId}.jpg`,
+      `${MEDIA_FOLDER}/${kind}`,
+      true // keepName : nom déterministe
+    );
+
+    if (!result.success) {
+      return { success: false, error: result.error };
+    }
+    return { success: true, existed: false };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Erreur d'upload canonique",
+    };
+  }
+}

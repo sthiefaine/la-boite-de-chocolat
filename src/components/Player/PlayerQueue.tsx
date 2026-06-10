@@ -92,7 +92,7 @@ export const PlayerQueue = ({ showQueue }: PlayerQueueProps) => {
               <div className={styles.queueItemImageContainer}>
                 <Image
                   src={
-                    item.img.startsWith("http")
+                    item.img.startsWith("http") || item.img.startsWith("/")
                       ? item.img
                       : item.img
                       ? getUploadServerUrl(item.img)

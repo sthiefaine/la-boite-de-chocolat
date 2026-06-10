@@ -90,6 +90,7 @@ export default async function TopEpisodesPage() {
                               slug: film.slug,
                               year: film.year,
                               imgFileName: film.imgFileName,
+                              tmdbId: film.tmdbId,
                               age: film.age,
                               saga: film.saga,
                             }
@@ -149,6 +150,7 @@ export default async function TopEpisodesPage() {
                               slug: film.slug,
                               year: film.year,
                               imgFileName: film.imgFileName,
+                              tmdbId: film.tmdbId,
                               age: film.age,
                               saga: film.saga,
                             }
@@ -198,6 +200,7 @@ export default async function TopEpisodesPage() {
                               slug: film.slug,
                               year: film.year,
                               imgFileName: film.imgFileName,
+                              tmdbId: film.tmdbId,
                               age: film.age,
                               saga: film.saga,
                             }

@@ -1,6 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
-import { IMAGE_CONFIG, getUploadServerUrl } from "@/helpers/imageConfig";
+import {
+  IMAGE_CONFIG,
+  getFilmPosterUrl,
+  getFilmPosterUrlWithAge,
+} from "@/helpers/imageConfig";
 import {
   formatEpisodeDescription,
   formatDuration,
@@ -13,10 +17,6 @@ import { LatestEpisodeData } from "@/app/page";
 interface LatestEpisodeSectionProps {
   episode: LatestEpisodeData | null;
 }
-
-const getImageUrl = (imageFileName: string) => {
-  return getUploadServerUrl(imageFileName);
-};
 
 export default async function LatestEpisodeSection({
   episode,
@@ -126,10 +126,10 @@ export default async function LatestEpisodeSection({
           </div>
 
           <div className={styles.mediaSection}>
-            {mainFilm?.imgFileName && (
+            {mainFilm && (mainFilm.imgFileName || mainFilm.tmdbId) && (
               <div className={styles.filmPoster}>
                 <Image
-                  src={isAdult ? `/api/image/masked/${mainFilm.imgFileName}` : getImageUrl(mainFilm.imgFileName)}
+                  src={getFilmPosterUrlWithAge(mainFilm, isAdult ? "18+" : mainFilm.age)}
                   alt={isAdult ? "Poster flouté - contenu 18+" : `Poster de ${mainFilm.title}`}
                   width={120}
                   height={180}
@@ -156,8 +156,8 @@ export default async function LatestEpisodeSection({
                 title={episode.title}
                 audioUrl={episode.audioUrl}
                 imageUrl={
-                  mainFilm?.imgFileName && !isAdult
-                    ? getImageUrl(mainFilm.imgFileName)
+                  mainFilm && (mainFilm.imgFileName || mainFilm.tmdbId) && !isAdult
+                    ? getFilmPosterUrl(mainFilm)
                     : undefined
                 }
                 artist="La Boîte de Chocolat"

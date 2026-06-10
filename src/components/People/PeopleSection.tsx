@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./PeopleSection.module.css";
-import { getUploadServerUrl, IMAGE_CONFIG } from "@/helpers/imageConfig";
+import { getPersonPhotoUrl, IMAGE_CONFIG } from "@/helpers/imageConfig";
 
 interface PeopleSectionProps {
   credits: {
@@ -9,12 +9,14 @@ interface PeopleSectionProps {
       name: string;
       slug: string | null;
       photoFileName: string | null;
+      tmdbId?: number | null;
     } | null;
     cast: Array<{
       name: string;
       slug: string | null;
       character: string;
       photoFileName: string | null;
+      tmdbId?: number | null;
     }>;
   };
   filmTitle?: string;
@@ -53,10 +55,10 @@ export default function PeopleSection({ credits, filmTitle }: PeopleSectionProps
               </h3>
               <Link href={`/people/${credits.director.slug}`} className={styles.personLink}>
                 <div className={styles.person}>
-                  {credits.director.photoFileName ? (
+                  {credits.director.photoFileName || credits.director.tmdbId ? (
                     <div className={styles.profileImage}>
                       <Image
-                        src={getUploadServerUrl(credits.director.photoFileName, "people")}
+                        src={getPersonPhotoUrl(credits.director)}
                         alt={credits.director.name}
                         width={80}
                         height={80}
@@ -89,10 +91,10 @@ export default function PeopleSection({ credits, filmTitle }: PeopleSectionProps
                   actor.slug ? (
                     <Link key={index} href={`/people/${actor.slug}`} className={styles.personLink}>
                       <div className={styles.person}>
-                        {actor.photoFileName ? (
+                        {actor.photoFileName || actor.tmdbId ? (
                           <div className={styles.profileImage}>
                             <Image
-                              src={getUploadServerUrl(actor.photoFileName, "people")}
+                              src={getPersonPhotoUrl(actor)}
                               alt={actor.name}
                               width={80}
                               height={80}
@@ -115,10 +117,10 @@ export default function PeopleSection({ credits, filmTitle }: PeopleSectionProps
                     </Link>
                   ) : (
                     <div key={index} className={styles.person}>
-                      {actor.photoFileName ? (
+                      {actor.photoFileName || actor.tmdbId ? (
                         <div className={styles.profileImage}>
                           <Image
-                            src={getUploadServerUrl(actor.photoFileName, "people")}
+                            src={getPersonPhotoUrl(actor)}
                             alt={actor.name}
                             width={80}
                             height={80}
