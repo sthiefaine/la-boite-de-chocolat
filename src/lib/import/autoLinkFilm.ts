@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { searchMovies, checkFilmExists, createFilmFromTMDB } from "@/app/actions/film";
 import { linkEpisodeToFilm } from "@/app/actions/episode";
+import { PODCAST_GENRES } from "@/helpers/helpers";
 
 // Liaison automatique épisode → film TMDB.
 // Formats de titres observés dans le flux RSS :
@@ -9,6 +10,14 @@ import { linkEpisodeToFilm } from "@/app/actions/episode";
 //   "p0rno - La Collectionneuse"       → film 18+
 //   "- BONUS - Fast and Furious 5"     → film (préfixe bonus à retirer)
 //   "- Petit Cadeau Secret Santa -"    → ANNONCE, ne jamais lier
+//   "F.A.Q"                            → RUBRIQUE, ne jamais lier (cf.
+//                                        NON_FILM_TITLES : « FAQ » est un
+//                                        vrai film TMDB, le piège est réel)
+//
+// Ce fichier alimente `/api/catalog`, que les sites de l'écosystème
+// (movie-to-podcast) consomment comme source AUTORITATIVE : un faux lien posé
+// ici est republié partout et n'est pas corrigeable en aval. D'où la règle
+// déjà présente dans pickBestMatch — mieux vaut AUCUN lien qu'un mauvais.
 
 const ADULT_PREFIX_REGEX = /^p[o0]rn[o0]\s*-\s*/i;
 const BONUS_PREFIX_REGEX = /^-+\s*bonus\s*-+\s*/i;
@@ -16,6 +25,32 @@ const BONUS_PREFIX_REGEX = /^-+\s*bonus\s*-+\s*/i;
 const ANNOUNCEMENT_WRAP_REGEX = /^-\s*[^-].*-$/;
 const ANNOUNCEMENT_KEYWORD_REGEX = /^(annonce|teaser|hors[- ]?s[eé]rie)\b/i;
 const YEAR_IN_TITLE_REGEX = /\s*\((\d{4})\)\s*/;
+
+const normalizeTitle = (str: string) =>
+  str
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]/g, "");
+
+// Rubriques d'émission qui ne sont JAMAIS un film, comparées sur le titre
+// NORMALISÉ (ponctuation retirée). Indispensable parce que la normalisation
+// rend « F.A.Q » identique à « FAQ » — or TMDB a bel et bien un film « FAQ »
+// (2015), et le match ressortait donc EXACT, avec la confiance maximale.
+// Incident du 2026-09-14 : l'épisode bonus Questions/Réponses a été publié
+// comme « la BDC parle du film FAQ » sur tout l'écosystème (movie-to-podcast
+// reprend ce catalogue comme autoritatif).
+// Liste volontairement courte et littérale : aucun titre de film légitime ne
+// doit pouvoir tomber dedans.
+const NON_FILM_TITLES = new Set([
+  "faq",
+  "questionsreponses",
+  "bestof",
+  "bilan",
+  "lesnews",
+  "bonus",
+  "horsserie",
+]);
 
 export type AutoLinkResult = {
   episodeTitle: string;
@@ -25,6 +60,7 @@ export type AutoLinkResult = {
     | "no_match"
     | "low_confidence"
     | "skipped_announcement"
+    | "skipped_non_film"
     | "error";
   filmTitle?: string;
   error?: string;
@@ -34,6 +70,8 @@ export function parseEpisodeTitle(title: string): {
   query: string;
   isAdult: boolean;
   isAnnouncement: boolean;
+  /** Rubrique d'émission (F.A.Q, bilan…) : à ne jamais chercher sur TMDB. */
+  isNonFilm: boolean;
   year: number | null;
 } {
   let rest = title.trim();
@@ -42,7 +80,23 @@ export function parseEpisodeTitle(title: string): {
     ANNOUNCEMENT_WRAP_REGEX.test(rest) ||
     ANNOUNCEMENT_KEYWORD_REGEX.test(rest)
   ) {
-    return { query: "", isAdult: false, isAnnouncement: true, year: null };
+    return {
+      query: "",
+      isAdult: false,
+      isAnnouncement: true,
+      isNonFilm: false,
+      year: null,
+    };
+  }
+
+  if (NON_FILM_TITLES.has(normalizeTitle(rest))) {
+    return {
+      query: "",
+      isAdult: false,
+      isAnnouncement: false,
+      isNonFilm: true,
+      year: null,
+    };
   }
 
   rest = rest.replace(BONUS_PREFIX_REGEX, "").trim();
@@ -60,15 +114,8 @@ export function parseEpisodeTitle(title: string): {
     rest = rest.replace(YEAR_IN_TITLE_REGEX, " ").trim();
   }
 
-  return { query: rest, isAdult, isAnnouncement: false, year };
+  return { query: rest, isAdult, isAnnouncement: false, isNonFilm: false, year };
 }
-
-const normalizeTitle = (str: string) =>
-  str
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]/g, "");
 
 const titleWords = (str: string) =>
   str
@@ -135,9 +182,8 @@ export async function autoLinkFilmToEpisode(episode: {
   title: string;
 }): Promise<AutoLinkResult> {
   try {
-    const { query, isAdult, isAnnouncement, year } = parseEpisodeTitle(
-      episode.title
-    );
+    const { query, isAdult, isAnnouncement, isNonFilm, year } =
+      parseEpisodeTitle(episode.title);
 
     if (isAnnouncement) {
       // Marquer comme annonce (badge UI existant) : sort l'épisode du
@@ -147,6 +193,17 @@ export async function autoLinkFilmToEpisode(episode: {
         data: { genre: "Annonce" },
       });
       return { episodeTitle: episode.title, status: "skipped_announcement" };
+    }
+
+    if (isNonFilm) {
+      // Rubrique d'émission : on la sort DÉFINITIVEMENT du pipeline (le cron
+      // ne reprend que les épisodes `genre: null`), sinon chaque run la
+      // représente à TMDB et finit par retomber sur un homonyme.
+      await prisma.podcastEpisode.update({
+        where: { id: episode.id },
+        data: { genre: PODCAST_GENRES.HORS_SUJET },
+      });
+      return { episodeTitle: episode.title, status: "skipped_non_film" };
     }
 
     if (!query) {
