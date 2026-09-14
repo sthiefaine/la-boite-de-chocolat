@@ -1,6 +1,7 @@
 import Parser from "rss-parser";
 import { prisma } from "@/lib/prisma";
 import { generateSlug } from "@/helpers/podcastHelpers";
+import { PODCAST_GENRES } from "@/helpers/helpers";
 import { allowedHours, shouldRunImport } from "@/helpers/timeHelpers";
 import {
   autoLinkFilmToEpisode,
@@ -126,9 +127,13 @@ export async function GET(request: Request) {
         counter++;
       }
 
-      // Épisodes adultes ("p0rno - ...") et annonces ("- ... -") détectés
-      // depuis le titre RSS
-      const { isAdult, isAnnouncement } = parseEpisodeTitle(item.title || "");
+      // Épisodes adultes ("p0rno - ..."), annonces ("- ... -") et rubriques
+      // ("F.A.Q"…) détectés dès le
+      // titre RSS : leur `genre` les sort du pipeline d'auto-liaison, qui ne
+      // reprend que les épisodes `genre: null`.
+      const { isAdult, isAnnouncement, isNonFilm } = parseEpisodeTitle(
+        item.title || ""
+      );
 
       await prisma.podcastEpisode.upsert({
         where: { audioUrl: item.enclosure.url },
@@ -153,6 +158,7 @@ export async function GET(request: Request) {
           episode: episode ?? undefined,
           ...(isAdult && { age: "18+" }),
           ...(isAnnouncement && { genre: "Annonce" }),
+          ...(isNonFilm && { genre: PODCAST_GENRES.HORS_SUJET }),
         },
       });
 
@@ -195,6 +201,9 @@ export async function GET(request: Request) {
       alreadyLinked: autoLinkResults.filter((r) => r.status === "already").length,
       skippedAnnouncements: autoLinkResults
         .filter((r) => r.status === "skipped_announcement")
+        .map((r) => r.episodeTitle),
+      skippedNonFilm: autoLinkResults
+        .filter((r) => r.status === "skipped_non_film")
         .map((r) => r.episodeTitle),
       lowConfidence: autoLinkResults
         .filter((r) => r.status === "low_confidence")
