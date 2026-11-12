@@ -1,88 +1,45 @@
-import { prisma } from "@/lib/prisma";
-import { SITE_URL, PODCAST_URLS } from "@/helpers/config";
+import { SITE_URL } from "@/helpers/config";
+import { buildPodcastFeed } from "@/lib/podcastFeed";
+import {
+  getTranscriptionCatalog,
+  parseTranscriptionStatus,
+} from "@/lib/transcriptionCatalog";
 
-function escapeXml(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;");
-}
+export const dynamic = "force-dynamic";
 
-export async function GET() {
-  const episodes = await prisma.podcastEpisode.findMany({
-    where: {
-      slug: { not: null },
-    },
-    orderBy: { pubDate: "desc" },
-    take: 50,
-    include: {
-      links: {
-        include: {
-          film: {
-            select: {
-              title: true,
-              slug: true,
-              director: true,
-              year: true,
-            },
-          },
-        },
-      },
-    },
-  });
-
-  const filteredEpisodes = episodes.filter(
-    (ep) => ep.age !== "18+" && ep.age !== "adult"
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const status = parseTranscriptionStatus(
+    searchParams.get("transcription"),
+    "all",
   );
+  if (!status) {
+    return Response.json(
+      { error: "transcription doit être all, missing ou available" },
+      { status: 400 },
+    );
+  }
 
-  const lastBuildDate = new Date().toUTCString();
+  // Conserver les 50 entrées du flux habituel. Les modes archive et filtré
+  // couvrent tous les épisodes, y compris ceux de l'ancien catalogue.
+  const all = searchParams.get("all") === "true" || status !== "all";
+  const selfUrl = new URL("/feed.xml", SITE_URL);
+  if (all) selfUrl.searchParams.set("all", "true");
+  if (status !== "all") selfUrl.searchParams.set("transcription", status);
 
-  const items = filteredEpisodes
-    .map((ep) => {
-      const pubDate = new Date(ep.pubDate).toUTCString();
-      const description = ep.description ? escapeXml(ep.description) : "";
-      const durationTag =
-        ep.duration != null
-          ? `      <itunes:duration>${ep.duration}</itunes:duration>`
-          : "";
-      const enclosureTag = ep.audioUrl
-        ? `      <enclosure url="${escapeXml(ep.audioUrl)}" type="audio/mpeg"/>`
-        : "";
-
-      return `    <item>
-      <title>${escapeXml(ep.title)}</title>
-      <link>${SITE_URL}/episodes/${ep.slug}</link>
-      <guid isPermaLink="true">${SITE_URL}/episodes/${ep.slug}</guid>
-      <description>${description}</description>
-      <pubDate>${pubDate}</pubDate>
-${enclosureTag}
-${durationTag}
-    </item>`;
-    })
-    .join("\n");
-
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
-  <channel>
-    <title>La Bo\u00eete de Chocolat</title>
-    <link>${SITE_URL}</link>
-    <description>Le podcast cin\u00e9ma fran\u00e7ais qui analyse vos films pr\u00e9f\u00e9r\u00e9s avec mauvaise foi.</description>
-    <language>fr</language>
-    <lastBuildDate>${lastBuildDate}</lastBuildDate>
-    <atom:link href="${SITE_URL}/feed.xml" rel="self" type="application/rss+xml"/>
-    <itunes:author>La Bo\u00eete de Chocolat</itunes:author>
-    <itunes:category text="Arts"><itunes:category text="Film Reviews"/></itunes:category>
-    <itunes:explicit>false</itunes:explicit>
-    <itunes:image href="${SITE_URL}/images/icons/web-app-manifest-512x512.png"/>
-${items}
-  </channel>
-</rss>`;
-
-  return new Response(xml, {
-    headers: {
-      "Content-Type": "application/rss+xml; charset=utf-8",
-    },
-  });
+  try {
+    const episodes = await getTranscriptionCatalog(
+      status,
+      all ? undefined : 50,
+    );
+    return new Response(buildPodcastFeed(episodes, selfUrl.toString()), {
+      headers: {
+        "Content-Type": "application/rss+xml; charset=utf-8",
+        "Cache-Control": "public, max-age=60, s-maxage=60",
+      },
+    });
+  } catch (error) {
+    console.error("Erreur génération flux RSS:", error);
+    return Response.json({ error: "Flux RSS indisponible" }, { status: 500 });
+  }
 }

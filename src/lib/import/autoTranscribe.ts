@@ -1,5 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { uploadTranscription } from "@/app/actions/transcription";
+import {
+  buildContextBiasFromFilms,
+  transcriptionFilmSelect,
+} from "@/lib/transcriptionContext";
 
 // Transcription automatique des épisodes via l'API Mistral (Voxtral).
 // DÉSACTIVÉE PAR DÉFAUT — double verrou :
@@ -56,11 +60,7 @@ export async function countAutoTranscriptionsThisMonth(): Promise<number> {
 // la bonne orthographe des noms propres. On connaît déjà le film lié à
 // l'épisode (l'auto-liaison tourne avant la transcription dans le même run) :
 // titre, saga, réalisateurs, casting et personnages.
-const CONTEXT_BIAS_MAX = 100;
-
 export async function buildContextBias(episodeId: string): Promise<string[]> {
-  const bias = new Set<string>(["La Boîte de Chocolat"]);
-
   try {
     const episode = await prisma.podcastEpisode.findUnique({
       where: { id: episodeId },
@@ -68,48 +68,22 @@ export async function buildContextBias(episodeId: string): Promise<string[]> {
         links: {
           select: {
             film: {
-              select: {
-                title: true,
-                director: true,
-                saga: { select: { name: true } },
-                directors: {
-                  select: { person: { select: { name: true } } },
-                },
-                cast: {
-                  select: {
-                    character: true,
-                    person: { select: { name: true } },
-                  },
-                  orderBy: { order: "asc" },
-                  take: 15,
-                },
-              },
+              select: transcriptionFilmSelect,
             },
           },
         },
       },
     });
 
-    for (const link of episode?.links ?? []) {
-      const film = link.film;
-      if (!film) continue;
-      if (film.title) bias.add(film.title);
-      if (film.director) bias.add(film.director);
-      if (film.saga?.name) bias.add(film.saga.name);
-      for (const d of film.directors) {
-        if (d.person?.name) bias.add(d.person.name);
-      }
-      for (const c of film.cast) {
-        if (c.person?.name) bias.add(c.person.name);
-        if (c.character) bias.add(c.character);
-      }
-    }
+    return buildContextBiasFromFilms(
+      episode?.links.map(({ film }) => film) ?? [],
+    );
   } catch (error) {
     // Le biais est un bonus : son échec ne doit pas empêcher la transcription.
     console.error("Erreur construction context_bias:", error);
   }
 
-  return [...bias].filter(Boolean).slice(0, CONTEXT_BIAS_MAX);
+  return buildContextBiasFromFilms([]);
 }
 
 export type AutoTranscribeResult = {
@@ -156,8 +130,8 @@ export function segmentsToSrt(segments: MistralSegment[]): string {
 
     blocks.push(
       `${i + 1}\n${secondsToSrtTime(seg.start)} --> ${secondsToSrtTime(
-        seg.end
-      )}\n${prefix}${text}`
+        seg.end,
+      )}\n${prefix}${text}`,
     );
   });
 
